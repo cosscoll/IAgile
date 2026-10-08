@@ -26,7 +26,7 @@ let browser;let passed=0;
 const test=(name,fn)=>({name,fn});
 const tests=[
   test('all four resources load and remain navigable',async page=>{
-    for(const name of ['index.html','diagnostic-ia.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
+    for(const name of ['index.html','diagnostic-ia.html','diagnostic-10-questions.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
       const response=await page.goto(base+'ressources/'+name);
       assert.equal(response.status(),200,name);
       assert.ok(await page.locator('h1').count(),name+' missing main heading');
@@ -44,6 +44,22 @@ const tests=[
       await page.waitForURL('**/ressources/'+resource+'.html');
       assert.equal(await page.locator('h1').count(),1);
     }
+  }),
+  test('10 question diagnostic gives three recommendations with risk controls',async page=>{
+    await page.goto(base+'ressources/diagnostic-10-questions.html');
+    assert.equal(await page.locator('fieldset.question').count(),10);
+    for(const [name,value] of [['domaine','redaction'],['frequence','4'],['duree','3'],['difficulte','verification'],['sensibilite','sensibles'],['impact','eleve'],['controle','non'],['stabilite','variable'],['transfert','non'],['priorite','qualite']]){
+      await page.locator('input[name="'+name+'"][value="'+value+'"]').check();
+    }
+    assert.match(await page.locator('#diagnostic-progress').innerText(),/10 \/ 10/);
+    await page.locator('#diagnostic10 button[type="submit"]').click();
+    assert.equal(await page.locator('#diagnostic-results ol li').count(),3);
+    assert.match(await page.locator('#diagnostic-results').innerText(),/Contrôle humain/);
+    assert.match(await page.locator('#diagnostic-results').innerText(),/Données confidentielles/);
+    const [dl]=await Promise.all([page.waitForEvent('download'),page.locator('#save-diagnostic').click()]);
+    assert.equal(dl.suggestedFilename(),'iagile-diagnostic-processus.txt');
+    await page.locator('input[name="sensibilite"][value="publiques"]').check();
+    assert.equal(await page.locator('#diagnostic-results').isVisible(),false);
   }),
   test('scorecard computes positive and negative gain without transmission',async page=>{
     await page.goto(base+'ressources/diagnostic-ia.html');
@@ -92,7 +108,7 @@ const tests=[
     assert.equal(download.suggestedFilename(),'iagile-brief-3d.txt');
   }),
   test('resource pages pass WCAG 2.1 A/AA automated accessibility checks',async page=>{
-    for(const p of ['index.html','diagnostic-ia.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
+    for(const p of ['index.html','diagnostic-ia.html','diagnostic-10-questions.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
       await page.goto(base+'ressources/'+p);
       const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
       const details=results.violations.map(x=>x.id+': '+x.nodes.map(n=>n.target.join(' ')).join(', '));
@@ -100,7 +116,7 @@ const tests=[
     }
   }),
   test('mobile viewport does not overflow; skip link accepts keyboard focus',async page=>{
-    for(const p of ['index.html','diagnostic-ia.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
+    for(const p of ['index.html','diagnostic-ia.html','diagnostic-10-questions.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
       await page.goto(base+'ressources/'+p);
       const sizes=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
       assert.ok(sizes.scroll <= sizes.viewport+2,p+' has horizontal overflow: '+JSON.stringify(sizes));
