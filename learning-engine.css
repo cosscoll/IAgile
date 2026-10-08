@@ -1,0 +1,225 @@
+/* IAgile CHROME / design tokens restored from selected art direction.
+   Ivory #F4F2ED · ink #141414 · silver #A8B2BC · cobalt #235BFF.
+   Sora for titles; Manrope for reading. The world is a physical learning system,
+   not an ambient abstract object. It deliberately does not mimic a working AI. */
+:root{--night:#141414;--black:#141414;--mid:#292c31;--text:#f6f5f1;--muted:#727981;--blue:#235bff;--cobalt:#235bff;--cream:#f4f2ed;--cream2:#faf9f6;--ink:#141414;--line:rgba(20,20,20,.16);--display:'Sora',sans-serif;--body:'Manrope',sans-serif}
+body{background:#f4f2ed;color:#141414}
+::selection{background:#235bff;color:#fff}
+:focus-visible{outline-color:#235bff}
+.blue,.accent{color:#235bff}
+.page-progress div{background:#235bff;box-shadow:none}
+.grain{opacity:.028}
+.pointer-halo{border-color:#235bff;mix-blend-mode:multiply}
+.loader{background:#f4f2ed;color:#141414}
+.loader-title,.loader-counter{color:#555c64}
+.loader-track{background:#c0c6cc}
+.loader-track span{background:#235bff}
+.site-curtain{background:#235bff}
+.site-header,.site-header.scrolled{background:rgba(244,242,237,.92);border-bottom:1px solid rgba(20,20,20,.10);color:#141414;backdrop-filter:blur(22px)}
+.site-header .logo,.site-header.scrolled .logo{color:#141414}
+.logo b{color:#235bff}
+.header-nav a{color:#30363e}.header-nav a:hover{color:#235bff}
+.online-indicator{color:#65696c}
+.online-indicator i,.live-dot{background:#235bff;box-shadow:0 0 0 4px rgba(35,91,255,.09);animation:none}
+.nav-cta{border-color:#141414;color:#141414;transition:background .3s,color .3s}
+.nav-cta:hover{background:#141414;color:#fff}
+.menu-toggle span{background:#141414}
+.mobile-menu{background:#f4f2ed;color:#141414}
+.cinema-pin{background:radial-gradient(ellipse at 73% 48%,#fff 0,#f4f2ed 42%,#e8e8e5 100%)}
+.cinema-grid{background-image:linear-gradient(#14141408 1px,transparent 1px),linear-gradient(90deg,#14141408 1px,transparent 1px);mask-image:linear-gradient(90deg,transparent,#000 55%)}
+.cinema-lightfield{background:radial-gradient(ellipse at 72% 50%,rgba(163,175,197,.14),transparent 61%)}
+.cinema-aura{background:radial-gradient(ellipse,rgba(194,202,217,.22),transparent 62%)}
+.frame-top,.cinema-bottom,.side-coordinate{color:#5b606a}
+.frame-top .live-dot{box-shadow:none}
+.scene-copy{color:#141414}
+.scene-copy h1,.scene-copy h2{font-weight:700;letter-spacing:-.085em}
+.scene-copy h1{font-size:clamp(62px,8.3vw,142px)}
+.scene-copy h2{font-size:clamp(54px,7vw,116px)}
+.eyebrow,.micro{color:#434c58}
+.eyebrow-line{background:#235bff}
+.scene-intro{color:#4d5561}
+.chrome-type{background:linear-gradient(108deg,#3d4148 2%,#929aa2 15%,#363c44 31%,#f1f3f4 45%,#3b4755 62%,#aeb7bf 75%,#35393e 100%);background-size:180% 100%;-webkit-background-clip:text;background-clip:text}
+.circle-cta{border-color:#141414;color:#141414}
+.circle-cta:hover{background:#235bff;color:#fff;border-color:#235bff}
+.scene-link{border-color:#141414}
+.scene-copy .eyebrow{color:#235bff}
+.chapter-index{color:#141414}.chapter-index i{background:#a8b2bc}.chapter-index span:last-child{color:#777}
+.scroll-mouse{border-color:#7e838d}
+.engine-indicator i{background:#235bff;box-shadow:none}
+.model-controls{right:6%;bottom:14%}
+.model-controls p,.model-controls p b{color:#414953}
+.mode-switch{background:rgba(255,255,255,.72)!important;border-color:#9da6b4!important;color:#141414!important;box-shadow:0 8px 32px #3331}
+.mode-switch:hover{border-color:#235bff!important;color:#235bff!important}
+.ticker{background:#d9dde0;color:#141414;border-color:#c7cdd2}
+.cream{background:#f4f2ed;color:#141414}
+.manifesto{background:#faf9f6}
+.manifesto .manifesto-detail p{color:#353e47}
+.feature-showcase{background:radial-gradient(ellipse at 70% 50%,#535963 0%,#252a30 40%,#141414 85%)}
+.feature-sphere,.feature-orbit{display:none!important}
+.feature-beam{opacity:.08}
+.lab{background:#f4f2ed;color:#141414}
+.lab .section-metadata,.lab .micro{color:#474c54}
+.lab .display{color:#141414}
+.lab .outline-light{-webkit-text-stroke:1px #606975;color:transparent}
+.lab-heading-copy{color:#4a5561!important}
+.workspace-header{background:#141414;color:#f9f8f5}
+.lab-workspace{border:1px solid #b8bdc6;box-shadow:0 28px 65px rgba(32,41,55,.10)}
+.journey{background:#faf9f6}
+.courses{background:#e9e9e6;color:#141414}
+.courses-head>p{color:#4c5661!important}
+.course-list{border-color:#adb1b7}
+.course-item{color:#141414!important;border-color:#b9bdc4!important}
+.course-item:hover{background:#fff}
+.course-info>span,.course-tags span,.catalogue-note{color:#555c65!important}
+.course-info p{color:#4b535d!important}
+.course-arrow{color:#235bff}
+.course-image{background:#d5dae0!important}
+.outro{background:radial-gradient(circle at 68% 50%,#4c5259 0,#2d3036 31%,#141414 85%)}
+.footer{background:#f4f2ed;color:#141414}
+/* Keep the 3D experience anchored in the layout, not over the purchase buttons. */
+.three-area.orbit-global{filter:none;z-index:30;pointer-events:auto}
+.three-area.orbit-global::after{content:none}
+body[data-orbit-section='accueil'] .three-area.orbit-global{left:42vw;top:5vh;width:56vw;height:87vh;opacity:1}
+body[data-orbit-section='approche'] .three-area.orbit-global{left:77vw;top:27vh;width:22vw;height:38vh;opacity:.92}
+body[data-orbit-section='showcase'] .three-area.orbit-global{left:58vw;top:18vh;width:39vw;height:66vh;opacity:1}
+body[data-orbit-section='experience'] .three-area.orbit-global{left:78vw;top:12vh;width:21vw;height:32vh;opacity:.85}
+body[data-orbit-section='parcours'] .three-area.orbit-global{left:69vw;top:35vh;width:29vw;height:50vh;opacity:.96}
+body[data-orbit-section='formations'] .three-area.orbit-global{left:80vw;top:18vh;width:19vw;height:32vh;opacity:.82}
+body[data-orbit-section='contact'] .three-area.orbit-global{left:57vw;top:17vh;width:39vw;height:65vh;opacity:.94}
+body[data-orbit-section='footer'] .three-area.orbit-global{left:82vw;top:19vh;width:17vw;height:27vh;opacity:.7}
+.orbit-hud{background:rgba(250,249,247,.9);color:#141414;border:1px solid rgba(103,113,127,.28);box-shadow:0 18px 48px #14141419;backdrop-filter:blur(22px)}
+.orbit-hud-pulse{background:#235bff;box-shadow:0 0 0 4px #235bff15;animation:none}
+.orbit-hud-copy span{color:#737b85;font-family:var(--body)}
+.orbit-hud-copy strong{color:#141414;font-family:var(--display)}
+.orbit-hud button{background:#141414;color:#fff;border-color:#141414;border-radius:50%}
+.orbit-hud button:hover{background:#235bff;border-color:#235bff}
+/* Replace the former decorative geometry with a semantically meaningful 3D learning console. */
+.three-area #threeCanvas,.three-area .webgl-fallback{display:none!important}
+.learning-universe{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;perspective:1100px;perspective-origin:50% 47%;user-select:none;touch-action:pan-y;isolation:isolate;outline-offset:-6px}
+.learning-universe::before{content:'';position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle,#ffffffba,transparent 62%);filter:blur(25px);pointer-events:none}
+.learning-caption,.learning-footer{position:absolute;left:9%;right:9%;z-index:6;display:flex;justify-content:space-between;align-items:center;gap:9px;font:600 10px/1.4 var(--body);letter-spacing:.14em;color:#454d56;pointer-events:none}
+.learning-caption{top:6%;justify-content:flex-start}
+.learn-pulse{width:6px;height:6px;border-radius:100%;background:#235bff;box-shadow:0 0 0 4px #235bff14;flex:0 0 6px}
+.learning-counter{margin-left:auto;color:#235bff;font-weight:800}
+.learning-footer{bottom:7%;font-size:9px;letter-spacing:.12em}
+.learning-footer span:first-child{color:#235bff}
+.learning-world{position:relative;width:570px;height:520px;flex:none;transform-style:preserve-3d;transform:rotateX(var(--tilt-x,-16deg)) rotateY(var(--tilt-y,-22deg)) rotateZ(-8deg) scale(var(--world-scale,1));will-change:transform;transition:transform .45s cubic-bezier(.2,.76,.2,1)}
+.processor,.learn-node,.learn-link,.world-ground,.world-grid,.world-orbit{position:absolute;transform-style:preserve-3d;backface-visibility:visible}
+.processor{left:173px;top:156px;width:225px;height:225px;transform:translate3d(0,0,80px);transition:transform 1.15s cubic-bezier(.2,.8,.2,1);z-index:4}
+.processor-back,.processor-rim,.processor-side{position:absolute;inset:0;border-radius:20px}
+.processor-back{transform:translateZ(-22px);background:linear-gradient(135deg,#3f4650 5%,#9ba6b0 45%,#363b42);border:2px solid #535d68;box-shadow:26px 35px 40px #272e3744}
+.processor-rim{background:linear-gradient(135deg,#f9fafb 0,#77828d 12%,#edf1f2 30%,#5a646f 45%,#eff2f3 58%,#87929e 77%,#e6eaed 100%);padding:14px;border:1px solid #fafafa;box-shadow:inset 1px 2px 4px #fff,0 20px 52px #26364b33}
+.processor-side.side-right{left:auto;right:-12px;width:24px;transform:rotateY(90deg) translateZ(11px);transform-origin:left;background:linear-gradient(#4e5864,#e5e9ec,#565e65)}
+.processor-side.side-top{top:auto;bottom:-10px;height:20px;transform:rotateX(-90deg) translateZ(11px);transform-origin:top;background:linear-gradient(90deg,#e0e5e9,#5c6269,#e3e8eb)}
+.processor-surface{position:relative;width:100%;height:100%;border-radius:12px;background:linear-gradient(145deg,#2a3038 3%,#15191f 45%,#2d343d 100%);border:1px solid #c2cbd5;box-shadow:inset 0 0 0 6px #3c424a,inset 0 20px 35px #12171c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;overflow:hidden}
+.processor-surface::before{content:'';position:absolute;inset:0;opacity:.4;background:repeating-linear-gradient(0deg,transparent 0,transparent 13px,#68728036 13px,#68728036 14px),repeating-linear-gradient(90deg,transparent 0,transparent 13px,#68728032 13px,#68728032 14px)}
+.cpu-micro{font:600 8px var(--body);letter-spacing:.18em;color:#e6ebed;position:relative;z-index:2;margin-top:3px}
+.cpu-core{position:relative;z-index:3;width:99px;height:99px;border:1px solid #909eac;background:linear-gradient(128deg,#3a434e,#10161d 52%,#384551);box-shadow:0 0 0 7px #a2abb420,inset 0 0 26px #235bff22;display:grid;place-items:center;transform:translateZ(7px)}
+.cpu-core span{font:600 61px/1 var(--display);letter-spacing:-.13em;color:#f5f5f3;text-shadow:0 0 22px #e0e9ff33;padding-right:10px}
+.cpu-core i{position:absolute;bottom:10px;right:11px;width:6px;height:6px;background:#235bff;box-shadow:0 0 13px #235bff}
+.cpu-rails{position:relative;z-index:2;display:flex;align-items:center;gap:8px;font:600 7px var(--body);letter-spacing:.04em;color:#c9d1d7}
+.cpu-rails b{color:#7297ff}
+.learn-node{width:190px;height:94px;z-index:3;transition:transform 1.15s cubic-bezier(.2,.8,.2,1),opacity .7s,filter .7s}
+.node-depth,.node-face{position:absolute;inset:0;border-radius:11px}
+.node-depth{background:linear-gradient(135deg,#54606e,#e4e9ed,#6c7884);transform:translate3d(7px,9px,-17px);box-shadow:10px 18px 23px #1a23302c}
+.node-face{padding:14px 15px;background:linear-gradient(150deg,rgba(255,255,255,.98),rgba(214,221,225,.97) 48%,rgba(250,251,252,.98));border:1px solid #fff;box-shadow:inset 0 0 0 1px #aeb7bd,0 15px 30px #131b2621;display:flex;gap:10px;align-items:center;color:#242b32;transform:translateZ(7px)}
+.node-icon{align-self:flex-start;font:800 12px var(--display);letter-spacing:-.05em;display:grid;place-items:center;width:28px;height:28px;flex:0 0 28px;border:1px solid #a4afbb;border-radius:5px;color:#235bff}
+.node-copy{display:flex;flex-direction:column;gap:5px;min-width:0}
+.node-copy small{font:700 7px var(--body);letter-spacing:.18em;color:#6d747c}
+.node-copy strong{font:700 13px/.98 var(--display);letter-spacing:-.06em}
+.node-copy em{font:500 8px var(--body);font-style:normal;color:#616a74}
+.node-signal{position:absolute;bottom:12px;right:14px;width:5px;height:5px;background:#a8b2bc;border-radius:50%}
+.node-1{transform:translate3d(30px,10px,-70px) scale(.83)}
+.node-2{transform:translate3d(290px,125px,-80px) scale(.83)}
+.node-3{transform:translate3d(180px,345px,-90px) scale(.83)}
+/* The course modules physically unfold as the learner advances. */
+.learning-universe[data-stage='0'] .node-1{transform:translate3d(28px,42px,24px) scale(.76);opacity:.68}
+.learning-universe[data-stage='0'] .node-2{transform:translate3d(316px,165px,-30px) scale(.76);opacity:.48}
+.learning-universe[data-stage='0'] .node-3{transform:translate3d(185px,380px,-42px) scale(.76);opacity:.42}
+.learning-universe[data-stage='1'] .node-1,.learning-universe[data-stage='2'] .node-1,.learning-universe[data-stage='3'] .node-1{transform:translate3d(8px,42px,118px) scale(1);opacity:1}
+.learning-universe[data-stage='1'] .node-2{transform:translate3d(317px,160px,-12px) scale(.82);opacity:.53}
+.learning-universe[data-stage='2'] .node-2,.learning-universe[data-stage='3'] .node-2{transform:translate3d(330px,155px,118px) scale(1);opacity:1}
+.learning-universe[data-stage='1'] .node-3,.learning-universe[data-stage='2'] .node-3{transform:translate3d(190px,390px,15px) scale(.81);opacity:.54}
+.learning-universe[data-stage='3'] .node-3{transform:translate3d(185px,370px,122px) scale(1);opacity:1}
+.learning-universe[data-stage='1'] .node-1 .node-signal,.learning-universe[data-stage='2'] .node-2 .node-signal,.learning-universe[data-stage='3'] .node-3 .node-signal{background:#235bff;box-shadow:0 0 0 5px #235bff20}
+.learning-universe[data-stage='1'] .node-1 .node-face,.learning-universe[data-stage='2'] .node-2 .node-face,.learning-universe[data-stage='3'] .node-3 .node-face{border-color:#235bff;box-shadow:0 0 0 1px #235bff20,0 15px 34px #235bff24}
+.learning-universe[data-stage='3'] .processor{transform:translate3d(0,0,105px)}
+.learn-link{height:3px;border-radius:2px;background:linear-gradient(90deg,#acb6c0,#235bff,#d4dde6);box-shadow:0 0 10px #235bff3b;z-index:2;transform-origin:left;opacity:.2;transition:opacity .7s,filter .7s}
+.link-a{width:167px;left:103px;top:159px;transform:translateZ(49px) rotateZ(46deg)}
+.link-b{width:138px;left:362px;top:257px;transform:translateZ(47px) rotateZ(-23deg)}
+.link-c{width:160px;left:281px;top:348px;transform:translateZ(45px) rotateZ(83deg)}
+.learning-universe[data-stage='1'] .link-a,.learning-universe[data-stage='2'] .link-a,.learning-universe[data-stage='3'] .learn-link{opacity:.88}
+.learning-universe[data-stage='2'] .link-b{opacity:.88}
+.world-ground{width:470px;height:420px;left:50px;top:50px;transform:translateZ(-76px);border:1px solid #adb8c460;border-radius:30px;background:radial-gradient(circle at 50% 50%,#d6dbe133,transparent 63%);box-shadow:0 0 0 16px #b8c4cf10,0 0 0 40px #b8c4cf09}
+.world-grid{width:470px;height:420px;left:50px;top:50px;transform:translateZ(-75px);border-radius:30px;opacity:.4;background-image:linear-gradient(#8695a42e 1px,transparent 1px),linear-gradient(90deg,#8695a42e 1px,transparent 1px);background-size:35px 35px}
+.world-orbit{width:470px;height:470px;left:50px;top:23px;border:1px solid #8295aa32;border-radius:50%;transform:translateZ(-85px)}
+.orbit-track-two{width:400px;height:400px;left:85px;top:57px;border-style:dashed;opacity:.5}
+body.learning-diagram .world-ground{box-shadow:0 0 0 15px #235bff0d,0 0 0 40px #235bff08;background:radial-gradient(circle at 50% 50%,#235bff14,transparent 80%)}
+body.learning-diagram .learn-link{opacity:1!important;filter:drop-shadow(0 0 8px #235bff)}
+body.learning-diagram .node-face{background:linear-gradient(155deg,rgba(255,255,255,.95),rgba(202,218,249,.95))}
+body.learning-diagram .cpu-core{border-color:#235bff;box-shadow:0 0 0 7px #235bff10,0 0 28px #235bff44}
+body.learning-diagram .world-grid{opacity:.9}
+body[data-orbit-section='approche'] .learning-caption,body[data-orbit-section='approche'] .learning-footer,body[data-orbit-section='experience'] .learning-caption,body[data-orbit-section='experience'] .learning-footer,body[data-orbit-section='formations'] .learning-caption,body[data-orbit-section='formations'] .learning-footer,body[data-orbit-section='footer'] .learning-caption,body[data-orbit-section='footer'] .learning-footer{opacity:0}
+body[data-orbit-section='showcase'] .learning-caption,body[data-orbit-section='contact'] .learning-caption{color:#f6f5f3}
+body[data-orbit-section='showcase'] .learning-footer,body[data-orbit-section='contact'] .learning-footer{color:#dce5f1}
+.learning-universe[data-stage='3'] .learning-counter{color:#235bff}
+/* compact orientations deliberately keep site text readable */
+body[data-orbit-section='approche'] .learning-world,body[data-orbit-section='experience'] .learning-world,body[data-orbit-section='formations'] .learning-world,body[data-orbit-section='footer'] .learning-world{--world-scale:.42}
+body[data-orbit-section='parcours'] .learning-world{--world-scale:.65}
+body[data-orbit-section='showcase'] .learning-world,body[data-orbit-section='contact'] .learning-world{--world-scale:.84}
+body:not([data-orbit-section='accueil']) .learning-universe::before{opacity:.4}
+@media(max-width:1200px){body[data-orbit-section='accueil'] .learning-world{--world-scale:.80}body[data-orbit-section='showcase'] .learning-world,body[data-orbit-section='contact'] .learning-world{--world-scale:.68}}
+@media(max-width:900px){
+ body[data-orbit-section='accueil'] .three-area.orbit-global{left:30vw;top:10vh;width:67vw;height:70vh}
+ body[data-orbit-section='approche'] .three-area.orbit-global,body[data-orbit-section='experience'] .three-area.orbit-global,body[data-orbit-section='formations'] .three-area.orbit-global,body[data-orbit-section='footer'] .three-area.orbit-global{left:76vw;top:18vh;width:23vw;height:32vh}
+ body[data-orbit-section='showcase'] .three-area.orbit-global,body[data-orbit-section='contact'] .three-area.orbit-global{left:52vw;top:20vh;width:45vw;height:57vh}
+ body[data-orbit-section='accueil'] .learning-world{--world-scale:.62}
+ body[data-orbit-section='approche'] .learning-world,body[data-orbit-section='experience'] .learning-world,body[data-orbit-section='formations'] .learning-world,body[data-orbit-section='footer'] .learning-world{--world-scale:.30}
+ body[data-orbit-section='parcours'] .learning-world{--world-scale:.44}
+ body[data-orbit-section='showcase'] .learning-world,body[data-orbit-section='contact'] .learning-world{--world-scale:.56}
+ .learning-caption,.learning-footer{letter-spacing:.06em;font-size:8px}
+}
+@media(max-width:650px){
+ .scene-copy h1{font-size:clamp(47px,12vw,73px)}
+ .scene-copy h2{font-size:clamp(43px,10.4vw,69px)}
+ .scene-copy{padding:9vh 6% 28vh;justify-content:flex-start;top:14vh}
+ .scene-intro{max-width:275px;font-size:12px;line-height:1.6}
+ .cinema{height:360vh}
+ .cinema-pin{background:linear-gradient(145deg,#faf9f6,#f0efeb)}
+ body[data-orbit-section='accueil'] .three-area.orbit-global{left:2vw;top:48vh;width:96vw;height:44vh;opacity:1;pointer-events:none}
+ body:not([data-orbit-section='accueil']) .three-area.orbit-global,body[data-orbit-section='showcase'] .three-area.orbit-global,body[data-orbit-section='contact'] .three-area.orbit-global{left:66vw;top:80px;width:33vw;height:27vh;opacity:.92;pointer-events:none}
+ body[data-orbit-section='accueil'] .learning-world{--world-scale:.50}
+ body:not([data-orbit-section='accueil']) .learning-world{--world-scale:.25}
+ .learning-caption{top:0;left:4%;right:4%;font-size:7px}
+ .learning-footer{bottom:0;left:4%;right:4%;font-size:7px}
+ .model-controls{bottom:12%;right:6%;gap:6px}
+ .model-controls p{display:none}
+ .frame-top span:last-child,.engine-indicator{display:none}
+ .orbital-hud{min-width:0}
+ .site-header .logo{font-size:30px}
+ .lab,.courses,.manifesto,.journey{padding-left:6%;padding-right:6%}
+}
+@media(prefers-reduced-motion:reduce){.learning-world,.processor,.learn-node,.learn-link{transition:none!important}.chrome-type{animation:none!important}}
+/* Final readability pass: dark gallery remains a single deliberate contrast beat. */
+.feature-showcase{color:#faf9f6}
+.feature-showcase .feature-big{color:#faf9f6}
+.feature-showcase .feature-big span{-webkit-text-stroke:1px #d3d8df;color:transparent}
+.feature-showcase .feature-foot,.feature-showcase .eyebrow,.feature-showcase .feature-marker{color:#dbe0e7}
+body[data-orbit-section='experience'] .three-area.orbit-global{top:57vh;left:82vw;width:16vw;height:26vh;opacity:.65;pointer-events:none}
+body[data-orbit-section='formations'] .three-area.orbit-global{left:83vw;top:21vh;width:15vw;height:27vh;opacity:.7;pointer-events:none}
+body[data-orbit-section='experience'] .learning-world,body[data-orbit-section='formations'] .learning-world{--world-scale:.33}
+/* Logical illustrations, each a chapter of the same learning system. */
+.course-visual{position:relative;width:88%;height:82%;display:grid;place-items:center;transform:rotate(-7deg);filter:drop-shadow(6px 18px 15px #161b2a24);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.course-item:hover .course-visual{transform:rotate(-3deg) translateY(-7px)}
+.course-visual-panel{position:absolute;width:75%;height:71%;background:linear-gradient(140deg,#f7fafb 3%,#cbd2d8 40%,#eef0f2 70%,#a9b3bd 100%);border:1px solid #fff;border-radius:8px;box-shadow:5px 6px 0 #677888,13px 16px 25px #2b334136;display:flex;flex-direction:column;justify-content:space-between;padding:17px;color:#1b2026}
+.course-visual-panel:before{content:'IAgile® / CHROME';font:700 8px var(--body);letter-spacing:.12em;color:#4e5761}
+.course-visual-panel strong{font:700 clamp(18px,2vw,30px) var(--display);letter-spacing:-.075em;color:#141414}
+.course-visual-panel small{font:700 9px var(--body);letter-spacing:.1em;color:#235bff}
+.course-visual-index{position:absolute;top:4%;right:4%;border-radius:50%;width:36px;height:36px;display:grid;place-items:center;background:#235bff;color:white;font:700 13px var(--display);z-index:3;box-shadow:0 5px 15px #235bff40}
+.course-visual-one .course-visual-panel{transform:translateX(4px) rotate(4deg)}
+.course-visual-two .course-visual-panel{transform:translateX(-4px) rotate(-4deg)}
+.course-visual-three .course-visual-panel{transform:translateY(-3px) rotate(2deg)}
+.course-visual-two .course-visual-panel:after{content:'CONTEXTE  →  PROMPT  →  ACTION';font:700 7px var(--body);letter-spacing:.05em;color:#66737e}
+.course-visual-three .course-visual-panel:after{content:'TESTER  /  MESURER  /  AMÉLIORER';font:700 7px var(--body);letter-spacing:.04em;color:#66737e}
+@media(max-width:900px){body[data-orbit-section='experience'] .learning-world,body[data-orbit-section='formations'] .learning-world{--world-scale:.26}}
+@media(max-width:650px){body[data-orbit-section='experience'] .three-area.orbit-global,body[data-orbit-section='formations'] .three-area.orbit-global{left:70vw;top:74px;width:28vw;height:20vh;opacity:.57;pointer-events:none}body[data-orbit-section='experience'] .learning-world,body[data-orbit-section='formations'] .learning-world{--world-scale:.23}}
