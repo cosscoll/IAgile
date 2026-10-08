@@ -4,6 +4,7 @@ import http from 'node:http';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import AxeBuilder from '@axe-core/playwright';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const types = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.xml':'application/xml'};
@@ -79,6 +80,14 @@ const tests=[
     assert.match(await page.locator('#brief-result').innerText(),/Présenter une marque locale/);
     const [download]=await Promise.all([page.waitForEvent('download'),page.locator('#save-brief').click()]);
     assert.equal(download.suggestedFilename(),'iagile-brief-3d.txt');
+  }),
+  test('resource pages pass WCAG 2.1 A/AA automated accessibility checks',async page=>{
+    for(const p of ['index.html','diagnostic-ia.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
+      await page.goto(base+'ressources/'+p);
+      const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
+      const details=results.violations.map(x=>x.id+': '+x.nodes.map(n=>n.target.join(' ')).join(', '));
+      assert.deepEqual(details,[],'WCAG violations for '+p);
+    }
   }),
   test('mobile viewport does not overflow; skip link accepts keyboard focus',async page=>{
     for(const p of ['index.html','diagnostic-ia.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
