@@ -53,6 +53,12 @@ for (const [course,resource] of [
  const html=fs.readFileSync(path.join(root,course),'utf8');
  assert(html.includes('../ressources/'+resource),course+' missing resource CTA');
 }
-const resourceJs=fs.readFileSync(path.join(root,'ressources/ressources.js'),'utf8');
-assert(!/\bfetch\s*\(|localStorage|sessionStorage|XMLHttpRequest/.test(resourceJs),'resources must not upload or persist form data');
+for (const localScript of ['ressources/ressources.js','ressources/diagnostic-10.js','ressources/demo-processus.js']) {
+ const script=fs.readFileSync(path.join(root,localScript),'utf8');
+ assert(!/\bfetch\s*\(|localStorage|sessionStorage|XMLHttpRequest|navigator\.sendBeacon|WebSocket\s*\(/.test(script),localScript+' must not upload or persist user data');
+}
+const diagnostic=fs.readFileSync(path.join(root,'ressources/diagnostic-10-questions.html'),'utf8');
+assert((diagnostic.match(/<fieldset\b/g)||[]).length===10,'diagnostic must contain 10 real questions');
+const demo=fs.readFileSync(path.join(root,'ressources/demo-processus.html'),'utf8');
+assert(demo.includes('id="demo-before"')&&demo.includes('id="demo-after"'),'demo needs both calculated outputs');
 console.log(`PASS — ${checked} HTML pages, ${links} internal assets/links, ${pages.length-1} sitemap URLs, 5 cinematic chapters`);
