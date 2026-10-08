@@ -30,3 +30,12 @@ GitHub Pages, branche `main`. Éviter les publications concurrentes depuis plusi
 ## Blocages commerciaux
 
 Voir `docs/ETAT-LANCEMENT.md`. Tant que le vendeur, l'offre, la conformité, la livraison pédagogique et les paiements ne sont pas validés, aucune inscription payante ne doit être activée.
+
+## Répartition vitrine / plateformes de formation
+
+- `index.html`, `parcours.html` et les quatre pages sous `formations/` constituent uniquement **la vitrine publique** : bénéfices, résultat visé et très courts aperçus.
+- Chaque formation aura **son propre site d'apprentissage dédié**, avec accès réservé aux apprenants inscrits ; aucun des quatre sites privés n'est encore connecté.
+- Les leçons détaillées, ateliers, exercices corrigés, évaluations, modèles et projets complets **ne doivent pas être publiés dans ce dépôt GitHub public ni dans GitHub Pages**.
+- Le contenu de formation doit être stocké dans un dépôt privé et livré via une plateforme avec contrôle d'accès **côté serveur** après inscription/paiement. Un masquage HTML ou JavaScript ne protège pas les fichiers.
+- Le dossier `pilote/` contient exclusivement un aperçu commercial limité ; les anciennes versions pédagogiques V17/V18 restent visibles dans l'historique de ce dépôt public et ne doivent pas être considérées comme privées.
+- Les prix, modalités de vente et ouvertures d'inscriptions restent à valider.
