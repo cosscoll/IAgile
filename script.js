@@ -32,6 +32,46 @@
   if(document.readyState==='complete')window.setTimeout(dismissLoader,450);
   else window.addEventListener('load',()=>window.setTimeout(dismissLoader,350),{once:true});
 
+
+  // V4: A single 3D world follows the entire journey, not only the intro.
+  const orbitHUD=$('#orbitHUD');
+  if(orbitHUD){
+    document.body.insertBefore(threeArea, document.querySelector('main'));
+    threeArea.classList.add('orbit-global');
+    document.body.dataset.orbitSection='accueil';
+  }
+  const orbitStops=[
+    ['#accueil','accueil','INTRODUCTION'],
+    ['#approche','approche','MANIFESTE'],
+    ['#showcase','showcase','LE DÉCLIC'],
+    ['#experience','experience','PROMPT STUDIO'],
+    ['.journey','parcours','PARCOURS'],
+    ['#formations','formations','FORMATIONS'],
+    ['#contact','contact','PROCHAINE ÉTAPE'],
+    ['.footer','footer','IAgile®']
+  ];
+  let sculptureProgress=0,activeOrbit='accueil';
+  function updateOrbitScene(s){
+    const height=Math.max(1, document.documentElement.scrollHeight-innerHeight);
+    sculptureProgress=scrollProgress+(reduced?0:clamp(s/height)*1.6);
+    const viewLine=innerHeight*.48;
+    let selected=orbitStops[0];
+    for(const stop of orbitStops){
+      const el=$(stop[0]);
+      if(el && el.getBoundingClientRect().top<=viewLine)selected=stop;
+    }
+    if(selected[1]==='accueil'&&cinema.getBoundingClientRect().bottom<innerHeight*.60)selected=orbitStops[1];
+    if(activeOrbit!==selected[1]){
+      activeOrbit=selected[1];
+      document.body.dataset.orbitSection=selected[1];
+      if(orbitHUD){
+        const caption=$('#orbitStage');
+        caption.textContent=selected[2];
+        caption.animate([{opacity:.15,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],{duration:380,easing:'ease-out'});
+      }
+    }
+  }
+
   function updateScroll() {
     const s = window.scrollY;
     const full = document.documentElement.scrollHeight - innerHeight;
@@ -52,6 +92,7 @@
       $('#chapterNumber').textContent=String(next+1).padStart(2,'0');
     }
     $('#cinemaAura').style.transform=`translate3d(${scrollProgress*7}vw,${scrollProgress*-13}vh,0)`;
+    updateOrbitScene(s);
     const feature=$('#showcase');
     const rect=feature.getBoundingClientRect();
     if(rect.bottom>0 && rect.top<innerHeight){
@@ -233,24 +274,25 @@
     }
     sizeCanvas3d();window.addEventListener('resize',sizeCanvas3d,{passive:true});
     canvas3DPlaying=true;
-    let lastFrame=0;
+    let lastFrame=0,lastResize=0;
     function drawFallback(now){
       if(!canvas3DPlaying)return;
       requestAnimationFrame(drawFallback);
-      if(document.hidden||cinema.getBoundingClientRect().bottom<0||cinema.getBoundingClientRect().top>innerHeight)return;
-      if(now-lastFrame<48)return;lastFrame=now;
+      if(document.hidden||document.body.classList.contains('modal-open'))return;
+      if(now-lastFrame<55)return;lastFrame=now;
+      if(now-lastResize>520){sizeCanvas3d();lastResize=now;}
       const ctx=canvas3dCtx,w=canvas.width,h=canvas.height,aspect=w/h;
       if(!w||!h)return;
       dragX=lerp(dragX,targetDragX+(coarse?0:mouseX*.18),.12);
       dragY=lerp(dragY,targetDragY+(coarse?0:mouseY*.13),.12);
       const time=reduced?0:(now-shaderState.start)/1000;
-      const ay=dragX+time*.22+scrollProgress*3.5,ax=dragY+Math.sin(time*.26)*.09+scrollProgress*1.8;
+      const ay=dragX+time*.22+sculptureProgress*3.5,ax=dragY+Math.sin(time*.26)*.09+sculptureProgress*1.8;
       const cx=Math.cos(ax),sx=Math.sin(ax),cy=Math.cos(ay),sy=Math.sin(ay);
       const rz=(p,a)=>{let c=Math.cos(a),s=Math.sin(a);return [p[0]*c-p[1]*s,p[0]*s+p[1]*c,p[2]];};
       const rx=(p,a)=>{let c=Math.cos(a),s=Math.sin(a);return [p[0],p[1]*c-p[2]*s,p[1]*s+p[2]*c];};
       const trans=(p,g)=>{
-        if(g===1)p=rx(rz(p,1.1+scrollProgress*1.35),.6);
-        if(g===2)p=rx(rz(p,-1.04-scrollProgress*1.5),1.25);
+        if(g===1)p=rx(rz(p,1.1+sculptureProgress*1.35),.6);
+        if(g===2)p=rx(rz(p,-1.04-sculptureProgress*1.5),1.25);
         const sc=g===1?1.02:g===2?.83:1;
         const x=p[0]*sc,y=p[1]*sc,z=p[2]*sc;
         const xt=x*cy+z*sy,zt=-x*sy+z*cy;
@@ -303,18 +345,19 @@
   }
   function resizeGL(){
     const {gl}=shaderState;if(!gl)return;
-    const r=threeArea.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,small?.76:1.1);
+    const r=threeArea.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,small?.82:1.1);
     const w=Math.max(1,Math.round(r.width*ratio)),h=Math.max(1,Math.round(r.height*ratio));
     if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}
   }
   window.addEventListener('resize',resizeGL,{passive:true});
   function renderGL(now){
     if(!shaderState.playing)return;
-    if(!document.hidden && cinema.getBoundingClientRect().bottom>=0&&cinema.getBoundingClientRect().top<=innerHeight){
+    if(!document.hidden && !document.body.classList.contains('modal-open')){
       const {gl,program,uniforms,particleProgram,particleUniforms}=shaderState;
       dragX=lerp(dragX,targetDragX+(coarse?0:mouseX*.18),.09);
       dragY=lerp(dragY,targetDragY+(coarse?0:mouseY*.13),.09);
-      const time=reduced?0:(now-shaderState.start)/1000,scroll=reduced?0:scrollProgress;
+      const time=reduced?0:(now-shaderState.start)/1000,scroll=sculptureProgress;
+      if(shaderState.frames%10===0)resizeGL();
       gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
       gl.useProgram(program);
       gl.uniform2f(uniforms.uResolution,canvas.width,canvas.height);
@@ -350,6 +393,11 @@
   });
   const finishDrag=()=>{dragging=false};threeArea.addEventListener('pointerup',finishDrag);threeArea.addEventListener('pointercancel',finishDrag);
   $('#modelMode').addEventListener('click',e=>{modelMode=1-modelMode;e.currentTarget.setAttribute('aria-pressed',String(!!modelMode));e.currentTarget.innerHTML=modelMode?'<span class="mode-dot"></span> BASCULER / CHROME':'<span class="mode-dot"></span> BASCULER / X-RAY';});
+  $('#orbitMode')?.addEventListener('click',()=>{
+    $('#modelMode').click();
+    $('#orbitMode').textContent=modelMode?'◎':'↗';
+    $('#orbitMode').setAttribute('aria-label',modelMode?'Activer le rendu chrome':'Activer le mode rayons X');
+  });
 
   // Reveal elements with a visible fallback for browsers without IO.
   if('IntersectionObserver' in window){
@@ -436,5 +484,5 @@
   $('.outro-note').textContent='Démonstration du site — catalogue et inscriptions à finaliser.';
   $('#modalCta').href='#experience';$('#modalCta').innerHTML='ESSAYER LE LABORATOIRE <span>↗</span>';
   // Useful debug/status indicator for launch QA, not exposed in UI.
-  window.__IAgileVersion='CHROME V3';
+  window.__IAgileVersion='CHROME V4 / ORBIT';
 })();
