@@ -3,3 +3,5 @@
 @media(max-width:750px){.sidebar{width:100%;min-width:0;max-width:100%;overflow-x:hidden}.course-nav{width:100%;max-width:100%;min-width:0}.app-layout{overflow-x:clip}}
 h1:focus{outline:none}h1 em,h2 em{color:#65717B}.utility-line{color:#5F686C}.eyebrow{color:#59636B}.choice-number,.course-index{color:#69747A}
 @media(max-width:750px){.sidebar-intro h2 br{display:inline}.sidebar-intro h2{line-height:1.25}}
+
+.v18-invite{border:1px solid #C7D1D5;background:linear-gradient(122deg,#E8EBE9,#F6F5EF);padding:24px;display:flex;align-items:center;justify-content:space-between;gap:24px;margin:24px 0 39px}.v18-invite strong{display:block;font:700 17px/1.45 var(--display);letter-spacing:-.035em;margin:8px 0}.v18-invite p{font-size:12px;color:#687478;margin:0;max-width:460px}.v18-invite .primary{flex:none;white-space:nowrap}.pending-step:hover{background:#F9F8F4}.pending-step:focus-visible{outline:2px solid var(--cobalt)}@media(max-width:760px){.v18-invite{flex-direction:column;align-items:stretch;gap:20px;padding:18px}.v18-invite .primary{width:100%}}

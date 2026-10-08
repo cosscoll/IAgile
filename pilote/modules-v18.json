@@ -1,0 +1,72 @@
+[
+  {
+    "n": 2,
+    "title": "Rechercher, comparer et vérifier",
+    "questions": [
+      "question",
+      "criteria",
+      "evidence",
+      "conclusion"
+    ]
+  },
+  {
+    "n": 3,
+    "title": "Rédiger et transformer l’information",
+    "questions": [
+      "source",
+      "audiences",
+      "versions",
+      "verify"
+    ]
+  },
+  {
+    "n": 4,
+    "title": "Travailler avec des documents et fichiers",
+    "questions": [
+      "operation",
+      "criteria",
+      "differences",
+      "brief"
+    ]
+  },
+  {
+    "n": 5,
+    "title": "Préparer réunions, décisions et actions",
+    "questions": [
+      "decision",
+      "options",
+      "unknowns",
+      "actions"
+    ]
+  },
+  {
+    "n": 6,
+    "title": "Organiser son quotidien avec l’IA",
+    "questions": [
+      "constraints",
+      "priorities",
+      "plan",
+      "review"
+    ]
+  },
+  {
+    "n": 7,
+    "title": "Construire un système personnel durable",
+    "questions": [
+      "stable",
+      "brief",
+      "handoff",
+      "maintenance"
+    ]
+  },
+  {
+    "n": 8,
+    "title": "Confidentialité, limites et bon sens",
+    "questions": [
+      "process",
+      "data",
+      "risk",
+      "safeguards"
+    ]
+  }
+]

@@ -1,39 +1,19 @@
-# IAgile — Expérience apprenant V17 (pilote)
+# IAgile Learning Lab — V18
 
-Une application statique autonome, créée à partir des ressources pédagogiques IAgile sur Google Drive :
-- Expérience apprenant & format premium — Processus du quotidien
-- Onboarding 30 minutes — Processus du quotidien
-- Lead magnet — Diagnostic IA du quotidien & défi 15 minutes
-- Module 0 — Diagnostiquer son quotidien et choisir les bons usages
-- Module 1 — Bien travailler avec une IA
-- Pack d'exercices — Processus du quotidien
-- Template — Playbook IA du quotidien
-- Projet final — Construire son système personnel avec l'IA
-- Grille de validation finale — Processus du quotidien
+Pilote pédagogique, non indexé et sans compte utilisateur.
 
-## Parcours réellement interactifs
-1. Personnalisation : Organiser / Produire / Analyser / Coordonner ; Essentiel / Approfondi.
-2. Défi 15 minutes : saisie d'une vraie tâche et calcul du gain net (temps de préparation + génération + vérification + correction).
-3. Module 0 : trois tâches concrètes, filtre de risque et engagement de validation humaine.
-4. Module 1 : constructeur de brief à six éléments, copie, règles explicites de vérification.
-5. Playbook personnel : 1 à 10 fiches, édition, export Markdown, impression.
-6. Sauvegarde / restauration JSON locale, avec validation et réinitialisation explicite.
+## Portée
+- `index.html`, `pilote.css`, `pilote.js` : V17 inchangée fonctionnellement (défi 15 min, modules 0–1, Playbook), avec liens vers V18.
+- `continuer.html`, `continuer.css`, `continuer.js` : modules 2 à 8, ateliers guidés, instructions copiables, auto-vérification, progression locale, export Markdown et JSON, import, réinitialisation.
+- `modules-v18.json` : correspondance des ateliers avec les modules pour tests.
 
-## Limites et sécurité
-- **Pilote accessible par URL : pas de comptes ni de contrôle d'accès**. Ne convient pas à la vente de cours protégés.
-- **Aucune requête serveur pour les données apprenantes**. Réponses sauvegardées en localStorage par navigateur. Sur appareils partagés, les autres utilisateurs du même navigateur pourraient les lire. Pas de synchronisation.
-- Ne pas entrer de données sensibles/confidentielles. Le document HTML demande explicitement des exemples non sensibles.
-- Les auto-validations sont des contrôles de saisie, **pas** une évaluation pédagogique réelle ou un modèle IA. Aucun score automatique ni certificat.
-- Modules 2 à 8 annoncés uniquement comme prochaines étapes ; ne pas laisser entendre qu'ils sont disponibles.
-- Documents Drive : divergence identifiée entre seuils de validation du projet final (70/100 et 80/100). À harmoniser avant lancement.
-- L'accès est volontairement `noindex,nofollow` et la page n'est pas intégrée au catalogue commercial.
+## Limitations volontairement explicites
+- Aucun paiement, compte, IA générative ou notation pédagogique automatique.
+- L'auto-validation ne signifie pas que la compétence est acquise.
+- Le projet final doit être revu par une personne. La dernière grille de validation indique 80/100 avec un minimum 12/20 en fiabilité ; un autre document interne mentionne 70/100, à harmoniser.
+- Ne pas saisir de données confidentielles dans les ateliers. Les données sont conservées seulement dans `localStorage` sur cet appareil, et exportables en JSON et Markdown.
+- Le stockage V17 et V18 est séparé afin de préserver les données des utilisateurs V17 existants. Pour changer de navigateur, exporter les deux sauvegardes.
+- L'accès par URL étant public, le pilote ne contient aucun contenu contractuellement protégé ni donnée client. `noindex` n'est pas une mesure d'authentification.
 
-## Tester
-
-```bash
-python -m http.server 8765 --directory ..
-# Puis http://localhost:8765/pilote/
-node --check pilote.js
-```
-
-Tester sur ordinateur et mobile : navigation entre étapes, progression, validation des formulaires, erreurs, persistance après rechargement, téléchargement Markdown + JSON, import, suppression et reset.
+## Contrôle local
+Servir le dossier parent avec `python -m http.server` puis ouvrir `/pilote/` et `/pilote/continuer.html`. Valider navigation, édition/annulation du statut, export/import, mobile et clavier.
