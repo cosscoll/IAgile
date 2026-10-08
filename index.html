@@ -14,8 +14,156 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="orbit.css">
   <link rel="stylesheet" href="learning-engine.css">
+  <style>
+/* IAgile — CHROME V6 / Spatial navigation and interactive learning demo.
+   Immutable brand tokens: ivory #F4F2ED / black #141414 / silver #A8B2BC / cobalt #235BFF. */
+:root{--v6-ivory:#f4f2ed;--v6-black:#141414;--v6-silver:#a8b2bc;--v6-cobalt:#235bff;--v6-ease:cubic-bezier(.18,.78,.17,1)}
+html{scroll-behavior:smooth}
+.site-header{z-index:95}
+.header-nav{gap:32px}
+.header-nav a{transition:transform .28s,color .28s;position:relative}
+.header-nav a:hover{transform:translateY(-2px)}
+.header-nav a:after{content:'';position:absolute;bottom:-8px;left:0;right:100%;height:2px;background:var(--v6-cobalt);transition:right .3s}
+.header-nav a:hover:after{right:0}
+body{padding-bottom:0}
+/* 3D navigation is not a floating overlay: each portal has a physical face, depth and its own transform. */
+.v6-portal-nav{position:fixed;z-index:76;left:50%;bottom:15px;transform:translateX(-50%);display:flex;gap:2px;align-items:stretch;padding:7px;background:rgba(249,248,246,.94);border:1px solid #b3bac44d;border-radius:18px;backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:0 14px 50px #151e3030,0 2px 6px #151e3015;min-height:78px;max-width:calc(100vw - 22px);perspective:900px;isolation:isolate}
+.v6-portal{position:relative;isolation:isolate;min-width:104px;padding:7px 18px 5px;color:#393e48;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:12px;transition:color .4s,background .4s;outline-offset:2px}
+.v6-portal:focus-visible{outline:2px solid var(--v6-cobalt)}
+.v6-portal.is-active{background:#e8e9e8;color:var(--v6-black)}
+.v6-portal-object{width:32px;height:27px;transform-style:preserve-3d;position:relative;transform:rotateX(-24deg) rotateY(-28deg);transition:transform .65s var(--v6-ease);display:grid;place-items:center}
+.v6-portal-object:before,.v6-portal-object:after{content:'';position:absolute;inset:1px 3px 3px;border-radius:4px;background:linear-gradient(140deg,#fff,#9ca8b4 47%,#e3e8eb 82%);border:1px solid #6a727d;box-shadow:1px 4px 8px #17243f23;transform:translateZ(-5px)}
+.v6-portal-object:after{transform:translateZ(0);background:linear-gradient(135deg,#f9fbfd 0,#bec8d0 22%,#f6f7f7 46%,#788899 85%,#dee2e7);border-color:#aeb8c2}
+.v6-portal-object i{position:absolute;inset:5px 8px;background:var(--v6-cobalt);transform:translateZ(3px);z-index:3;border-radius:2px;opacity:.55;transition:opacity .3s}
+.v6-portal-object b{position:relative;z-index:4;font:800 10px 'Sora',sans-serif;color:#fff;transform:translateZ(8px);text-shadow:0 1px 2px #1c2d73}
+.v6-portal:nth-child(2) .v6-portal-object:after{border-radius:50% 25% 25% 50%}
+.v6-portal:nth-child(3) .v6-portal-object:after{clip-path:polygon(16% 0,100% 0,84% 100%,0 100%)}
+.v6-portal:nth-child(4) .v6-portal-object:after{border-radius:3px;transform:translateZ(0) rotate(-12deg)}
+.v6-portal-name{font:800 9px/1.1 'Manrope',sans-serif;letter-spacing:.09em;white-space:nowrap}
+.v6-portal:hover .v6-portal-object,.v6-portal:focus-visible .v6-portal-object{transform:rotateX(-38deg) rotateY(26deg) translateY(-6px) translateZ(10px)}
+.v6-portal:hover{color:var(--v6-cobalt)}
+.v6-portal.is-active .v6-portal-object{transform:rotateX(-22deg) rotateY(22deg) translateY(-2px)}
+.v6-portal.is-active .v6-portal-object i{opacity:1;box-shadow:0 0 9px #235bff60}
+.v6-portal-indicator{display:none}
+body.modal-open .v6-portal-nav,body.menu-open .v6-portal-nav{opacity:0;pointer-events:none}
+.v6-page-wipe{position:fixed;z-index:110;inset:0;pointer-events:none;display:grid;place-items:center;opacity:0;visibility:hidden;background:linear-gradient(117deg,#f4f2ed,#e2e5e8);clip-path:inset(0 100% 0 0);transition:clip-path .54s cubic-bezier(.8,0,.2,1),opacity .35s,visibility 0s .54s}
+.v6-page-wipe.is-on{opacity:1;visibility:visible;clip-path:inset(0 0 0 0);transition:clip-path .48s cubic-bezier(.6,.03,.3,1),opacity .2s}
+.v6-wipe-prism{width:90px;height:90px;display:grid;place-items:center;border:1px solid #a8b2bc;border-radius:15px;box-shadow:16px 16px 0 #9099a5,-14px -14px 30px #fff,0 20px 65px #12192d32;transform:rotateY(35deg) rotateX(-27deg);background:linear-gradient(155deg,#fff 0,#b1bac5 34%,#e3e5e8 54%,#787f8a 100%);color:#141414;font:700 39px 'Sora',sans-serif;letter-spacing:-.09em}
+.v6-wipe-prism span{transform:translateZ(15px)}
+/* Keep the persistent model available but don't let it hide this interactive 3D room. */
+body[data-orbit-section='atelier'] .three-area.orbit-global{left:84vw!important;top:10vh!important;width:15vw!important;height:22vh!important;opacity:.72!important;pointer-events:none!important}
+body[data-orbit-section='atelier'] .learning-world{--world-scale:.25}
+body[data-orbit-section='atelier'] .orbit-hud{opacity:.84;transform:translateY(0)}
+/* V6 studio deliberately sits in the classic CHROME palette rather than cyan sci-fi. */
+.v6-studio{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(135deg,#efefec 0%,#faf9f6 37%,#e4e6e8 100%);color:var(--v6-black);padding:112px 5.2% 130px;min-height:1180px}
+.v6-studio:before{content:'';pointer-events:none;position:absolute;inset:0;background-image:linear-gradient(#14141405 1px,transparent 1px),linear-gradient(90deg,#14141405 1px,transparent 1px);background-size:77px 77px;mask-image:linear-gradient(90deg,transparent,black 45%,transparent);z-index:-1}
+.v6-studio-grain{position:absolute;z-index:-1;width:90vw;height:65vw;border:1px solid #235bff12;border-radius:50%;top:20px;right:-60vw;transform:rotateX(67deg);box-shadow:0 0 85px #235bff06,inset 0 0 85px #235bff08;pointer-events:none}
+.v6-studio-meta{color:#58616e;border-color:#14141428!important}
+.v6-studio-title{margin:95px 0 62px;display:flex;align-items:flex-end;justify-content:space-between;gap:5%}
+.v6-studio-title h2{font:750 clamp(51px,7.5vw,126px)/.99 'Sora',sans-serif;letter-spacing:-.084em;color:#141414;margin:24px 0 0}
+.v6-studio-title h2 em{font-style:normal;color:transparent;-webkit-text-stroke:1.25px #939ba6}
+.v6-studio-title h2 span{background:linear-gradient(100deg,#2c3037 0%,#b9c0c6 23%,#393e45 40%,#f6f7f8 55%,#646d79 80%,#292f35);-webkit-background-clip:text;background-clip:text;color:transparent}
+.v6-studio-title>p{max-width:325px;color:#535c68;font:500 14px/1.95 'Manrope',sans-serif;margin:0 0 9px}
+.v6-overline{display:flex;align-items:center;gap:10px;font:800 10px 'Manrope',sans-serif;letter-spacing:.17em;color:#525b67}
+.v6-live-dot{width:7px;height:7px;background:var(--v6-cobalt);border-radius:50%;box-shadow:0 0 0 4px #235bff14}
+.v6-studio-console{position:relative;border:1px solid #8795a9a8;background:#f7f7f6;box-shadow:0 40px 100px #131c3530,0 10px 30px #131c350e;overflow:hidden}
+.v6-console-head{display:flex;align-items:center;justify-content:space-between;min-height:63px;padding:10px 26px;border-bottom:1px solid #bec3ca;gap:18px;background:linear-gradient(110deg,#fff,#e7e8e8)}
+.v6-console-brand{font:800 9px 'Manrope',sans-serif;letter-spacing:.14em;display:flex;align-items:center;gap:15px;color:#606872}
+.v6-small-logo{font:800 22px 'Sora',sans-serif;color:#141414;letter-spacing:-.11em}.v6-small-logo span{font-weight:400}
+.v6-head-divider{height:20px;width:1px;background:#b7bdc5}
+.v6-console-state{display:flex;align-items:center;gap:9px;font:700 9px 'Manrope',sans-serif;letter-spacing:.13em;color:#29323e}.v6-state-light{width:7px;height:7px;border-radius:50%;background:#235bff;box-shadow:0 0 0 4px #235bff17}
+.v6-sim-tag{border:1px solid #b6c0cd;color:#6a7480;padding:8px 10px;font:700 8px 'Manrope',sans-serif;letter-spacing:.08em}
+.v6-console-body{display:grid;grid-template-columns:minmax(235px,26%) minmax(0,1fr);min-height:620px}
+.v6-choice-panel{background:#f0f0ed;border-right:1px solid #c6ccd1;padding:31px 20px;display:flex;flex-direction:column;gap:9px}
+.v6-panel-label{display:flex;justify-content:space-between;margin-bottom:24px;color:#7a828c;font:800 9px 'Manrope',sans-serif;letter-spacing:.12em}
+.v6-panel-label span{color:#235bff}
+.v6-scenario{appearance:none;border:1px solid #c8cfd5;background:#f8f8f6;display:flex;align-items:center;gap:14px;cursor:pointer;text-align:left;min-height:92px;padding:14px;color:#292e35;transition:background .4s,box-shadow .4s,transform .4s,border .4s;transform-style:preserve-3d;position:relative;font-family:'Manrope',sans-serif}
+.v6-scenario:before{content:'';position:absolute;inset:0;border-right:3px solid transparent;transition:border-color .3s}
+.v6-scenario:hover,.v6-scenario:focus-visible{transform:translateX(5px) rotateY(-3deg);box-shadow:-4px 7px 14px #1d2e5017;outline:none;border-color:#8899b1}
+.v6-scenario.is-selected{background:#e2e7ec;transform:translateX(4px);box-shadow:-4px 8px 18px #1d2e5013;border-color:#9aaabb}
+.v6-scenario.is-selected:before{border-right-color:#235bff}
+.v6-choice-n{font:700 12px 'Sora',sans-serif;color:#235bff}
+.v6-choice-info{display:flex;flex:1;flex-direction:column;gap:7px}
+.v6-choice-info strong{font-size:12px;letter-spacing:-.01em}.v6-choice-info small{font-size:10px;color:#727b87}
+.v6-choice-arrow{font-size:21px;color:#235bff}
+.v6-demo-info{margin-top:auto;display:flex;align-items:flex-start;gap:12px;background:#e5e7e8;padding:17px 14px;color:#596470;font:500 10px/1.7 'Manrope',sans-serif}
+.v6-demo-info span{color:#235bff;font-size:17px}.v6-demo-info p{margin:0}.v6-demo-info strong{display:block;color:#242a31;font-size:9px;letter-spacing:.11em;margin-bottom:5px}
+.v6-visual-stage{background:radial-gradient(ellipse at 52% 55%,#ffffff,#e0e4e8 66%,#cbd1d9);position:relative;overflow:hidden;min-width:0;perspective:1400px;isolation:isolate}
+.v6-visual-stage:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 49.9%,#14141406 50%,transparent 50.1%),linear-gradient(transparent 49.9%,#14141406 50%,transparent 50.1%);background-size:65px 65px;mask-image:radial-gradient(ellipse at center,#000,transparent 75%);pointer-events:none}
+.v6-stage-top,.v6-stage-controls{position:absolute;left:27px;right:27px;display:flex;justify-content:space-between;align-items:center;z-index:12;font:800 9px 'Manrope',sans-serif;color:#596573;letter-spacing:.1em;gap:15px;pointer-events:none}
+.v6-stage-top{top:25px}.v6-stage-top b{color:#235bff}
+.v6-stage-controls{bottom:23px}.v6-stage-hint{opacity:.8}
+.v6-run{pointer-events:auto;border:0;background:#141414;color:white;padding:17px 20px;min-width:240px;font:800 10px 'Manrope',sans-serif;letter-spacing:.07em;display:flex;justify-content:space-between;align-items:center;gap:18px;cursor:pointer;box-shadow:6px 7px 0 #a3abb4;transform:translate3d(0,0,0);transition:transform .3s,box-shadow .3s,background .3s}
+.v6-run:hover:not(:disabled){background:#235bff;box-shadow:2px 3px 0 #a3abb4;transform:translate3d(4px,4px,0)}
+.v6-run:disabled{opacity:.68;cursor:progress}.v6-run b{font-size:18px}.v6-run-glyph{font-size:15px;color:#aabdfd}
+.v6-spatial-viewport{position:absolute;inset:40px 0 60px;perspective:900px;perspective-origin:50% 47%;cursor:grab;touch-action:pan-y;outline-offset:-9px}
+.v6-spatial-viewport:active{cursor:grabbing}.v6-spatial-viewport:focus-visible{outline:2px solid #235bff}
+.v6-ambient-glow{position:absolute;width:74%;height:75%;left:13%;top:15%;border-radius:50%;background:radial-gradient(ellipse,#c9d5e969,transparent 70%);filter:blur(20px);opacity:.84}
+.v6-spatial-world{position:absolute;width:740px;height:460px;left:50%;top:50%;margin-left:-370px;margin-top:-230px;transform-style:preserve-3d;transform:rotateX(var(--v6-rx,-15deg)) rotateY(var(--v6-ry,-21deg)) scale(var(--v6-scale,1));transition:transform .18s linear;will-change:transform;--v6-effect:0}
+.v6-world-floor{position:absolute;width:800px;height:370px;left:-30px;top:184px;background:radial-gradient(ellipse,#5b729015 2%,transparent 70%);border-radius:50%;transform:rotateX(82deg) translateZ(-90px);box-shadow:0 0 0 1px #70849d33;transform-style:preserve-3d}
+.v6-world-grid{position:absolute;inset:7% -8%;background-image:linear-gradient(#879db31a 1px,transparent 1px),linear-gradient(90deg,#879db31a 1px,transparent 1px);background-size:41px 41px;transform:rotateX(78deg) translateZ(-105px);mask-image:radial-gradient(ellipse,#000,transparent 70%)}
+.v6-world-axis{position:absolute;top:51%;left:6%;width:88%;height:1px;background:linear-gradient(90deg,transparent,#235bff40,#235bff40,transparent);transform:translateZ(-60px)}
+.v6-energy-beam{position:absolute;z-index:1;top:49.4%;width:168px;height:3px;background:linear-gradient(90deg,#a8b2bc,#235bff,#b7c6db);transform:translateZ(25px);box-shadow:0 0 9px #235bff42;opacity:.8;overflow:hidden}
+.v6-energy-beam:after{content:'';width:32%;height:100%;background:#fff;position:absolute;top:0;left:-40%;box-shadow:0 0 16px white}
+.v6-beam-1{left:191px}.v6-beam-2{left:435px}
+.v6-studio-console.is-running .v6-energy-beam:after{animation:v6beam 1.1s linear infinite}
+@keyframes v6beam{to{left:140%}}
+.v6-object{position:absolute;transform-style:preserve-3d;will-change:transform;transition:filter .5s,opacity .5s,transform .85s var(--v6-ease)}
+.v6-input{width:195px;height:212px;left:5px;top:117px;transform:translateZ(30px) rotateY(7deg)}
+.v6-object-depth,.v6-output-depth{position:absolute;inset:7px -12px -11px 12px;background:linear-gradient(135deg,#909da9,#566472);border:1px solid #667586;transform:translateZ(-22px);box-shadow:20px 28px 32px #1e354e26}
+.v6-object-face,.v6-output-face{position:absolute;inset:0;background:linear-gradient(143deg,#fff,#e1e7ec 45%,#c4cdd7);border:1px solid #fff;border-radius:9px;padding:21px 18px;box-shadow:inset 0 0 3px #fff,0 0 0 1px #85929e85;transform:translateZ(4px);display:flex;flex-direction:column;justify-content:space-between}
+.v6-face-heading,.v6-output-top{display:flex;justify-content:space-between;align-items:center;font:800 10px 'Manrope',sans-serif;color:#465362;letter-spacing:.08em}.v6-face-heading i{color:#235bff;font-style:normal;font-size:10px}
+.v6-window-stripe{height:2px;background:linear-gradient(90deg,#235bff,#b6c8d8);width:100%}.v6-object-face b{font:800 29px 'Sora',sans-serif;color:#1c242e;letter-spacing:-.065em}.v6-data-lines{display:grid;gap:9px}.v6-data-lines i{height:5px;background:#849bad4d;border-radius:2px}.v6-data-lines i:nth-child(2){width:75%}.v6-data-lines i:nth-child(3){width:54%;background:#235bff88}.v6-object-face small{font:700 9px 'Manrope',sans-serif;color:#758393;letter-spacing:.1em}
+.v6-brain{left:299px;top:99px;width:153px;height:246px;transform:translateZ(95px) rotateY(-11deg);filter:drop-shadow(8px 16px 13px #14274425)}
+.v6-brain-depth{position:absolute;inset:8px -14px -15px 15px;background:#6b7480;transform:translateZ(-38px);border-radius:14px}
+.v6-brain-core{position:absolute;inset:0;border-radius:14px;border:1px solid #fff;background:linear-gradient(121deg,#fff 0,#bac5cf 15%,#454f5d 30%,#f8f9fa 47%,#8d99a5 64%,#252c37 83%,#c2c9d2 100%);box-shadow:inset -15px -5px 20px #1b273d22,inset 5px 5px 20px #fff8,10px 25px 35px #14243e41;transform:translateZ(20px);display:flex;align-items:center;justify-content:space-between;flex-direction:column;padding:19px 10px}
+.v6-core-top,.v6-core-bottom{font:800 8px 'Manrope',sans-serif;letter-spacing:.1em;color:#283341}.v6-core-symbol{font:800 72px 'Sora',sans-serif;letter-spacing:-.16em;color:#f6f7fa;text-shadow:0 1px 0 #ffffff,0 3px 8px #101d3caa,1px 1px 0 #1a2433}.v6-core-symbol i{font-style:normal;color:#235bff}
+.v6-core-tracks{display:flex;gap:8px}.v6-core-tracks span{display:block;width:13px;height:3px;background:#235bff;box-shadow:0 0 5px #235bff90}.v6-brain-glow{position:absolute;inset:20%;filter:blur(24px);background:#235bff33;transform:translateZ(-10px)}
+.v6-output{width:215px;height:237px;right:0;top:100px;transform:translateZ(40px) rotateY(-11deg)}
+.v6-output-face{padding:16px;justify-content:space-between}.v6-output-top{font-size:9px;color:#235bff}
+.v6-mini-browser{height:153px;border:1px solid #889caf;background:#fefefe;box-shadow:0 12px 20px #172b4028;overflow:hidden;transform:translateZ(8px)}.v6-mini-browser-bar{height:21px;background:#141414;display:flex;gap:4px;align-items:center;padding:0 8px}.v6-mini-browser-bar i{height:4px;width:4px;border-radius:50%;background:#b0b6c2}
+.v6-mini-screen{background:linear-gradient(132deg,#e7e9ea,#fff);height:132px;padding:12px;display:flex;flex-direction:column;gap:8px}.v6-mini-screen>span{font:800 7px 'Manrope',sans-serif;color:#235bff;letter-spacing:.08em}.v6-mini-screen strong{font:800 20px/.95 'Sora',sans-serif;letter-spacing:-.08em;color:#161b22}.v6-mini-screen i{height:7px;background:#b6c2cb;width:83%;border-radius:2px}.v6-mini-screen i:last-child{width:58%}
+.v6-output-foot{font:800 8px 'Manrope',sans-serif;letter-spacing:.1em;color:#747e8d}
+.v6-node-stamp{position:absolute;font:800 9px 'Manrope',sans-serif;color:#647283;white-space:nowrap;letter-spacing:.11em;transform:translateZ(100px)}.v6-stamp-1{top:85px;left:33px}.v6-stamp-2{top:60px;left:320px}.v6-stamp-3{top:68px;right:28px}
+.v6-studio-console[data-step='0'] .v6-input,.v6-studio-console[data-step='1'] .v6-brain,.v6-studio-console[data-step='2'] .v6-output{filter:drop-shadow(0 0 22px #235bff48)}
+.v6-studio-console[data-step='0'] .v6-input{transform:translateZ(68px) rotateY(6deg) translateY(-12px)}
+.v6-studio-console[data-step='1'] .v6-brain{transform:translateZ(135px) rotateY(-7deg) translateY(-15px)}
+.v6-studio-console[data-step='2'] .v6-output{transform:translateZ(82px) rotateY(-11deg) translateY(-18px)}
+.v6-studio-console.is-finished .v6-output-face{box-shadow:0 0 0 2px #235bff78,0 14px 35px #17376d34}
+.v6-results{border-top:1px solid #bac2c9;padding:23px 29px 29px;background:#f9f9f7}
+.v6-results-head{display:flex;justify-content:space-between;gap:18px;font:800 9px 'Manrope',sans-serif;letter-spacing:.12em;color:#66717e}.v6-results-head span:last-child{color:#235bff}
+.v6-process-timeline{display:flex;align-items:center;gap:15px;margin:22px 0}.v6-process-step{display:flex;align-items:center;gap:11px;opacity:.35;transition:opacity .3s;white-space:nowrap;color:#414e5d}
+.v6-process-step span{display:grid;place-items:center;border:1px solid #a3afbb;border-radius:50%;height:25px;width:25px;font:800 9px 'Sora',sans-serif}.v6-process-step strong{font:800 9px 'Manrope',sans-serif;letter-spacing:.11em}.v6-process-step.is-ready,.v6-process-step.is-complete{opacity:1}.v6-process-step.is-complete span{background:#235bff;border-color:#235bff;color:white}
+.v6-step-link{height:1px;background:linear-gradient(90deg,#bbc5d0,#235bff,#bbc5d0);max-width:90px;flex:1}
+.v6-deliverable{display:flex;align-items:center;gap:18px;background:#e9edf0;border:1px solid #bec7d0;padding:20px 24px;min-height:95px;transition:background .35s,transform .35s}
+.v6-deliverable.is-complete{background:#dce5f3;transform:translateY(-2px)}
+.v6-deliverable-icon{height:49px;width:49px;display:grid;place-items:center;flex:0 0 49px;font-size:25px;color:#235bff;background:#f7f9fc;border:1px solid #a6b9d0}
+.v6-deliverable>div{flex:1}.v6-deliverable small{display:block;font:800 9px 'Manrope',sans-serif;letter-spacing:.1em;color:#717d88;margin-bottom:6px}.v6-deliverable strong{font:800 18px 'Sora',sans-serif;letter-spacing:-.055em;color:#202b36}.v6-deliverable p{font:500 12px/1.6 'Manrope',sans-serif;color:#596571;margin:7px 0 0}.v6-result-status{font:800 9px 'Manrope',sans-serif;color:#235bff;border:1px solid #b4c3d7;padding:9px;white-space:nowrap}
+.v6-studio-bottom{display:flex;align-items:center;justify-content:space-between;gap:25px;padding-top:31px}.v6-studio-bottom span{white-space:nowrap;font:800 9px 'Manrope',sans-serif;letter-spacing:.1em;color:#647382}.v6-studio-bottom p{max-width:470px;font:500 11px/1.7 'Manrope',sans-serif;color:#65717f;margin:0}.v6-studio-bottom a{white-space:nowrap;font:800 10px 'Manrope',sans-serif;letter-spacing:.05em;display:flex;gap:30px;align-items:center;padding-bottom:9px;border-bottom:1px solid #141414;color:#141414}.v6-studio-bottom a b{font-size:24px;color:#235bff}
+/* 3D response in the rest of the site, beyond the introductory sculpture. */
+.course-item{perspective:1300px}.course-item .course-image{transform-style:preserve-3d;transition:transform .7s var(--v6-ease),box-shadow .7s var(--v6-ease);will-change:transform}
+.course-item:hover .course-image,.course-item:focus-visible .course-image{transform:perspective(900px) rotateY(-9deg) rotateX(5deg) translateY(-7px)!important;box-shadow:16px 22px 25px #1a273126}
+.course-item .course-visual{transform-style:preserve-3d}.course-item:hover .course-visual{transform:rotate(-3deg) translateZ(34px) translateY(-5px)}
+.journey-step{perspective:950px}.journey-step .step-visual{transition:transform .7s var(--v6-ease),box-shadow .7s var(--v6-ease);transform-style:preserve-3d}.journey-step:hover .step-visual{transform:rotateX(9deg) rotateY(-6deg) translateY(-8px);box-shadow:10px 17px 35px #182a3a24}
+/* Keep floating controls separated; the 3D nav owns the bottom center. */
+.orbit-hud{bottom:26px;right:18px;min-width:175px}
+.orbit-hud-copy span{font-size:8px}.orbit-hud-copy strong{font-size:9px}
+.footer{padding-bottom:125px}.outro-footer{margin-bottom:84px}
+@media(max-width:1280px){.v6-spatial-world{--v6-scale:.86}.v6-portal{min-width:92px;padding-inline:13px}.v6-studio-title h2{font-size:7.3vw}.v6-choice-panel{padding-inline:14px}.v6-sim-tag{display:none}.v6-studio-bottom span{display:none}.orbit-hud{bottom:103px}}
+@media(max-width:1020px){.v6-console-body{grid-template-columns:1fr}.v6-choice-panel{flex-direction:row;flex-wrap:wrap;padding:13px;border-right:0;border-bottom:1px solid #bdc7d0}.v6-panel-label{width:100%;margin:0 0 7px}.v6-scenario{width:calc(33.33% - 7px);min-height:84px;gap:8px;padding:12px}.v6-choice-info strong{font-size:10px}.v6-choice-info small{font-size:8px}.v6-choice-arrow{display:none}.v6-demo-info{display:none}.v6-visual-stage{min-height:565px}.v6-spatial-world{--v6-scale:.96}.v6-studio-title{display:block}.v6-studio-title>p{max-width:560px;margin-top:30px}.v6-studio-title h2{font-size:clamp(56px,9vw,105px)}.v6-studio-bottom{flex-wrap:wrap}.v6-studio-bottom p{max-width:none}.v6-studio{padding-bottom:100px}}
+@media(max-width:700px){.v6-portal-nav{bottom:7px;width:calc(100vw - 16px);min-height:65px;gap:0;padding:5px;border-radius:13px}.v6-portal{flex:1;min-width:0;padding:4px 3px;border-radius:9px;gap:4px}.v6-portal-object{width:25px;height:23px}.v6-portal-object b{font-size:8px}.v6-portal-name{font-size:7px;letter-spacing:0}.v6-studio{padding:75px 5% 100px;min-height:0}.v6-studio-title{margin:65px 0 35px}.v6-studio-title h2{font-size:clamp(37px,10vw,72px);line-height:1.04}.v6-overline{font-size:8px;letter-spacing:.09em}.v6-studio-title>p{font-size:12px;line-height:1.7}.v6-console-head{padding:11px 13px;min-height:50px}.v6-console-brand{font-size:7px;gap:9px}.v6-small-logo{font-size:18px}.v6-console-state{font-size:7px}.v6-choice-panel{padding:10px 8px}.v6-scenario{width:calc(33.33% - 6px);min-height:73px;flex-direction:column;align-items:flex-start;gap:5px;padding:9px}.v6-choice-n{font-size:9px}.v6-choice-info strong{font-size:8px}.v6-choice-info small{display:none}.v6-visual-stage{min-height:465px}.v6-stage-top{left:13px;right:13px;top:16px;font-size:7px}.v6-stage-top span:last-child{display:none}.v6-spatial-viewport{inset:30px 0 72px}.v6-spatial-world{--v6-scale:.58}.v6-stage-controls{left:12px;right:12px;bottom:18px;justify-content:center}.v6-stage-hint{display:none}.v6-run{min-width:0;width:100%;padding:14px 14px;font-size:9px;box-shadow:4px 5px 0 #a3abb4}.v6-results{padding:20px 12px}.v6-results-head{font-size:7px}.v6-process-timeline{gap:5px}.v6-process-step{gap:4px}.v6-process-step strong{font-size:7px;letter-spacing:0}.v6-process-step span{width:19px;height:19px;font-size:7px}.v6-step-link{min-width:8px}.v6-deliverable{gap:9px;padding:12px}.v6-deliverable-icon{width:34px;height:34px;flex-basis:34px}.v6-deliverable strong{font-size:13px}.v6-deliverable p{font-size:10px}.v6-deliverable small{font-size:7px}.v6-result-status{font-size:7px;padding:4px}.v6-studio-bottom p{font-size:10px}.v6-studio-bottom a{font-size:9px}.orbit-hud{display:none!important}.outro-footer{margin-bottom:80px}.footer{padding-bottom:105px}body[data-orbit-section='atelier'] .three-area.orbit-global{left:72vw!important;top:78px!important;width:24vw!important;height:16vh!important;opacity:.4!important}}
+@media(max-width:400px){.v6-spatial-world{--v6-scale:.48}.v6-visual-stage{min-height:415px}.v6-portal-name{font-size:6px}.v6-studio-title h2{font-size:10vw}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.v6-spatial-world,.v6-object,.v6-scenario,.v6-portal-object,.course-item .course-image,.journey-step .step-visual,.v6-page-wipe{transition:none!important;animation:none!important}.v6-energy-beam:after{animation:none!important}}
+/* V6 QA: the dedicated 3D studio is the hero in this chapter; avoid a duplicate floating model. */
+body[data-orbit-section='atelier'] .three-area.orbit-global{opacity:0!important;pointer-events:none!important}
+body[data-orbit-section='atelier'] .orbit-hud{opacity:0!important;pointer-events:none!important}
+/* Keep the persistent navigation away from actionable controls on small viewports. */
+@media(max-width:700px){.v6-visual-stage{min-height:555px}.v6-spatial-viewport{inset:38px 0 152px}.v6-stage-controls{bottom:105px}.v6-results{padding-bottom:76px}.v6-stage-hint{display:none}}
+
+</style>
   <script src="script.js" defer></script>
   <script src="learning-engine.js" defer></script>
+  
 </head>
 <body>
   <a class="skip-link" href="#formations">Aller aux formations</a>
@@ -34,10 +182,19 @@
 
   <header class="site-header" id="siteHeader">
     <a href="#accueil" class="logo" aria-label="IAgile accueil">ia<span>gile</span><b>.</b><sup>®</sup></a>
-    <nav class="header-nav" aria-label="Navigation principale"><a href="#approche">L'APPROCHE</a><a href="#experience">LE LAB</a><a href="#formations">FORMATIONS</a></nav>
+    <nav class="header-nav" aria-label="Navigation principale"><a href="#approche">L'APPROCHE</a><a href="#atelier">STUDIO 3D</a><a href="#experience">LE LAB</a><a href="#formations">FORMATIONS</a></nav>
     <div class="nav-actions"><span class="online-indicator"><i></i> STUDIO EN LIGNE</span><a class="nav-cta magnetic" href="#formations"><span>EXPLORER</span><b>↗</b></a><button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button></div>
   </header>
-  <div class="mobile-menu" id="mobileMenu"><a href="#approche">L'APPROCHE ↗</a><a href="#experience">LE LAB ↗</a><a href="#formations">FORMATIONS ↗</a><a href="#contact">CONTACT ↗</a></div>
+  <div class="mobile-menu" id="mobileMenu"><a href="#approche">L'APPROCHE ↗</a><a href="#atelier">STUDIO 3D ↗</a><a href="#experience">LE LAB ↗</a><a href="#formations">FORMATIONS ↗</a><a href="#contact">CONTACT ↗</a></div>
+
+  <nav class="v6-portal-nav" aria-label="Navigation 3D entre les univers IAgile">
+    <a class="v6-portal is-active" href="#accueil" data-portal="accueil" aria-current="location"><span class="v6-portal-object" aria-hidden="true"><i></i><b>01</b></span><span class="v6-portal-name">ACCUEIL</span></a>
+    <a class="v6-portal" href="#atelier" data-portal="atelier"><span class="v6-portal-object" aria-hidden="true"><i></i><b>02</b></span><span class="v6-portal-name">STUDIO 3D</span></a>
+    <a class="v6-portal" href="#experience" data-portal="experience"><span class="v6-portal-object" aria-hidden="true"><i></i><b>03</b></span><span class="v6-portal-name">LE LAB</span></a>
+    <a class="v6-portal" href="#formations" data-portal="formations"><span class="v6-portal-object" aria-hidden="true"><i></i><b>04</b></span><span class="v6-portal-name">FORMATIONS</span></a>
+    <span class="v6-portal-indicator" aria-hidden="true"></span>
+  </nav>
+  <div class="v6-page-wipe" id="v6PageWipe" aria-hidden="true"><div class="v6-wipe-prism"><span>ia</span></div></div>
 
   <main>
     <!-- A persistent, genuinely three-dimensional sculpture powers all sections, with a cinematic four-chapter introduction. -->
@@ -83,7 +240,46 @@
 
     <section class="feature-showcase" id="showcase"><div class="feature-bg"><div class="feature-orbit orbit-one"></div><div class="feature-orbit orbit-two"></div><div class="feature-orbit orbit-three"></div><div class="feature-beam"></div></div><div class="feature-inner"><span class="eyebrow"><span class="eyebrow-line"></span> NOUVELLES COMPÉTENCES / NOUVEAU REGARD</span><p class="feature-big" id="featureText">LA TECHNOLOGIE<br><span>BOUGE.</span><br>VOUS AUSSI.</p><p class="feature-foot">UN MÊME OBJECTIF : TRANSFORMER LA CURIOSITÉ EN SAVOIR-FAIRE.</p></div><span class="feature-marker">[ 02 / LE DÉCLIC ]</span></section>
 
-    <section class="lab" id="experience"><div class="section-metadata"><span>[ 03 / LE LABORATOIRE ]</span><span>UNE EXPÉRIENCE À TESTER, PAS JUSTE À REGARDER.</span></div>
+    <!-- IAgile / 3D capability studio: spatial navigation + explanatory product simulations. -->
+    <section class="v6-studio" id="atelier" aria-labelledby="v6StudioTitle">
+      <div class="v6-studio-grain" aria-hidden="true"></div>
+      <div class="section-metadata v6-studio-meta"><span>[ 03 / STUDIO DES POSSIBLES ]</span><span>UN APERÇU DES COMPÉTENCES QU'ON PEUT DÉVELOPPER</span></div>
+      <div class="v6-studio-title"><div><div class="v6-overline"><span class="v6-live-dot"></span> IAGILE / IMMERSIVE WORKSHOP 01—03</div><h2 id="v6StudioTitle">L'IA NE SE<br><em>REGARDE PAS.</em><br>ELLE SE <span>CONSTRUIT.</span></h2></div><p>Du simple brief au résultat. Explorez trois mises en situation et faites circuler l'information à travers un système en trois dimensions.</p></div>
+      <div class="v6-studio-console" id="v6Console">
+        <div class="v6-console-head"><div class="v6-console-brand"><span class="v6-small-logo">ia<span>gile.</span></span><span class="v6-head-divider"></span> PROTOTYPE / EXPERIENCE ENGINE</div><div class="v6-console-state"><span class="v6-state-light"></span><span id="v6Status">PRÊT À EXPLORER</span></div><span class="v6-sim-tag">SIMULATION / PAS D'IA CONNECTÉE</span></div>
+        <div class="v6-console-body">
+          <aside class="v6-choice-panel" aria-label="Choisissez une démonstration">
+            <div class="v6-panel-label">CHOISIR UN UNIVERS <span>01 / 03</span></div>
+            <button class="v6-scenario is-selected" type="button" data-demo="creation" aria-pressed="true"><span class="v6-choice-n">01</span><span class="v6-choice-info"><strong>STUDIO CRÉATIF</strong><small>Du brief à une page web</small></span><span class="v6-choice-arrow">↗</span></button>
+            <button class="v6-scenario" type="button" data-demo="workflow" aria-pressed="false"><span class="v6-choice-n">02</span><span class="v6-choice-info"><strong>AUTOMATISATION</strong><small>De l'e-mail à l'action</small></span><span class="v6-choice-arrow">↗</span></button>
+            <button class="v6-scenario" type="button" data-demo="agent" aria-pressed="false"><span class="v6-choice-n">03</span><span class="v6-choice-info"><strong>ASSISTANT IA</strong><small>D'un document à une réponse</small></span><span class="v6-choice-arrow">↗</span></button>
+            <div class="v6-demo-info"><span>◉</span><p><strong>MODE EXPLORATION</strong>Chaque démonstration illustre un type de projet possible, sans prétendre exécuter un modèle réel.</p></div>
+          </aside>
+          <div class="v6-visual-stage" id="v6VisualStage">
+            <div class="v6-stage-top"><span>SCÈNE / <b id="v6SceneLabel">CRÉATION</b></span><span>GLISSER POUR EXPLORER ↗</span></div>
+            <div class="v6-spatial-viewport" id="v6SpatialViewport" tabindex="0" aria-label="Visualisation 3D des trois étapes. Déplacez la souris ou utilisez les flèches gauche et droite pour changer l'angle.">
+              <div class="v6-ambient-glow" aria-hidden="true"></div>
+              <div class="v6-spatial-world" id="v6SpatialWorld" aria-hidden="true">
+                <div class="v6-world-floor"></div><div class="v6-world-grid"></div><div class="v6-world-axis"></div>
+                <div class="v6-energy-beam v6-beam-1"></div><div class="v6-energy-beam v6-beam-2"></div>
+                <div class="v6-object v6-input" data-step="0"><div class="v6-object-depth"></div><div class="v6-object-face"><div class="v6-face-heading"><span>01 / INPUT</span><i>●</i></div><span class="v6-window-stripe"></span><b id="v6InputName">BRIEF</b><div class="v6-data-lines"><i></i><i></i><i></i></div><small id="v6InputDetail">VOTRE IDÉE</small></div></div>
+                <div class="v6-object v6-brain" data-step="1"><div class="v6-brain-depth"></div><div class="v6-brain-core"><span class="v6-core-top">IAgile / ENGINE</span><div class="v6-core-symbol">IA<i>.</i></div><div class="v6-core-tracks"><span></span><span></span><span></span></div><span class="v6-core-bottom">02 / TRANSFORM</span></div><div class="v6-brain-glow"></div></div>
+                <div class="v6-object v6-output" data-step="2"><div class="v6-output-depth"></div><div class="v6-output-face"><div class="v6-output-top"><span>03 / OUTPUT</span><span>↗</span></div><div class="v6-mini-browser"><div class="v6-mini-browser-bar"><i></i><i></i><i></i></div><div class="v6-mini-screen"><span id="v6MiniTag">SITE WEB</span><strong id="v6MiniTitle">CRÉEZ PLUS.</strong><i></i><i></i></div></div><span class="v6-output-foot" id="v6OutputFoot">RÉSULTAT VISIBLE</span></div></div>
+                <div class="v6-node-stamp v6-stamp-1">01 — INPUT</div><div class="v6-node-stamp v6-stamp-2">02 — IA</div><div class="v6-node-stamp v6-stamp-3">03 — OUTPUT</div>
+              </div>
+            </div>
+            <div class="v6-stage-controls"><span class="v6-stage-hint">↔ 3D / MANIPULEZ L'ESPACE</span><button type="button" id="v6Run" class="v6-run"><span class="v6-run-glyph">▶</span><span id="v6RunLabel">LANCER LA SIMULATION</span><b>↗</b></button></div>
+          </div>
+        </div>
+        <div class="v6-results"><div class="v6-results-head"><span>JOURNAL D'EXÉCUTION / <span id="v6RunId">DÉMO_001</span></span><span id="v6ProgressText">EN ATTENTE</span></div>
+          <div class="v6-process-timeline" aria-label="Progression de la démonstration"><div class="v6-process-step is-ready" data-progress="0"><span>01</span><strong>RECEVOIR</strong></div><i class="v6-step-link"></i><div class="v6-process-step" data-progress="1"><span>02</span><strong>STRUCTURER</strong></div><i class="v6-step-link"></i><div class="v6-process-step" data-progress="2"><span>03</span><strong>PRODUIRE</strong></div></div>
+          <div class="v6-deliverable" id="v6Deliverable" aria-live="polite"><span class="v6-deliverable-icon">◈</span><div><small>RÉSULTAT DE LA SIMULATION</small><strong id="v6ResultTitle">Une page web à partir d'un brief</strong><p id="v6ResultBody">Lancez la démonstration pour voir comment les étapes s'enchaînent.</p></div><span class="v6-result-status" id="v6ResultStatus">À DÉCOUVRIR</span></div>
+        </div>
+      </div>
+      <div class="v6-studio-bottom"><span>IAgile® / CHROME — EXPLORATION IMMERSIVE</span><p>Ces séquences sont des simulations pédagogiques préprogrammées. Elles illustrent des possibilités de projets IA, sans démonstration d'un service connecté ni garantie de résultat.</p><a href="#formations">EXPLORER LES FORMATIONS <b>↗</b></a></div>
+    </section>
+
+    <section class="lab" id="experience"><div class="section-metadata"><span>[ 04 / LE LABORATOIRE ]</span><span>UNE EXPÉRIENCE À TESTER, PAS JUSTE À REGARDER.</span></div>
       <div class="lab-heading"><div><p class="micro reveal"><span class="live-dot"></span> INTERACTIVE PLAYGROUND — 01</p><h2 class="display headline-reveal">L'IA SE<br><span class="outline-light">DÉCOUVRE</span><br>EN FAISANT<span class="blue">.</span></h2></div><p class="lab-heading-copy reveal">Sélectionnez une mission. Nous vous montrons comment structurer une bonne demande à l'IA. C'est un aperçu de notre méthode, pas une réponse générée par un modèle.</p></div>
       <div class="lab-workspace reveal">
         <div class="workspace-header"><div><span class="workspace-brand"><i></i> IAGILE / PROMPT STUDIO</span><span class="workspace-version">DEMO ENVIRONMENT v0.3</span></div><div class="workspace-window-icons"><b></b><b></b><b></b></div></div>
@@ -93,19 +289,121 @@
       </div><div class="lab-description"><span>[ LA MÉTHODE ]</span><p>Explorer. Comprendre. Tester. Recommencer. C'est en manipulant les outils que l'on développe des compétences durables.</p></div>
     </section>
 
-    <section class="journey cream" id="methode"><div class="section-metadata"><span>[ 04 / L'EXPÉRIENCE IAGILE ]</span><span>UNE PROGRESSION, PAS UNE PROMESSE MAGIQUE.</span></div><div class="journey-head"><h2 class="display headline-reveal">DU PREMIER<br>DÉCLIC À <i>L'ACTION.</i></h2><p class="reveal">Trois mouvements. Une méthode pensée pour transformer vos premières découvertes en usages réguliers.</p></div><div class="journey-steps"><article class="journey-step reveal"><div class="step-visual"><div class="step-visual-a"><i></i><i></i><i></i></div></div><div class="step-meta">01 — EXPLORE <span>↗</span></div><h3>COMPRENDRE.</h3><p>Décoder le fonctionnement, les possibilités et les limites de l'intelligence artificielle.</p></article><article class="journey-step reveal"><div class="step-visual"><div class="step-visual-b"><b>AI</b><i></i><i></i><i></i><i></i></div></div><div class="step-meta">02 — BUILD <span>↗</span></div><h3>EXPÉRIMENTER.</h3><p>Construire des méthodes, formuler de meilleurs prompts et tester des cas concrets.</p></article><article class="journey-step reveal"><div class="step-visual"><div class="step-visual-c"><i></i><b>✳</b></div></div><div class="step-meta">03 — EVOLVE <span>↗</span></div><h3>APPLIQUER.</h3><p>Intégrer les bons usages dans ses missions, ses projets et son quotidien.</p></article></div></section>
+    <section class="journey cream" id="methode"><div class="section-metadata"><span>[ 05 / L'EXPÉRIENCE IAGILE ]</span><span>UNE PROGRESSION, PAS UNE PROMESSE MAGIQUE.</span></div><div class="journey-head"><h2 class="display headline-reveal">DU PREMIER<br>DÉCLIC À <i>L'ACTION.</i></h2><p class="reveal">Trois mouvements. Une méthode pensée pour transformer vos premières découvertes en usages réguliers.</p></div><div class="journey-steps"><article class="journey-step reveal"><div class="step-visual"><div class="step-visual-a"><i></i><i></i><i></i></div></div><div class="step-meta">01 — EXPLORE <span>↗</span></div><h3>COMPRENDRE.</h3><p>Décoder le fonctionnement, les possibilités et les limites de l'intelligence artificielle.</p></article><article class="journey-step reveal"><div class="step-visual"><div class="step-visual-b"><b>AI</b><i></i><i></i><i></i><i></i></div></div><div class="step-meta">02 — BUILD <span>↗</span></div><h3>EXPÉRIMENTER.</h3><p>Construire des méthodes, formuler de meilleurs prompts et tester des cas concrets.</p></article><article class="journey-step reveal"><div class="step-visual"><div class="step-visual-c"><i></i><b>✳</b></div></div><div class="step-meta">03 — EVOLVE <span>↗</span></div><h3>APPLIQUER.</h3><p>Intégrer les bons usages dans ses missions, ses projets et son quotidien.</p></article></div></section>
 
-    <section class="courses" id="formations"><div class="section-metadata"><span>[ 05 / LES FORMATIONS ]</span><span>LE BON PARCOURS COMMENCE PAR UNE BONNE QUESTION.</span></div><div class="courses-head"><div><p class="micro reveal"><span class="live-dot"></span> PARCOURS À PERSONNALISER</p><h2 class="display headline-reveal">CHOISISSEZ<br>VOTRE <span class="chrome-type">AVANCE.</span></h2></div><p class="reveal">Découvrez trois orientations de formation. Intitulés, contenus et tarifs seront remplacés par le catalogue officiel IAgile.</p></div>
-      <div class="course-list"><button class="course-item reveal" type="button" data-course="0"><div class="course-number">/ 01</div><div class="course-image course-image-one"><div class="course-visual course-visual-one" aria-hidden="true"><div class="course-visual-index">01</div><div class="course-visual-panel"><strong>LES BASES<br>DE L’IA.</strong><small>COMPRENDRE / 01</small></div></div><span>DISCOVER / 01</span></div><div class="course-info"><span>LES FONDAMENTAUX · DÉCOUVERTE</span><h3>COMPRENDRE<br>L'INTELLIGENCE<br>ARTIFICIELLE.</h3><p>Pour découvrir l'IA, ses usages et les bons réflexes.</p><div class="course-tags"><span>INITIATION</span><span>MISE EN PRATIQUE</span></div></div><span class="course-arrow">↗</span></button>
-      <button class="course-item reveal" type="button" data-course="1"><div class="course-number">/ 02</div><div class="course-image course-image-two"><div class="course-visual course-visual-two" aria-hidden="true"><div class="course-visual-index">02</div><div class="course-visual-panel"><strong>DU PROMPT<br>À L’ACTION.</strong><small>EXPÉRIMENTER / 02</small></div></div><span>BUILD / 02</span></div><div class="course-info"><span>LES MÉTHODES · PRODUCTIVITÉ</span><h3>L'IA AU SERVICE<br>DE VOTRE<br>QUOTIDIEN.</h3><p>Pour explorer des applications concrètes dans le travail.</p><div class="course-tags"><span>OUTILS</span><span>WORKFLOWS</span></div></div><span class="course-arrow">↗</span></button>
-      <button class="course-item reveal" type="button" data-course="2"><div class="course-number">/ 03</div><div class="course-image course-image-three"><div class="course-visual course-visual-three" aria-hidden="true"><div class="course-visual-index">03</div><div class="course-visual-panel"><strong>PROJETS<br>CONCRETS.</strong><small>APPLIQUER / 03</small></div></div><span>EVOLVE / 03</span></div><div class="course-info"><span>LES PROJETS · STRATÉGIE</span><h3>CONSTRUIRE<br>AVEC L'IA.</h3><p>Pour structurer des projets et des usages plus avancés.</p><div class="course-tags"><span>STRATÉGIE</span><span>APPLICATION</span></div></div><span class="course-arrow">↗</span></button></div>
+    <section class="courses" id="formations"><div class="section-metadata"><span>[ 06 / LES FORMATIONS ]</span><span>LE BON PARCOURS COMMENCE PAR UNE BONNE QUESTION.</span></div><div class="courses-head"><div><p class="micro reveal"><span class="live-dot"></span> PARCOURS À PERSONNALISER</p><h2 class="display headline-reveal">CHOISISSEZ<br>VOTRE <span class="chrome-type">AVANCE.</span></h2></div><p class="reveal">Découvrez trois orientations de formation. Intitulés, contenus et tarifs seront remplacés par le catalogue officiel IAgile.</p></div>
+      <div class="course-list"><button class="course-item reveal" type="button" data-course="0"><div class="course-number">/ 01</div><div class="course-image course-image-one"><div class="course-orb chrome-orb"></div><span>DISCOVER / 01</span></div><div class="course-info"><span>LES FONDAMENTAUX · DÉCOUVERTE</span><h3>COMPRENDRE<br>L'INTELLIGENCE<br>ARTIFICIELLE.</h3><p>Pour découvrir l'IA, ses usages et les bons réflexes.</p><div class="course-tags"><span>INITIATION</span><span>MISE EN PRATIQUE</span></div></div><span class="course-arrow">↗</span></button>
+      <button class="course-item reveal" type="button" data-course="1"><div class="course-number">/ 02</div><div class="course-image course-image-two"><div class="course-grid-orb"><i></i><i></i><i></i><i></i></div><span>BUILD / 02</span></div><div class="course-info"><span>LES MÉTHODES · PRODUCTIVITÉ</span><h3>L'IA AU SERVICE<br>DE VOTRE<br>QUOTIDIEN.</h3><p>Pour explorer des applications concrètes dans le travail.</p><div class="course-tags"><span>OUTILS</span><span>WORKFLOWS</span></div></div><span class="course-arrow">↗</span></button>
+      <button class="course-item reveal" type="button" data-course="2"><div class="course-number">/ 03</div><div class="course-image course-image-three"><div class="course-loop"><i></i><i></i><i></i></div><span>EVOLVE / 03</span></div><div class="course-info"><span>LES PROJETS · STRATÉGIE</span><h3>CONSTRUIRE<br>AVEC L'IA.</h3><p>Pour structurer des projets et des usages plus avancés.</p><div class="course-tags"><span>STRATÉGIE</span><span>APPLICATION</span></div></div><span class="course-arrow">↗</span></button></div>
       <p class="catalogue-note">Ces formations sont des exemples de présentation, et non des offres commerciales définitives. Aucune commande n'est effectuée sur ce prototype.</p>
     </section>
 
     <section class="outro" id="contact"><div class="outro-grid" aria-hidden="true"></div><div class="outro-light"></div><div class="outro-badge"><i class="live-dot"></i> READY FOR WHAT'S NEXT?</div><div class="outro-content"><span>[ FIN DE L'INTRODUCTION / DÉBUT DES POSSIBILITÉS ]</span><h2>LE FUTUR<br>C'EST <em>VOUS.</em></h2><a href="mailto:formations@iagile.fr?subject=Informations%20sur%20les%20formations%20IAgile" class="outro-cta magnetic" id="outroCta" data-placeholder-contact="true">PARLONS DE VOS OBJECTIFS <b>↗</b></a><p class="outro-note">Adresse de contact provisoire : à confirmer avant lancement public.</p></div><div class="outro-footer"><span>IAgile®</span><span>MAKE WHAT'S NEXT.</span><span>© 2026 — CHROME STUDIO</span></div></section>
   </main>
-  <footer class="footer"><a href="#accueil" class="logo">ia<span>gile</span><b>.</b><sup>®</sup></a><p>Apprendre l'intelligence artificielle.<br>Créer ses propres possibilités.</p><div><a href="#approche">L'APPROCHE</a><a href="#experience">LE LAB</a><a href="#formations">LES FORMATIONS</a></div><a class="back-top" href="#accueil">REMONTER ↑</a></footer>
+  <footer class="footer"><a href="#accueil" class="logo">ia<span>gile</span><b>.</b><sup>®</sup></a><p>Apprendre l'intelligence artificielle.<br>Créer ses propres possibilités.</p><div><a href="#approche">L'APPROCHE</a><a href="#atelier">STUDIO 3D</a><a href="#experience">LE LAB</a><a href="#formations">LES FORMATIONS</a></div><a class="back-top" href="#accueil">REMONTER ↑</a></footer>
 
   <div class="modal-overlay" id="modalOverlay" hidden></div><section class="course-modal" id="courseModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true" tabindex="-1"><div class="modal-bar"><span>IAgile / PARCOURS</span><button type="button" id="closeModal" aria-label="Fermer la fiche de formation">✕</button></div><div class="modal-body"><p id="modalKicker" class="micro"></p><h2 id="modalTitle"></h2><p id="modalDescription"></p><div class="modal-spec"><span>PROGRAMME</span><strong>À CONFIRMER</strong></div><div class="modal-spec"><span>DURÉE & TARIF</span><strong>À CONFIRMER</strong></div><div class="modal-spec"><span>INSCRIPTION</span><strong>PROCHAINEMENT</strong></div><a href="#contact" class="modal-cta" id="modalCta">DÉCOUVRIR L'APPROCHE <span>↗</span></a><p class="modal-disclaimer">Fiche illustrative : les informations officielles seront ajoutées avant commercialisation.</p></div></section>
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+/* IAgile CHROME V6 — meaningful spatial navigation and staged simulations.
+   Static illustrative output: no model, external API, billing or user data is used. */
+(()=>{
+'use strict';
+const $=(s,root=document)=>root.querySelector(s);
+const $$=(s,root=document)=>[...root.querySelectorAll(s)];
+const viewport=$('#v6SpatialViewport');
+if(!viewport)return;
+const world=$('#v6SpatialWorld'),consoleEl=$('#v6Console'),run=$('#v6Run'),wipe=$('#v6PageWipe');
+const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const scenarios={
+ creation:{label:'CRÉATION',input:'BRIEF',detail:'VOTRE IDÉE',tag:'SITE WEB',mini:'CRÉEZ PLUS.',foot:'PAGE WEB CONÇUE',title:'Une page web à partir d’un brief',body:'Un brief clarifié, une structure de page, des sections, une proposition de texte et des éléments à réviser avant publication.',id:'DÉMO_001'},
+ workflow:{label:'AUTOMATISATION',input:'E-MAIL',detail:'MESSAGE ENTRANT',tag:'WORKFLOW',mini:'TRIER. AGIR.',foot:'FLUX STRUCTURÉ',title:'Un processus de traitement des demandes',body:'Une demande est classée, une tâche est préparée et un suivi est proposé. Dans un vrai système, les connexions et les validations sont à configurer.',id:'DÉMO_002'},
+ agent:{label:'ASSISTANT IA',input:'DOCUMENT',detail:'VOTRE BASE DE SAVOIR',tag:'ASSISTANT',mini:'UNE RÉPONSE.',foot:'SOURCE + SYNTHÈSE',title:'Un assistant qui s’appuie sur des documents',body:'Un document sert de contexte, une question est analysée et une réponse structurée est préparée avec référence à sa source.',id:'DÉMO_003'}
+};
+let current='creation',timeouts=[],running=false,activeStage=-1,dragging=false,startX=0,startY=0;
+let rotX=-15,rotY=-21,targetX=-15,targetY=-21,globalProgress=0,lastNav='accueil',lastScroll=-1;
+const stamp=$('#v6Status'),progressText=$('#v6ProgressText'),label=$('#v6RunLabel');
+function stopAll(){timeouts.forEach(clearTimeout);timeouts=[];running=false;run.disabled=false;consoleEl.classList.remove('is-running','is-finished');consoleEl.removeAttribute('data-step');}
+function setPhase(step){
+ activeStage=step;
+ consoleEl.dataset.step=String(step);
+ $$('.v6-process-step').forEach((el,i)=>{
+   el.classList.toggle('is-ready',i===step);
+   el.classList.toggle('is-complete',i<=step);
+ });
+ if(step===0){stamp.textContent='BRIEF REÇU';progressText.textContent='01 / 03';}
+ if(step===1){stamp.textContent='STRUCTURATION EN COURS';progressText.textContent='02 / 03';}
+ if(step===2){stamp.textContent='RÉSULTAT DISPONIBLE';progressText.textContent='03 / 03';}
+}
+function setDemo(key){
+ if(!scenarios[key])return;
+ stopAll();current=key;activeStage=-1;
+ const s=scenarios[key];
+ $$('.v6-scenario').forEach(btn=>{const active=btn.dataset.demo===key;btn.classList.toggle('is-selected',active);btn.setAttribute('aria-pressed',String(active));});
+ $('#v6SceneLabel').textContent=s.label;$('#v6InputName').textContent=s.input;$('#v6InputDetail').textContent=s.detail;$('#v6MiniTag').textContent=s.tag;$('#v6MiniTitle').textContent=s.mini;$('#v6OutputFoot').textContent=s.foot;
+ $('#v6ResultTitle').textContent=s.title;$('#v6ResultBody').textContent='Lancez la démonstration pour visualiser le processus et son résultat.';
+ $('#v6RunId').textContent=s.id;progressText.textContent='EN ATTENTE';stamp.textContent='PRÊT À EXPLORER';label.textContent='LANCER LA SIMULATION';
+ $('#v6ResultStatus').textContent='À DÉCOUVRIR';$('#v6Deliverable').classList.remove('is-complete');
+ $$('.v6-process-step').forEach((el,i)=>{el.classList.toggle('is-ready',i===0);el.classList.remove('is-complete');});
+}
+$$('.v6-scenario').forEach(btn=>btn.addEventListener('click',()=>setDemo(btn.dataset.demo)));
+run.addEventListener('click',()=>{
+ if(running)return;
+ running=true;run.disabled=true;consoleEl.classList.add('is-running');$('#v6Deliverable').classList.remove('is-complete');
+ label.textContent='SIMULATION EN COURS';
+ setPhase(0);
+ const delay=reduced?160:830;
+ timeouts.push(setTimeout(()=>setPhase(1),delay));
+ timeouts.push(setTimeout(()=>setPhase(2),delay*2));
+ timeouts.push(setTimeout(()=>{
+   running=false;run.disabled=false;consoleEl.classList.remove('is-running');consoleEl.classList.add('is-finished');
+   label.textContent='REJOUER LA DÉMONSTRATION';$('#v6Deliverable').classList.add('is-complete');
+   $('#v6ResultBody').textContent=scenarios[current].body;$('#v6ResultStatus').textContent='APERÇU LIVRABLE';
+ },delay*2+250));
+});
+// 3D camera: pointer orbit, drag orbit and keyboard orbit. Scroll changes real depth/angle.
+function setTargetFromPoint(x,y){const r=viewport.getBoundingClientRect();if(!r.width||!r.height)return;targetY=-21+clamp((x-r.left)/r.width-.5,-.5,.5)*22;targetX=-15+clamp((y-r.top)/r.height-.5,-.5,.5)*17;}
+viewport.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;dragging=true;startX=e.clientX;startY=e.clientY;viewport.setPointerCapture?.(e.pointerId);});
+viewport.addEventListener('pointermove',e=>{if(matchMedia('(pointer:coarse)').matches)return;if(dragging){targetY=clamp(targetY+(e.clientX-startX)*.23,-59,48);targetX=clamp(targetX-(e.clientY-startY)*.19,-45,28);startX=e.clientX;startY=e.clientY;}else setTargetFromPoint(e.clientX,e.clientY);});
+viewport.addEventListener('pointerup',()=>dragging=false);viewport.addEventListener('pointercancel',()=>dragging=false);
+viewport.addEventListener('pointerleave',()=>{if(!dragging){targetX=-15;targetY=-21;}});
+viewport.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();if(e.key==='ArrowLeft')targetY-=12;if(e.key==='ArrowRight')targetY+=12;if(e.key==='ArrowUp')targetX-=9;if(e.key==='ArrowDown')targetX+=9;targetY=clamp(targetY,-59,48);targetX=clamp(targetX,-45,28);}});
+function frame(){
+ if(!reduced){rotX+=(targetX-rotX)*.08;rotY+=(targetY-rotY)*.08;}else{rotX=targetX;rotY=targetY;}
+ const rx=rotX+globalProgress*7,ry=rotY+globalProgress*9;
+ world.style.setProperty('--v6-rx',rx.toFixed(2)+'deg');world.style.setProperty('--v6-ry',ry.toFixed(2)+'deg');
+ if(!reduced)requestAnimationFrame(frame);
+}
+frame();
+// The spatial dock identifies the relevant section, links directly and transitions between worlds.
+const navStops=[['accueil','#accueil'],['atelier','#atelier'],['experience','#experience'],['formations','#formations']];
+function updateScroll(){
+ const s=scrollY;
+ if(s===lastScroll)return;lastScroll=s;
+ const studio=$('#atelier'),r=studio.getBoundingClientRect();
+ const fraction=clamp((innerHeight-r.top)/(innerHeight+r.height),0,1);
+ globalProgress=fraction;
+ const cutoff=innerHeight*.52;
+ if(r.top <= cutoff && r.bottom > cutoff) document.body.dataset.orbitSection='atelier';
+ let active='accueil';
+ for(const [key,selector] of navStops){const section=$(selector);if(section&&section.getBoundingClientRect().top<=cutoff)active=key;}
+ if(active!==lastNav){lastNav=active;$$('.v6-portal').forEach(link=>{const is=link.dataset.portal===active;link.classList.toggle('is-active',is);if(is)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});}
+}
+let pending=false;window.addEventListener('scroll',()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;updateScroll()})},{passive:true});window.addEventListener('resize',()=>{lastScroll=-1;updateScroll()},{passive:true});updateScroll();
+$$('.v6-portal').forEach(link=>link.addEventListener('click',e=>{
+ const target=$(link.getAttribute('href'));if(!target)return;
+ if(reduced)return;
+ e.preventDefault();
+ wipe.classList.add('is-on');
+ const s=setTimeout(()=>{target.scrollIntoView({behavior:'instant',block:'start'});history.replaceState(null,'',link.getAttribute('href'));updateScroll();},255);
+ const finish=setTimeout(()=>wipe.classList.remove('is-on'),625);
+ timeouts.push(s,finish);
+}));
+window.__IAgileV6Ready={studio:true,navigation:true,scenarios:3,realAIConnected:false};
+})();
+
+});
+</script>
 </body>
 </html>
