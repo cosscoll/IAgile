@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /IAgile/
+Sitemap: https://cosscoll.github.io/IAgile/sitemap.xml

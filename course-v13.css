@@ -1,0 +1,3 @@
+/* Transparency and focus for commercial pages */
+.hero-disclosure{color:#4b5860!important}.hero-actions .text-cta{white-space:normal}.syllabus-unit summary:focus-visible{outline:2px solid #235bff;outline-offset:3px}.cross-card:focus-visible,.primary-cta:focus-visible{outline:2px solid #235bff;outline-offset:4px}
+@media(max-width:760px){.hero-actions{gap:16px}.hero-actions .text-cta{font-size:9px}}
