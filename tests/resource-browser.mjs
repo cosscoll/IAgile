@@ -47,6 +47,7 @@ const tests=[
   }),
   test('scorecard computes positive and negative gain without transmission',async page=>{
     await page.goto(base+'ressources/diagnostic-ia.html');
+    assert.equal(await page.locator('#save-score').isVisible(),false,'export must start hidden');
     const fill=async (id,n)=>page.locator('#'+id).fill(String(n));
     await fill('before',20);await fill('prep',2);await fill('run',1);await fill('review',3);await fill('fix',2);
     await page.locator('button[type="submit"]').click();
