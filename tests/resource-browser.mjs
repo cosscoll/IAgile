@@ -51,12 +51,21 @@ const tests=[
     await fill('before',20);await fill('prep',2);await fill('run',1);await fill('review',3);await fill('fix',2);
     await page.locator('button[type="submit"]').click();
     assert.match(await page.locator('#score-result').innerText(),/Écart : 12 min/);
+    assert.match(await page.locator('#score-result').innerText(),/Ce gain n’est pas validé/);
+    await page.locator('#quality-ok').check();
+    assert.equal(await page.locator('#save-score').isVisible(),false,'editing must hide stale export');
+    await page.locator('button[type="submit"]').click();
+    assert.match(await page.locator('#score-result').innerText(),/qualité déclarée vérifiée/);
     assert.equal(await page.locator('#save-score').isVisible(),true);
     const [download]=await Promise.all([page.waitForEvent('download'),page.locator('#save-score').click()]);
     assert.equal(download.suggestedFilename(),'iagile-scorecard.txt');
     await fill('before',1);
+    assert.equal(await page.locator('#score-result').isVisible(),false,'editing must hide old result');
     await page.locator('button[type="submit"]').click();
     assert.match(await page.locator('#score-result').innerText(),/demandé plus de temps/);
+    await fill('before',0.3);await fill('prep',0.1);await fill('run',0.1);await fill('review',0.1);await fill('fix',0);
+    await page.locator('button[type="submit"]').click();
+    assert.match(await page.locator('#score-result').innerText(),/Écart : 0 min/,'decimal arithmetic must be rounded');
     await page.locator('#prep').fill('-2');
     assert.equal(await page.locator('#prep').evaluate(el=>el.checkValidity()),false);
   }),
