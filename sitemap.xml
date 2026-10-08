@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://cosscoll.github.io/IAgile/</loc></url>
+  <url><loc>https://cosscoll.github.io/IAgile/parcours.html</loc></url>
+  <url><loc>https://cosscoll.github.io/IAgile/a-propos.html</loc></url>
+  <url><loc>https://cosscoll.github.io/IAgile/faq.html</loc></url>
   <url><loc>https://cosscoll.github.io/IAgile/formations/sites-web-3d.html</loc></url>
   <url><loc>https://cosscoll.github.io/IAgile/formations/agents-personnalises.html</loc></url>
   <url><loc>https://cosscoll.github.io/IAgile/formations/automatiser-tache.html</loc></url>
