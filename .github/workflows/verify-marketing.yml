@@ -22,7 +22,7 @@ jobs:
         run: npm test
       - name: Install Playwright and Chromium
         run: |
-          npm install --no-save playwright@1.55.1
+          npm install --no-save playwright@1.55.1 @axe-core/playwright
           npx playwright install --with-deps chromium
       - name: Test interactive resources in Chromium
         run: node tests/resource-browser.mjs
