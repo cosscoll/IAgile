@@ -1,0 +1,8 @@
+/* Encarts de ressources — styles volontairement isolés des pages de cours existantes. */
+.resource-promo{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;max-width:1120px;margin:48px auto;padding:28px clamp(20px,3.5vw,44px);background:#FBFAF7;border:1px solid #CBD1D5;border-radius:12px;color:#141414}
+.resource-promo .micro{display:block;color:#4C6685;letter-spacing:.14em;font-size:11px;font-weight:700}
+.resource-promo h2{font-family:Sora,Manrope,Arial,sans-serif;font-size:clamp(22px,3vw,34px);line-height:1.15;letter-spacing:-.03em;margin:10px 0}
+.resource-promo p{max-width:640px;font:400 15px/1.7 Manrope,Arial,sans-serif;color:#47515C;margin:0}
+.resource-promo>a{display:inline-flex;align-items:center;justify-content:center;background:#141414;color:#fff;border:1px solid #141414;padding:13px 18px;border-radius:5px;text-decoration:none;font:700 13px/1.2 Manrope,Arial,sans-serif;min-height:48px}
+.resource-promo>a:hover{background:#27384F}.resource-promo>a:focus-visible{outline:3px solid #235BFF;outline-offset:3px}
+@media(max-width:680px){.resource-promo{margin:24px 18px;padding:25px 22px}.resource-promo>a{width:100%}}
