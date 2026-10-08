@@ -46,3 +46,9 @@ Lien UTM d'essai : ?utm_source=linkedin&utm_medium=organic&utm_campaign=processu
 Ce lien est un exemple d'URL, pas une publication.
 Matériaux maîtres de campagne sur Google Drive : « Campagne pilote — Processus du quotidien — 6 semaines » ; « Campagne Processus — Contenus rédigés S1 + emails » ; « Campagne Processus — Publications S2 à S6 et emails de nurturing ». Ne pas dupliquer ces documents ; les utiliser à l'ouverture.
 Statut diffusion : préparation seulement. Aucune publication, vente ni collecte déclenchée par cette branche.
+
+## Livrables de démonstration prévus dans la branche
+- `ressources/diagnostic-10-questions.html` : 10 réponses traitées localement, trois pistes d'exercices, avertissements confidentialité et sécurité, export explicite ; aucune prétention de notation IA.
+- `ressources/demo-processus.html` : traitement réel de notes fictives, traçabilité par ligne, conservation des champs inconnus, avertissement sur les actions incomplètes ; aucun chiffre de temps fabriqué.
+- `ressources/diagnostic-ia.html` : Scorecard de mesure réelle utilisée ensuite par l'apprenant.
+- Capture de démonstration automatiquement générée pendant les tests sur mobile et ordinateur et déposée comme artefact GitHub Actions. Ce n'est pas encore une vidéo publicitaire produite/validée.

@@ -26,7 +26,7 @@ let browser;let passed=0;
 const test=(name,fn)=>({name,fn});
 const tests=[
   test('all four resources load and remain navigable',async page=>{
-    for(const name of ['index.html','diagnostic-ia.html','diagnostic-10-questions.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
+    for(const name of ['index.html','diagnostic-ia.html','diagnostic-10-questions.html','demo-processus.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
       const response=await page.goto(base+'ressources/'+name);
       assert.equal(response.status(),200,name);
       assert.ok(await page.locator('h1').count(),name+' missing main heading');
@@ -60,6 +60,20 @@ const tests=[
     assert.equal(dl.suggestedFilename(),'iagile-diagnostic-processus.txt');
     await page.locator('input[name="sensibilite"][value="publiques"]').check();
     assert.equal(await page.locator('#diagnostic-results').isVisible(),false);
+  }),
+  test('real local process demonstration flags missing fields without dropping lines',async page=>{
+    await page.goto(base+'ressources/demo-processus.html');
+    await page.locator('#demo-workflow button[type="submit"]').click();
+    assert.match(await page.locator('#demo-after').innerText(),/échéance à préciser/);
+    assert.match(await page.locator('#demo-after').innerText(),/NON CLASSÉ/);
+    assert.match(await page.locator('#demo-after').innerText(),/Le prix est-il déjà validé/);
+    const [dl]=await Promise.all([page.waitForEvent('download'),page.locator('#save-demo').click()]);
+    assert.equal(dl.suggestedFilename(),'iagile-demo-processus.txt');
+    await page.locator('#demo-notes').fill('ACTION: <script>alert(1)</script>');
+    assert.equal(await page.locator('#demo-comparison').isVisible(),false);
+    await page.locator('#demo-workflow button[type="submit"]').click();
+    assert.match(await page.locator('#demo-after').innerText(),/responsable à préciser/);
+    assert.equal(await page.locator('#demo-comparison script').count(),0,'user data is text, never interpreted HTML');
   }),
   test('scorecard computes positive and negative gain without transmission',async page=>{
     await page.goto(base+'ressources/diagnostic-ia.html');
@@ -108,7 +122,7 @@ const tests=[
     assert.equal(download.suggestedFilename(),'iagile-brief-3d.txt');
   }),
   test('resource pages pass WCAG 2.1 A/AA automated accessibility checks',async page=>{
-    for(const p of ['index.html','diagnostic-ia.html','diagnostic-10-questions.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
+    for(const p of ['index.html','diagnostic-ia.html','diagnostic-10-questions.html','demo-processus.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
       await page.goto(base+'ressources/'+p);
       const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
       const details=results.violations.map(x=>x.id+': '+x.nodes.map(n=>n.target.join(' ')).join(', '));
@@ -116,7 +130,7 @@ const tests=[
     }
   }),
   test('mobile viewport does not overflow; skip link accepts keyboard focus',async page=>{
-    for(const p of ['index.html','diagnostic-ia.html','diagnostic-10-questions.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
+    for(const p of ['index.html','diagnostic-ia.html','diagnostic-10-questions.html','demo-processus.html','incident-lab.html','agent-readiness.html','brief-site-3d.html']){
       await page.goto(base+'ressources/'+p);
       const sizes=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
       assert.ok(sizes.scroll <= sizes.viewport+2,p+' has horizontal overflow: '+JSON.stringify(sizes));
@@ -137,6 +151,9 @@ try{
     }
     await page.goto(base+'ressources/index.html');
     await page.screenshot({path:path.join(root,'resource-preview-'+viewport.width+'.png'),fullPage:true});
+    await page.goto(base+'ressources/demo-processus.html');
+    await page.locator('#demo-workflow button[type="submit"]').click();
+    await page.screenshot({path:path.join(root,'resource-preview-demo-'+viewport.width+'.png'),fullPage:true});
     await context.close();
   }
   console.log('PASS — '+passed+' functional browser checks, desktop and mobile');
