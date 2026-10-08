@@ -3,7 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const pages = ['index.html', 'parcours.html', 'a-propos.html', 'faq.html', '404.html','formations/sites-web-3d.html','formations/agents-personnalises.html','formations/automatiser-tache.html','formations/ia-au-quotidien.html'];
+const pages = ['index.html', 'parcours.html', 'a-propos.html', 'faq.html', '404.html','formations/sites-web-3d.html','formations/agents-personnalises.html','formations/automatiser-tache.html','formations/ia-au-quotidien.html','ressources/index.html','ressources/diagnostic-ia.html','ressources/incident-lab.html','ressources/agent-readiness.html','ressources/brief-site-3d.html'];
 let links=0;let checked=0;
 for (const page of pages) {
   const source = fs.readFileSync(path.join(root,page), 'utf8');
@@ -44,4 +44,15 @@ assert((home.match(/data-chapter="[0-4]"/g)||[]).length===5,'home must have exac
 assert(home.includes('id="universeCanvas"'),'3D canvas must be preserved');
 for (const expected of ['a-propos.html','faq.html','parcours.html']) assert(home.includes(`href="${expected}"`));
 assert(!fs.existsSync(path.join(root,'.env')),'no credentials in published root');
-console.log(`PASS — ${checked} HTML pages, ${links} internal assets/links, 8 sitemap URLs, 5 cinematic chapters`);
+for (const [course,resource] of [
+ ['formations/ia-au-quotidien.html','diagnostic-ia.html'],
+ ['formations/automatiser-tache.html','incident-lab.html'],
+ ['formations/agents-personnalises.html','agent-readiness.html'],
+ ['formations/sites-web-3d.html','brief-site-3d.html']
+]) {
+ const html=fs.readFileSync(path.join(root,course),'utf8');
+ assert(html.includes('../ressources/'+resource),course+' missing resource CTA');
+}
+const resourceJs=fs.readFileSync(path.join(root,'ressources/ressources.js'),'utf8');
+assert(!/\bfetch\s*\(|localStorage|sessionStorage|XMLHttpRequest/.test(resourceJs),'resources must not upload or persist form data');
+console.log(`PASS — ${checked} HTML pages, ${links} internal assets/links, ${pages.length-1} sitemap URLs, 5 cinematic chapters`);
