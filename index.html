@@ -1,96 +1,83 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0a0c10" />
-  <meta name="description" content="IAgile — Apprenez à maîtriser l'intelligence artificielle. Une expérience de formation conçue pour passer à l'action." />
-  <title>IAgile® — L'intelligence en mouvement</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b13">
+  <meta name="description" content="IAgile — Découvrez des formations et ateliers pour transformer l'intelligence artificielle en compétences concrètes. Une expérience d'apprentissage immersive.">
+  <title>IAgile® — L'avenir n'attend pas</title>
+  <meta property="og:title" content="IAgile® — L'avenir n'attend pas">
+  <meta property="og:description" content="L'IA, de la découverte à la maîtrise. Explorez une nouvelle manière d'apprendre.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#formations">Accéder aux formations</a>
-  <div id="preloader" class="preloader" aria-hidden="true"><div class="preloader-middle"><span class="preloader-mark">iagile<span>®</span></span><div class="preloader-progress"><i></i></div><span class="preloader-sub">THE FUTURE IS LEARNABLE</span></div></div>
-  <div class="transition-screen" id="transitionScreen" aria-hidden="true"><span>iagile<span class="blue">.</span></span></div>
-  <div class="noise" aria-hidden="true"></div>
-  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
-  <div class="scroll-meter" aria-hidden="true"><span class="scroll-meter-label">SCROLL PROGRESS</span><div class="scroll-meter-track"><span id="scrollMeterProgress"></span></div><span id="scrollPercent">00%</span></div>
+  <a class="skip-link" href="#formations">Aller aux formations</a>
+  <div class="loader" id="loader" aria-hidden="true"><div class="loader-inner"><span class="loader-brand">ia<span>gile.</span></span><span class="loader-title">INITIALISATION / CHROME ENGINE</span><div class="loader-track"><span></span></div><span class="loader-counter" id="loaderCounter">00</span></div></div>
+  <div class="site-curtain" id="siteCurtain" aria-hidden="true"><span>IAgile<span class="accent">.</span></span></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="pointer-halo" id="pointerHalo" aria-hidden="true"></div>
+  <div class="page-progress" aria-hidden="true"><div id="pageProgress"></div></div>
 
-  <header class="header" id="header">
-    <a href="#home" class="wordmark" aria-label="IAgile — accueil">iagile<span class="wordmark-dot">.</span><sup>®</sup></a>
-    <nav class="nav" aria-label="Navigation"><a href="#vision">VISION</a><a href="#laboratoire">EXPÉRIENCE</a><a href="#formations">FORMATIONS</a></nav>
-    <div class="header-right"><button type="button" class="selection-btn" id="cartTrigger">MA SÉLECTION <span id="cartCount">00</span></button><a href="#formations" class="header-cta">EXPLORER <span>↗</span></a><button class="menu-button" id="menuButton" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button></div>
+  <header class="site-header" id="siteHeader">
+    <a href="#accueil" class="logo" aria-label="IAgile accueil">ia<span>gile</span><b>.</b><sup>®</sup></a>
+    <nav class="header-nav" aria-label="Navigation principale"><a href="#approche">L'APPROCHE</a><a href="#experience">LE LAB</a><a href="#formations">FORMATIONS</a></nav>
+    <div class="nav-actions"><span class="online-indicator"><i></i> STUDIO EN LIGNE</span><a class="nav-cta magnetic" href="#formations"><span>EXPLORER</span><b>↗</b></a><button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button></div>
   </header>
-  <nav class="mobile-nav" id="mobileNav" aria-label="Navigation mobile"><a href="#vision">VISION</a><a href="#laboratoire">EXPÉRIENCE</a><a href="#formations">FORMATIONS</a></nav>
+  <div class="mobile-menu" id="mobileMenu"><a href="#approche">L'APPROCHE ↗</a><a href="#experience">LE LAB ↗</a><a href="#formations">FORMATIONS ↗</a><a href="#contact">CONTACT ↗</a></div>
 
   <main>
-    <section class="cinema" id="home" aria-label="IAgile, une nouvelle dimension de l'apprentissage">
-      <div class="cinema-sticky" id="cinemaSticky">
-        <canvas id="chrome3d" aria-label="Sculpture chromée tridimensionnelle interactive" role="img"></canvas>
-        <div class="ambient ambient-a" aria-hidden="true"></div><div class="ambient ambient-b" aria-hidden="true"></div>
-        <div class="cinema-grid" aria-hidden="true"></div>
-        <div class="cinema-edge cinema-edge-top"><span><span class="status-dot"></span> INTERACTIVE INTELLIGENCE / 001</span><span>IAgile © 2026 <span class="hide-mobile">— AN EXPERIMENT IN LEARNING</span></span></div>
-        <div class="stage stage-one is-active" data-stage="0">
-          <div class="stage-eyebrow"><span class="eyebrow-line"></span> BIENVENUE DANS LA NOUVELLE ÈRE</div>
-          <h1>L'INTELLIGENCE<br><span class="outline">PREND</span><br><span class="indent">FORME<span class="blue">.</span></span></h1>
-          <div class="stage-footer"><p>Ce n'est pas simplement une formation.<br>C'est une nouvelle manière de penser, créer et avancer.</p><a href="#formations" class="round-arrow" aria-label="Découvrir les formations">↗</a></div>
-        </div>
-        <div class="stage stage-two" data-stage="1" aria-hidden="true">
-          <div class="stage-eyebrow"><span class="eyebrow-line"></span> CHAPITRE 01 — LE DÉCLIC</div>
-          <h2>LE FUTUR<br>NE S'ATTEND<br><span class="chrome-gradient">PAS.</span></h2>
-          <p class="stage-description">Il se comprend. Il s'expérimente.<br>Il se construit, une compétence à la fois.</p>
-        </div>
-        <div class="stage stage-three" data-stage="2" aria-hidden="true">
-          <div class="stage-eyebrow"><span class="eyebrow-line"></span> CHAPITRE 02 — LE MOUVEMENT</div>
-          <h2>NE SUIVEZ<br>PLUS LE<br><span class="chrome-gradient">CHANGEMENT.</span></h2>
-          <p class="stage-description">Prenez une longueur d'avance.<br>Transformez l'intelligence artificielle en savoir-faire.</p>
-          <a href="#formations" class="text-arrow">DÉCOUVRIR NOS PARCOURS <span>↗</span></a>
-        </div>
-        <button type="button" class="scene-mode" id="sceneMode" aria-pressed="false" aria-label="Activer le mode hologramme pour la sculpture 3D">◇ MODE HOLOGRAMME</button>
-        <div class="model-hint" id="modelHint"><span class="spin-symbol">◎</span><span>OBJET 3D INTERACTIF<br><strong>GLISSER POUR FAIRE PIVOTER</strong></span></div>
-        <div class="cinema-edge cinema-edge-bottom"><div class="chapter-steps"><span id="chapterCurrent">01</span> <i></i> 03</div><div class="cinema-scroll"><span>SCROLLEZ POUR ENTRER DANS L'EXPÉRIENCE</span><b>↓</b></div><div class="render-label">CHROME ENGINE <span class="status-dot"></span> LIVE</div></div>
+    <!-- Real WebGL ray-marched 3D sculpture, moved through this 4-viewport scroll sequence. -->
+    <section class="cinema" id="accueil" aria-label="Une introduction 3D immersive à IAgile">
+      <div class="cinema-pin" id="cinemaPin">
+        <div class="cinema-lightfield" aria-hidden="true"></div><div class="cinema-grid" aria-hidden="true"></div><div class="cinema-aura" id="cinemaAura" aria-hidden="true"></div>
+        <div class="three-area" id="threeArea"><canvas id="threeCanvas" aria-label="Sculpture tridimensionnelle métallisée interactive, déplacez le pointeur pour la faire pivoter" role="img"></canvas><div class="webgl-fallback" id="webglFallback" aria-hidden="true"><div class="fallback-sculpture"></div></div></div>
+        <div class="side-coordinate" aria-hidden="true">IA—03 // DIGITAL LEARNING EXPERIENCE</div>
+        <div class="frame-top"><span><i class="live-dot"></i> EXPLORATION MODE / ACTIVE</span><span>IAgile — CHROME EXPERIENCE © 2026</span></div>
+        <div class="scene-copy scene-copy-0 active" data-scene="0"><p class="eyebrow"><span class="eyebrow-line"></span> UNE AUTRE FAÇON D'APPRENDRE</p><h1>LE FUTUR<br><span class="chrome-type">SE <em>CRÉE.</em></span></h1><p class="scene-intro">L'intelligence artificielle change les règles.<br>Apprenez à écrire les vôtres.</p><a class="circle-cta magnetic" href="#formations" aria-label="Découvrir les formations"><span>↗</span></a></div>
+        <div class="scene-copy scene-copy-1" data-scene="1"><p class="eyebrow"><span class="eyebrow-line"></span> 01 / CHANGER DE PERSPECTIVE</p><h2>NE SUIVEZ<br>PLUS LE<br><span class="chrome-type">MOUVEMENT.</span></h2><p class="scene-intro">Comprendre les outils. Développer les réflexes.<br>Faire de l'IA un véritable levier.</p></div>
+        <div class="scene-copy scene-copy-2" data-scene="2"><p class="eyebrow"><span class="eyebrow-line"></span> 02 / PRENDRE LE CONTRÔLE</p><h2>L'IA N'EST<br>PLUS UNE<br><span class="chrome-type">OPTION.</span></h2><p class="scene-intro">Elle peut devenir votre terrain d'expérimentation.<br>Et votre prochaine compétence.</p></div>
+        <div class="scene-copy scene-copy-3" data-scene="3"><p class="eyebrow"><span class="eyebrow-line"></span> 03 / PASSER À L'ACTION</p><h2>VOUS AVEZ<br>UNE LONGUEUR<br><span class="chrome-type">D'AVANCE.</span></h2><p class="scene-intro">Les possibilités sont immenses.<br>Le premier pas commence ici.</p><a class="scene-link" href="#formations">DÉCOUVRIR LES FORMATIONS <span>↗</span></a></div>
+        <div class="model-controls"><button id="modelMode" class="mode-switch" type="button" aria-pressed="false"><span class="mode-dot"></span> BASCULER / X-RAY</button><p><span class="rotate-icon">⤾</span> GLISSEZ SUR LA SCULPTURE <br><b>360° / TEMPS RÉEL</b></p></div>
+        <div class="cinema-bottom"><div class="chapter-index"><span id="chapterNumber">01</span><i></i><span>04</span></div><div class="scroll-prompt"><span>FAITES DÉFILER POUR EXPLORER</span><div class="scroll-mouse">↓</div></div><span class="engine-indicator"><i></i> LIVE WEBGL / 3D</span></div>
       </div>
     </section>
 
-    <div class="marquee" aria-hidden="true"><div class="marquee-track">LE FUTUR S'APPREND <b>✳</b> L'IA SE MAÎTRISE <b>✳</b> L'AVENIR SE CONSTRUIT <b>✳</b> LE FUTUR S'APPREND <b>✳</b> L'IA SE MAÎTRISE <b>✳</b> L'AVENIR SE CONSTRUIT <b>✳</b></div></div>
+    <div class="ticker" aria-hidden="true"><div class="ticker-track"> <span>IMAGINE.</span><span>✳</span><span>EXPÉRIMENTE.</span><span>✳</span><span>CRÉE.</span><span>✳</span><span>RECOMMENCE.</span><span>✳</span><span>IMAGINE.</span><span>✳</span><span>EXPÉRIMENTE.</span><span>✳</span><span>CRÉE.</span><span>✳</span><span>RECOMMENCE.</span><span>✳</span></div></div>
 
-    <section class="vision cream-section" id="vision">
-      <div class="section-topline reveal"><span>01 / NOTRE CONVICTION</span><span>[ LE SAVOIR EST UNE FORCE ]</span></div>
-      <div class="vision-body"><div class="vision-intro reveal"><span class="small-spark">✳</span><p>Une nouvelle perspective sur l'intelligence artificielle.</p></div><h2 class="vision-title kinetic-text" data-reveal="words">LA TECHNOLOGIE<br>ÉVOLUE. <span class="vision-muted">VOUS</span><br><em>AUSSI.</em></h2><div class="vision-bottom"><p class="reveal">L'IA n'est pas réservée à une poignée d'experts. Nous voulons rendre ses possibilités compréhensibles, concrètes et immédiatement applicables.</p><span class="vision-index reveal">I / III <b>↗</b></span></div></div>
-      <div class="vision-ghost" aria-hidden="true">A<span>I</span></div>
+    <section class="manifesto cream" id="approche"><div class="section-metadata"><span>[ 01 / LE MANIFESTE ]</span><span>LE MONDE CHANGE. PAS VOTRE POTENTIEL.</span></div>
+      <div class="manifesto-grid"><p class="manifesto-side reveal"><span>✳</span> L'IA N'EST PAS UNE DESTINATION.<br> C'EST UN POINT DE DÉPART.</p><div class="manifesto-main"><h2 class="display headline-reveal">LE PROGRÈS<br>NE SE <span class="ghost-letter">REGARDE</span><br><i>PLUS.</i><br>IL SE <span class="stroke-underline">PRATIQUE.</span></h2><div class="manifesto-detail reveal"><span>— L'APPROCHE IAGILE</span><p>Pas de jargon pour impressionner. Des méthodes à comprendre, des outils à tester et des usages à maîtriser pour passer de « je pourrais » à « je sais faire ».</p></div></div></div>
+      <div class="oversize-asterisk" aria-hidden="true">✳</div>
     </section>
 
-    <section class="laboratory" id="laboratoire">
-      <div class="section-topline reveal"><span>02 / LE LABORATOIRE</span><span>[ EXPLORE / EXPERIMENT / EVOLVE ]</span></div>
-      <div class="lab-head"><div><p class="micro-label reveal"><span class="status-dot"></span> LEARNING SYSTEM / ONLINE</p><h2 class="lab-title kinetic-text" data-reveal="words">APPRENDRE<br><span class="outline">AUTREMENT.</span></h2></div><p class="lab-side reveal">Des connaissances qui sortent de l'écran pour prendre leur place dans la réalité. Chaque étape rapproche de l'action.</p></div>
-      <div class="lab-grid">
-        <article class="lab-card card-primary reveal" data-tilt><div class="lab-card-head"><span>01 / EXPLORE</span><span>↗</span></div><div class="lab-visual lab-core"><div class="core-ring core-a"></div><div class="core-ring core-b"></div><div class="core-ring core-c"></div><div class="core-sphere"></div></div><div class="lab-card-bottom"><h3>COMPRENDRE<br>L'ESSENTIEL.</h3><p>Des bases claires pour décoder l'IA, sans jargon inutile.</p></div></article>
-        <article class="lab-card card-secondary reveal" data-tilt><div class="lab-card-head"><span>02 / EXPERIMENT</span><span>↗</span></div><div class="lab-visual lab-nodes"><span class="node node-1">PROMPT</span><span class="node node-2">IDÉE</span><span class="node node-3">ACTION</span><div class="node-connect n1"></div><div class="node-connect n2"></div><div class="node-connect n3"></div><div class="node-center">AI<span>.</span></div></div><div class="lab-card-bottom"><h3>PASSER<br>À LA PRATIQUE.</h3><p>Expérimenter de nouveaux outils et méthodes de travail.</p></div></article>
-        <article class="lab-card card-third reveal" data-tilt><div class="lab-card-head"><span>03 / EVOLVE</span><span>↗</span></div><div class="lab-visual lab-chrome"><div class="fluid-object"></div><div class="fluid-reflection"></div></div><div class="lab-card-bottom"><h3>CRÉER<br>SON AVANCE.</h3><p>Intégrer les bons usages dans ses projets et son quotidien.</p></div></article>
-      </div>
+    <section class="feature-showcase" id="showcase"><div class="feature-bg"><div class="feature-orbit orbit-one"></div><div class="feature-orbit orbit-two"></div><div class="feature-orbit orbit-three"></div><div class="feature-sphere"></div><div class="feature-beam"></div></div><div class="feature-inner"><span class="eyebrow"><span class="eyebrow-line"></span> NOUVELLES COMPÉTENCES / NOUVEAU REGARD</span><p class="feature-big" id="featureText">LA TECHNOLOGIE<br><span>BOUGE.</span><br>VOUS AUSSI.</p><p class="feature-foot">UN MÊME OBJECTIF : TRANSFORMER LA CURIOSITÉ EN SAVOIR-FAIRE.</p></div><span class="feature-marker">[ 02 / LE DÉCLIC ]</span></section>
+
+    <section class="lab" id="experience"><div class="section-metadata"><span>[ 03 / LE LABORATOIRE ]</span><span>UNE EXPÉRIENCE À TESTER, PAS JUSTE À REGARDER.</span></div>
+      <div class="lab-heading"><div><p class="micro reveal"><span class="live-dot"></span> INTERACTIVE PLAYGROUND — 01</p><h2 class="display headline-reveal">L'IA SE<br><span class="outline-light">DÉCOUVRE</span><br>EN FAISANT<span class="blue">.</span></h2></div><p class="lab-heading-copy reveal">Sélectionnez une mission. Nous vous montrons comment structurer une bonne demande à l'IA. C'est un aperçu de notre méthode, pas une réponse générée par un modèle.</p></div>
+      <div class="lab-workspace reveal">
+        <div class="workspace-header"><div><span class="workspace-brand"><i></i> IAGILE / PROMPT STUDIO</span><span class="workspace-version">DEMO ENVIRONMENT v0.3</span></div><div class="workspace-window-icons"><b></b><b></b><b></b></div></div>
+        <div class="workspace-body"><div class="workspace-sidebar"><span class="workspace-sidebar-title">CHOISIR UNE MISSION</span><button class="task-choice selected" data-task="marketing"><span>01</span><b>COMMUNICATION</b><span>↗</span></button><button class="task-choice" data-task="productivite"><span>02</span><b>PRODUCTIVITÉ</b><span>↗</span></button><button class="task-choice" data-task="creation"><span>03</span><b>CRÉATION</b><span>↗</span></button><div class="sidebar-footer"><span class="live-dot"></span> READY TO EXPERIMENT</div></div>
+          <div class="workspace-screen"><div class="prompt-label"><span>INPUT / CONTEXT ENGINE</span><span id="promptId">TASK_001</span></div><div class="screen-question" id="screenQuestion">« Rédige un post pour annoncer mon nouveau service. »</div><div class="prompt-transform"><span>⇣</span><span>AJOUTER OBJECTIF + CONTEXTE + FORMAT</span></div><div class="prompt-output" id="promptOutput"><span class="generated-tag"><i class="live-dot"></i> STRUCTURE DE PROMPT — EXEMPLE</span><p id="promptContent">Tu es spécialiste de la communication pour les petites entreprises. Rédige un post LinkedIn de 120 mots pour annoncer le lancement d'un nouveau service. Adopte un ton professionnel et accessible. Commence par le bénéfice client, puis explique le fonctionnement et termine par un appel à l'action. Ne crée pas de chiffres ni de témoignages fictifs.</p><button id="copyPrompt" class="copy-prompt">COPIER LE PROMPT <span>↗</span></button></div><div class="screen-foot"><span>EXEMPLE PÉDAGOGIQUE — AUCUNE IA CONNECTÉE À CETTE DÉMO</span><span>01 / 03</span></div></div>
+        </div>
+      </div><div class="lab-description"><span>[ LA MÉTHODE ]</span><p>Explorer. Comprendre. Tester. Recommencer. C'est en manipulant les outils que l'on développe des compétences durables.</p></div>
     </section>
 
-    <section class="impact cream-section" id="impact"><div class="section-topline reveal"><span>03 / NOUVEAU REGARD</span><span>[ BEYOND THE ORDINARY ]</span></div><div class="impact-inner"><p class="micro-label reveal">LE SAVOIR COMME MOTEUR</p><h2 class="impact-title kinetic-text" data-reveal="words">MOINS DE<br><span>DOUTES.</span><br>PLUS DE<br><em>POSSIBILITÉS.</em></h2><div class="impact-bottom reveal"><span class="impact-star">✳</span><p>Une formation utile n'est pas celle qui impressionne le plus. C'est celle qui vous permet de faire des choses que vous ne pouviez pas faire hier.</p></div></div></section>
+    <section class="journey cream" id="methode"><div class="section-metadata"><span>[ 04 / L'EXPÉRIENCE IAGILE ]</span><span>UNE PROGRESSION, PAS UNE PROMESSE MAGIQUE.</span></div><div class="journey-head"><h2 class="display headline-reveal">DU PREMIER<br>DÉCLIC À <i>L'ACTION.</i></h2><p class="reveal">Trois mouvements. Une méthode pensée pour transformer vos premières découvertes en usages réguliers.</p></div><div class="journey-steps"><article class="journey-step reveal"><div class="step-visual"><div class="step-visual-a"><i></i><i></i><i></i></div></div><div class="step-meta">01 — EXPLORE <span>↗</span></div><h3>COMPRENDRE.</h3><p>Décoder le fonctionnement, les possibilités et les limites de l'intelligence artificielle.</p></article><article class="journey-step reveal"><div class="step-visual"><div class="step-visual-b"><b>AI</b><i></i><i></i><i></i><i></i></div></div><div class="step-meta">02 — BUILD <span>↗</span></div><h3>EXPÉRIMENTER.</h3><p>Construire des méthodes, formuler de meilleurs prompts et tester des cas concrets.</p></article><article class="journey-step reveal"><div class="step-visual"><div class="step-visual-c"><i></i><b>✳</b></div></div><div class="step-meta">03 — EVOLVE <span>↗</span></div><h3>APPLIQUER.</h3><p>Intégrer les bons usages dans ses missions, ses projets et son quotidien.</p></article></div></section>
 
-    <section class="catalogue cream-section" id="formations"><div class="section-topline reveal"><span>04 / NOS PARCOURS</span><span>[ TROUVEZ VOTRE POINT DE DÉPART ]</span></div><div class="catalogue-head"><div><p class="micro-label reveal">PASSEZ EN MODE ACTION</p><h2 class="catalogue-title kinetic-text" data-reveal="words">CHOISISSEZ<br>VOTRE <em>AVANCE.</em></h2></div><p class="catalogue-aside reveal">Du premier contact avec l'IA aux usages plus avancés. Un chemin à construire selon vos objectifs.</p></div>
-      <div class="filters reveal" role="group" aria-label="Catégories des formations"><button class="filter active" data-filter="all">TOUTES <span>03</span></button><button class="filter" data-filter="debutant">DÉCOUVRIR</button><button class="filter" data-filter="productivite">PRATIQUER</button><button class="filter" data-filter="strategie">ALLER PLUS LOIN</button></div>
-      <div class="courses">
-        <article class="course-row reveal" data-course="fondamentaux" data-category="debutant"><div class="course-id">01 / 03</div><div class="course-thumbnail thumbnail-a"><div class="thumb-metal thumb-one"></div><span>FOUNDATIONS / 001</span></div><div class="course-content"><p>INITIATION / LES BASES</p><h3>LES FONDAMENTAUX<br>DE L'IA<span>.</span></h3><div class="course-excerpt">Comprendre l'essentiel. Apprendre les premiers réflexes.</div></div><button class="course-open" data-detail="fondamentaux" aria-label="Découvrir Les fondamentaux de l'IA">↗</button></article>
-        <article class="course-row reveal" data-course="productivite" data-category="productivite"><div class="course-id">02 / 03</div><div class="course-thumbnail thumbnail-b"><div class="thumb-metal thumb-two"></div><span>WORKFLOW / 002</span></div><div class="course-content"><p>PRATIQUE / LES MÉTHODES</p><h3>L'IA AU SERVICE<br>DE VOTRE TEMPS<span>.</span></h3><div class="course-excerpt">Explorer des usages concrets pour travailler autrement.</div></div><button class="course-open" data-detail="productivite" aria-label="Découvrir L'IA au service de votre temps">↗</button></article>
-        <article class="course-row reveal" data-course="strategie" data-category="strategie"><div class="course-id">03 / 03</div><div class="course-thumbnail thumbnail-c"><div class="thumb-metal thumb-three"></div><span>STRATEGY / 003</span></div><div class="course-content"><p>VISION / LES OPPORTUNITÉS</p><h3>PENSER PLUS LOIN<br>AVEC L'IA<span>.</span></h3><div class="course-excerpt">Identifier les opportunités et inventer de nouveaux usages.</div></div><button class="course-open" data-detail="strategie" aria-label="Découvrir Penser plus loin avec l'IA">↗</button></article>
-      </div><p class="catalogue-note">Les trois parcours affichés servent à démontrer le site. Les intitulés, programmes, tarifs et liens de paiement officiels restent à intégrer.</p>
+    <section class="courses" id="formations"><div class="section-metadata"><span>[ 05 / LES FORMATIONS ]</span><span>LE BON PARCOURS COMMENCE PAR UNE BONNE QUESTION.</span></div><div class="courses-head"><div><p class="micro reveal"><span class="live-dot"></span> PARCOURS À PERSONNALISER</p><h2 class="display headline-reveal">CHOISISSEZ<br>VOTRE <span class="chrome-type">AVANCE.</span></h2></div><p class="reveal">Découvrez trois orientations de formation. Intitulés, contenus et tarifs seront remplacés par le catalogue officiel IAgile.</p></div>
+      <div class="course-list"><button class="course-item reveal" type="button" data-course="0"><div class="course-number">/ 01</div><div class="course-image course-image-one"><div class="course-orb chrome-orb"></div><span>DISCOVER / 01</span></div><div class="course-info"><span>LES FONDAMENTAUX · DÉCOUVERTE</span><h3>COMPRENDRE<br>L'INTELLIGENCE<br>ARTIFICIELLE.</h3><p>Pour découvrir l'IA, ses usages et les bons réflexes.</p><div class="course-tags"><span>INITIATION</span><span>MISE EN PRATIQUE</span></div></div><span class="course-arrow">↗</span></button>
+      <button class="course-item reveal" type="button" data-course="1"><div class="course-number">/ 02</div><div class="course-image course-image-two"><div class="course-grid-orb"><i></i><i></i><i></i><i></i></div><span>BUILD / 02</span></div><div class="course-info"><span>LES MÉTHODES · PRODUCTIVITÉ</span><h3>L'IA AU SERVICE<br>DE VOTRE<br>QUOTIDIEN.</h3><p>Pour explorer des applications concrètes dans le travail.</p><div class="course-tags"><span>OUTILS</span><span>WORKFLOWS</span></div></div><span class="course-arrow">↗</span></button>
+      <button class="course-item reveal" type="button" data-course="2"><div class="course-number">/ 03</div><div class="course-image course-image-three"><div class="course-loop"><i></i><i></i><i></i></div><span>EVOLVE / 03</span></div><div class="course-info"><span>LES PROJETS · STRATÉGIE</span><h3>CONSTRUIRE<br>AVEC L'IA.</h3><p>Pour structurer des projets et des usages plus avancés.</p><div class="course-tags"><span>STRATÉGIE</span><span>APPLICATION</span></div></div><span class="course-arrow">↗</span></button></div>
+      <p class="catalogue-note">Ces formations sont des exemples de présentation, et non des offres commerciales définitives. Aucune commande n'est effectuée sur ce prototype.</p>
     </section>
 
-    <section class="closing" id="contact"><div class="closing-light"></div><div class="section-topline reveal"><span>05 / LA PROCHAINE ÉTAPE</span><span>[ MAKE IT REAL ]</span></div><div class="closing-inner"><div class="closing-small reveal"><span class="status-dot"></span> PRÊT À ALLER PLUS LOIN ?</div><h2 class="kinetic-text" data-reveal="words">LE FUTUR<br>COMMENCE<br><em>MAINTENANT.</em></h2><a class="closing-button" href="#formations">EXPLORER LES FORMATIONS <span>↗</span></a><div class="closing-bottom"><span>THE FUTURE IS LEARNABLE.</span><span>IAgile / CHROME EXPERIENCE</span></div></div></section>
+    <section class="outro" id="contact"><div class="outro-grid" aria-hidden="true"></div><div class="outro-light"></div><div class="outro-badge"><i class="live-dot"></i> READY FOR WHAT'S NEXT?</div><div class="outro-content"><span>[ FIN DE L'INTRODUCTION / DÉBUT DES POSSIBILITÉS ]</span><h2>LE FUTUR<br>C'EST <em>VOUS.</em></h2><a href="#formations" class="outro-cta magnetic" id="outroCta">EXPLORER LES FORMATIONS <b>↗</b></a><p class="outro-note">Démonstration du site — catalogue et inscriptions à finaliser.</p></div><div class="outro-footer"><span>IAgile®</span><span>MAKE WHAT'S NEXT.</span><span>© 2026 — CHROME STUDIO</span></div></section>
   </main>
-  <footer class="footer"><a href="#home" class="wordmark">iagile<span class="wordmark-dot">.</span></a><p>UNE AUTRE FAÇON D'APPRENDRE.<br>© 2026 IAGILE — VERSION DÉMONSTRATION</p><div><a href="#vision">VISION</a><a href="#formations">FORMATIONS</a><a href="#home">REMONTER ↑</a></div></footer>
+  <footer class="footer"><a href="#accueil" class="logo">ia<span>gile</span><b>.</b><sup>®</sup></a><p>Apprendre l'intelligence artificielle.<br>Créer ses propres possibilités.</p><div><a href="#approche">L'APPROCHE</a><a href="#experience">LE LAB</a><a href="#formations">LES FORMATIONS</a></div><a class="back-top" href="#accueil">REMONTER ↑</a></footer>
 
-  <div class="overlay" id="overlay" hidden></div>
-  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Votre sélection de formations"><div class="drawer-head"><span>VOTRE SÉLECTION <b id="drawerCount">(00)</b></span><button class="icon-close" id="drawerClose" aria-label="Fermer la sélection">×</button></div><div id="drawerItems" class="drawer-items"></div><div class="drawer-foot"><span>LE PAIEMENT N'EST PAS ENCORE DISPONIBLE.</span><a href="#formations" id="drawerExplore" class="drawer-explore">EXPLORER LES FORMATIONS ↗</a></div></aside>
-  <div class="course-modal" id="courseModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalTitle"><div class="modal-meta"><span id="modalType"></span><button class="icon-close" id="modalClose" aria-label="Fermer le détail">×</button></div><div class="modal-main"><span class="modal-kicker">IAgile / LEARNING EXPERIENCE</span><h2 id="modalTitle"></h2><p id="modalDescription"></p><div class="modal-lines"><span>FORMAT</span><strong>EN LIGNE</strong></div><div class="modal-lines"><span>STATUT</span><strong>PROGRAMME À CONFIRMER</strong></div><button class="modal-add" id="modalAdd">AJOUTER À MA SÉLECTION <span>↗</span></button></div></div>
+  <div class="modal-overlay" id="modalOverlay" hidden></div><section class="course-modal" id="courseModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true" tabindex="-1"><div class="modal-bar"><span>IAgile / PARCOURS</span><button type="button" id="closeModal" aria-label="Fermer la fiche de formation">✕</button></div><div class="modal-body"><p id="modalKicker" class="micro"></p><h2 id="modalTitle"></h2><p id="modalDescription"></p><div class="modal-spec"><span>PROGRAMME</span><strong>À CONFIRMER</strong></div><div class="modal-spec"><span>DURÉE & TARIF</span><strong>À CONFIRMER</strong></div><div class="modal-spec"><span>INSCRIPTION</span><strong>PROCHAINEMENT</strong></div><a href="#experience" class="modal-cta" id="modalCta">ESSAYER LE LABORATOIRE <span>↗</span></a><p class="modal-disclaimer">Fiche illustrative : les informations officielles seront ajoutées avant commercialisation.</p></div></section>
 </body>
 </html>
