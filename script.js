@@ -321,6 +321,7 @@ void main(){
       document.documentElement.dataset.renderEngine='webgl-mesh-3d';
     }catch(e){console.warn('IAgile WebGL fallback:',e);document.body.classList.add('no-webgl');modeButton.disabled=true;modeButton.textContent='◇ APERÇU STATIQUE'}
   }
-  startChromeScene();
-  setTimeout(()=>$('#preloader').classList.add('done'),1100);
+  try { startChromeScene(); } catch (error) { console.warn('IAgile scene fallback:',error); document.body.classList.add('no-webgl'); }
+  const finishPreload=()=>$('#preloader')?.classList.add('done');
+  setTimeout(finishPreload,1100);
 })();
