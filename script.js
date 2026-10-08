@@ -33,7 +33,8 @@
   else window.addEventListener('load',()=>window.setTimeout(dismissLoader,350),{once:true});
 
 
-  // V4: A single 3D world follows the entire journey, not only the intro.
+  // V4: A single 3D world follows the entire journey rather than disappearing
+  // at the end of the introductory scroll sequence.
   const orbitHUD=$('#orbitHUD');
   if(orbitHUD){
     document.body.insertBefore(threeArea, document.querySelector('main'));
@@ -384,7 +385,7 @@
     }
     requestAnimationFrame(renderGL);
   }
-  initWebGL();
+  if (!$('#learningUniverse')) initWebGL();
   threeArea.addEventListener('pointerdown',e=>{dragging=true;startX=e.clientX;startY=e.clientY;lastX=e.clientX;lastY=e.clientY;try{threeArea.setPointerCapture(e.pointerId)}catch(err){}});
   threeArea.addEventListener('pointermove',e=>{
     const r=threeArea.getBoundingClientRect();mouseX=clamp((e.clientX-r.left)/r.width*2-1,-1,1);mouseY=clamp((e.clientY-r.top)/r.height*2-1,-1,1);
@@ -392,11 +393,11 @@
     targetDragX+=(e.clientX-lastX)*.007;targetDragY+=(e.clientY-lastY)*.007;lastX=e.clientX;lastY=e.clientY;
   });
   const finishDrag=()=>{dragging=false};threeArea.addEventListener('pointerup',finishDrag);threeArea.addEventListener('pointercancel',finishDrag);
-  $('#modelMode').addEventListener('click',e=>{modelMode=1-modelMode;e.currentTarget.setAttribute('aria-pressed',String(!!modelMode));e.currentTarget.innerHTML=modelMode?'<span class="mode-dot"></span> BASCULER / CHROME':'<span class="mode-dot"></span> BASCULER / X-RAY';});
+  $('#modelMode').addEventListener('click',e=>{modelMode=1-modelMode;e.currentTarget.setAttribute('aria-pressed',String(!!modelMode));e.currentTarget.innerHTML=modelMode?'<span class="mode-dot"></span> MASQUER LES CONNEXIONS':'<span class="mode-dot"></span> VOIR LES CONNEXIONS';document.body.classList.toggle('learning-diagram',!!modelMode);});
   $('#orbitMode')?.addEventListener('click',()=>{
     $('#modelMode').click();
-    $('#orbitMode').textContent=modelMode?'◎':'↗';
-    $('#orbitMode').setAttribute('aria-label',modelMode?'Activer le rendu chrome':'Activer le mode rayons X');
+    $('#orbitMode').textContent=modelMode?'−':'+';
+    $('#orbitMode').setAttribute('aria-label',modelMode?'Masquer les connexions':'Afficher les connexions');
   });
 
   // Reveal elements with a visible fallback for browsers without IO.
@@ -484,5 +485,5 @@
   $('.outro-note').textContent='Démonstration du site — catalogue et inscriptions à finaliser.';
   $('#modalCta').href='#experience';$('#modalCta').innerHTML='ESSAYER LE LABORATOIRE <span>↗</span>';
   // Useful debug/status indicator for launch QA, not exposed in UI.
-  window.__IAgileVersion='CHROME V4 / ORBIT';
+  window.__IAgileVersion='CHROME V5 / LEARNING SYSTEM';
 })();
