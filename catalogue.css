@@ -1,0 +1,30 @@
+/* IAgile V11: Editorial catalogue only. Original CHROME V10 spatial site intact. */
+.courses-forward{padding:112px 6% 125px;background:#f4f2ed;color:#141414;border-top:1px solid #b5bec047;border-bottom:1px solid #b5bec061}
+.courses-forward-top{display:grid;grid-template-columns:1.55fr 1fr;align-items:end;gap:22px;margin-bottom:40px}
+.courses-forward-top>span{grid-column:1/-1;font:10px 'DM Mono',monospace;letter-spacing:.16em;color:#56626c}
+.courses-forward-top h2{font:700 clamp(36px,5vw,78px)/1.03 'Sora',sans-serif;letter-spacing:-.082em;margin:0}
+.courses-forward-top h2 em{font-style:normal;color:#859097}
+.courses-forward-top p{font:15px/1.8 'Manrope',sans-serif;color:#56626a;max-width:440px;margin:0}
+.courses-forward-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.forward-card{display:flex;flex-direction:column;gap:10px;position:relative;min-width:0;min-height:398px;padding:22px;background:#fbfaf7;border:1px solid #c6cdd0;overflow:hidden;transition:background .3s,transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s}
+.forward-card:hover,.forward-card:focus-visible{background:#fff;transform:translateY(-10px);box-shadow:0 20px 40px #24334216}
+.forward-index,.forward-link,.courses-forward-foot{font:10px 'DM Mono',monospace;letter-spacing:.05em;color:#68747d}
+.forward-index{letter-spacing:.09em}
+.forward-object{height:154px;display:grid;place-items:center;perspective:600px;transform-style:preserve-3d;margin:10px 0}
+.forward-object>span{position:relative;display:grid;place-items:center;width:118px;height:104px;font:58px 'Sora',sans-serif;color:#4f5a62;background:linear-gradient(135deg,#fff 3%,#ccd4d6 43%,#f5f5f2 58%,#97a6ad 100%);border:1px solid #9eabb2;box-shadow:14px 15px 0 #a2adb3,24px 28px 24px #71828a36;transform:rotateY(-27deg) rotateX(14deg) rotateZ(-8deg);transition:transform .6s}
+.forward-card:hover .forward-object>span{transform:rotateY(-8deg) rotateX(4deg) rotateZ(-3deg) translateY(-5px)}
+.forward-agent .forward-object>span{border-radius:50%;width:114px;height:114px}
+.forward-flow .forward-object>span{border-radius:8px;width:118px;height:72px}
+.forward-daily .forward-object>span{border-radius:16px 3px 16px 3px}
+.forward-card h3{font:700 clamp(19px,1.7vw,27px)/1.19 'Sora',sans-serif;letter-spacing:-.055em;margin:0;min-height:66px}
+.forward-card p{font:12px/1.75 'Manrope',sans-serif;color:#5c686c;margin:0 0 20px;flex:1}
+.forward-link{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #c4cccf;padding-top:15px;color:#2a3238}
+.forward-link b{font-size:20px;font-weight:400}
+.courses-forward-foot{margin-top:24px;text-align:right}
+.academy-course-title:hover,.academy-course-title:focus-visible{text-decoration:underline;text-underline-offset:7px;text-decoration-color:#7c8b92}
+.course-mini-meta{font:10px 'DM Mono',monospace;color:#5a686e;line-height:1.6;margin-top:8px}
+.course-mini-meta i{font-style:normal;padding:0 7px;color:#9da6ac}
+.academy-course>span{line-height:1.6}
+@media(max-width:1100px){.courses-forward-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.forward-card{min-height:340px}.forward-card h3{min-height:0}}
+@media(max-width:700px){.courses-forward{padding:76px 6% 80px}.courses-forward-top{grid-template-columns:1fr}.courses-forward-top h2{font-size:clamp(36px,9vw,55px)}.courses-forward-top p{font-size:13px}.courses-forward-grid{grid-template-columns:1fr}.forward-card{min-height:0;display:grid;grid-template-columns:100px 1fr;gap:7px 14px;padding:18px}.forward-index{grid-column:1/-1}.forward-object{grid-column:1;grid-row:2/5;height:135px;margin:0}.forward-object>span{width:75px;height:75px;font-size:36px;box-shadow:7px 8px 0 #a2adb3,14px 14px 16px #71828a36}.forward-agent .forward-object>span{width:75px;height:75px}.forward-flow .forward-object>span{width:75px;height:55px}.forward-card h3{grid-column:2;grid-row:2;font-size:21px}.forward-card p{grid-column:2;grid-row:3;font-size:11px;margin:0}.forward-link{grid-column:1/-1;font-size:9px;margin-top:9px}}
+@media(prefers-reduced-motion:reduce){.forward-card,.forward-object>span{transition:none!important}}
