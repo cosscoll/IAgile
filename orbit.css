@@ -1,0 +1,55 @@
+/* IAgile CHROME V4 — continuous 3D narrative across the whole visitor journey */
+.three-area.orbit-global{
+  position:fixed;inset:auto;z-index:32;
+  left:37vw;top:0;width:63vw;height:100svh;
+  opacity:1;isolation:isolate;
+  transition:left 1150ms cubic-bezier(.19,1,.22,1),top 1150ms cubic-bezier(.19,1,.22,1),width 1150ms cubic-bezier(.19,1,.22,1),height 1150ms cubic-bezier(.19,1,.22,1),opacity 650ms ease,filter 850ms ease;
+  filter:drop-shadow(0 18px 60px rgba(24,56,110,.12));
+  cursor:grab;
+}
+.three-area.orbit-global:active{cursor:grabbing}
+.three-area.orbit-global:after{
+  content:'';position:absolute;inset:14%;border-radius:50%;border:1px solid rgba(150,185,247,.14);
+  opacity:0;pointer-events:none;transition:opacity 850ms ease;
+  box-shadow:inset 0 0 65px rgba(70,130,255,.035),0 0 55px rgba(76,111,183,.045);
+}
+body:not([data-orbit-section='accueil']) .three-area.orbit-global:after{opacity:1}
+body[data-orbit-section='approche'] .three-area.orbit-global{left:83vw;top:10vh;width:16vw;height:26vh;opacity:.88}
+body[data-orbit-section='showcase'] .three-area.orbit-global{left:61vw;top:21vh;width:38vw;height:59vh;opacity:.96}
+body[data-orbit-section='experience'] .three-area.orbit-global{left:83vw;top:25vh;width:16vw;height:27vh;opacity:.85}
+body[data-orbit-section='parcours'] .three-area.orbit-global{left:70vw;top:48vh;width:28vw;height:45vh;opacity:.82}
+body[data-orbit-section='formations'] .three-area.orbit-global{left:79vw;top:55vh;width:20vw;height:32vh;opacity:.86}
+body[data-orbit-section='contact'] .three-area.orbit-global{left:59vw;top:12vh;width:39vw;height:67vh;opacity:.92}
+body[data-orbit-section='footer'] .three-area.orbit-global{left:80vw;top:53vh;width:18vw;height:27vh;opacity:.75}
+.orbit-hud{
+ position:fixed;z-index:38;right:24px;bottom:23px;display:flex;align-items:center;gap:12px;
+ border:1px solid rgba(140,175,238,.33);background:rgba(8,14,26,.82);color:#dce9ff;
+ backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+ padding:11px 11px 11px 16px;min-width:228px;
+ box-shadow:0 12px 42px rgba(0,0,0,.27),inset 0 0 28px rgba(70,105,178,.06);
+ opacity:1;transform:translateY(0);transition:opacity .6s,transform .6s;
+}
+body[data-orbit-section='accueil'] .orbit-hud{opacity:0;transform:translateY(18px);pointer-events:none}
+.orbit-hud-pulse{width:6px;height:6px;border-radius:50%;background:#95c4ff;box-shadow:0 0 14px #79aaff;animation:orbit-hud-pulse 2.8s ease-in-out infinite}
+@keyframes orbit-hud-pulse{50%{box-shadow:0 0 1px #79aaff;opacity:.4}}
+.orbit-hud-copy{display:flex;flex-direction:column;flex:1;gap:5px;white-space:nowrap}
+.orbit-hud-copy span{font:500 9px/1.15 var(--mono);letter-spacing:.11em;color:#8caedc}
+.orbit-hud-copy strong{font:700 11px/1.3 var(--display);letter-spacing:.09em}
+.orbit-hud button{border:1px solid rgba(134,175,230,.35);background:#1c2e4b;color:#eff5ff;font:22px/1 var(--display);width:37px;height:37px;display:grid;place-items:center;transition:background .22s,transform .22s}
+.orbit-hud button:hover{background:#335d9e;transform:rotate(45deg)}
+body.modal-open .orbit-hud,body.menu-open .orbit-hud,body.modal-open .three-area.orbit-global,body.menu-open .three-area.orbit-global{opacity:0;pointer-events:none}
+@media(max-width:900px){
+  body:not([data-orbit-section='accueil']) .three-area.orbit-global{left:70vw;top:19vh;width:29vw;height:45vh;opacity:.78}
+  body[data-orbit-section='showcase'] .three-area.orbit-global{left:59vw;top:27vh;width:40vw;height:55vh;opacity:.9}
+  body[data-orbit-section='contact'] .three-area.orbit-global{left:63vw;top:28vh;width:35vw;height:48vh;opacity:.83}
+}
+@media(max-width:650px){
+ .three-area.orbit-global{left:0;top:12%;width:110vw;height:75vh;opacity:.77;pointer-events:none}
+ body:not([data-orbit-section='accueil']) .three-area.orbit-global,
+ body[data-orbit-section='showcase'] .three-area.orbit-global,
+ body[data-orbit-section='contact'] .three-area.orbit-global{left:66vw;top:77px;width:33vw;height:28vh;opacity:.76;pointer-events:none}
+ .orbit-hud{right:10px;bottom:12px;min-width:0;padding:8px 9px 8px 11px;gap:8px}
+ .orbit-hud-copy span{font-size:7px}.orbit-hud-copy strong{font-size:9px}.orbit-hud button{height:30px;width:30px;font-size:17px}
+ .orbit-hud-pulse{display:none}
+}
+@media(prefers-reduced-motion:reduce){.three-area.orbit-global,.orbit-hud{transition:none!important}.orbit-hud-pulse{animation:none}}
