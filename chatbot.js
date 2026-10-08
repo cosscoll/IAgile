@@ -1,79 +1,79 @@
-/* IAgile — Assistant de démonstration, connaissance locale vérifiée.
-   Pas de génération IA ni d'API externe: contenu auditable, aucune donnée transmise.
-   Remplaçable ultérieurement par un backend IA sécurisé. */
+/* IAgile Assistant V15 — model-generated answers only.
+ * Browser sends the conversation to a secure API; no canned Q&A fallback.
+ * Requires a configured server; never expose API credentials here.
+ */
 (()=>{
 'use strict';
 if(document.getElementById('iaChatShell'))return;
 const isCoursePage=location.pathname.includes('/formations/');
 const prefix=isCoursePage?'../':'';
-const courses=[
- {id:'web',title:'Créer des sites web 3D animés',short:'Sites web 3D',url:'formations/sites-web-3d.html',tags:['site','web','3d','three','threejs','r3f','blender','scroll','animation','design','developpement','portfolio','react','front-end','visuel','immersif','interface','cinema','gsap'],description:'Créer un site immersif publié, avec scène 3D, narration au scroll, navigation spatiale et tests de performance.',audience:'Créatifs, designers, profils digitaux et entrepreneurs. Un parcours de fondations web est prévu pour les débutants.',tools:'HTML, CSS, JavaScript, React, Three.js / R3F, GSAP, Blender, Git et GitHub.',program:'15 modules (0 à 14) et un module WebGPU/TSL avancé. Brief créatif, storyboard, bases web, Three.js, assets, motion, scroll, navigation 3D, interactions, shaders, responsive, performance et publication.',project:'Immersive Website Production Pack : site 3D publié, storyboard, dépôt Git, assets optimisés, tests et dossier de présentation.',demo:['Définir une idée et son storyboard spatial','Créer une scène 3D et synchroniser la caméra au scroll','Optimiser puis publier le site']},
- {id:'agent',title:'Créer des agents personnalisés',short:'Agents IA',url:'formations/agents-personnalises.html',tags:['agent','agents','chatbot','assistant','personnalise','entreprise','metier','support','service client','rh','sdk','outil','tools','memoire','rag','chat','bot','autonome'],description:'Concevoir un agent spécialisé qui utilise les bonnes connaissances et les bons outils, tout en restant contrôlable.',audience:'Entrepreneurs, équipes métiers, professionnels du support et personnes intéressées par des agents sur mesure. Parcours no-code ou technique.',tools:'Plateforme no-code/low-code (Make AI Agents ou équivalent) ou OpenAI Agents SDK, outils, APIs, recherche documentaire et évaluations.',program:'12 modules (0 à 11) : cadrage de l’agent, contrat de rôle, instructions, connaissances, outils, mémoire, premier agent, garde-fous, tests, traçage, multi-agent et maintenance.',project:'Agent Production Pack : agent fonctionnel, rôle, connaissances, permissions, tests, traces, validations humaines et guide de maintenance.',demo:['Définir la mission et les limites de l’agent','Lui fournir une source documentaire et un outil','Tester une demande et bloquer une action sans validation']},
- {id:'automation',title:'Automatiser une tâche fastidieuse',short:'Automatisation',url:'formations/automatiser-tache.html',tags:['automatisation','automatiser','automatique','repetitif','repetitive','workflow','n8n','make','api','webhook','email','mail','document','administratif','synchronisation','productivite','gain','temps','routine','processus'],description:'Transformer une tâche répétitive en workflow exploitable, testé, surveillé et maintenable.',audience:'Professionnels et équipes qui veulent gagner du temps sur des tâches structurées. Les concepts sont abordés avant les outils.',tools:'n8n principalement, Make en alternative, APIs, webhooks, JSON, logs et contrôles d’exécution.',program:'11 modules (0 à 10) : choix de la tâche, cartographie, triggers et actions, données, APIs, construction, IA utile, pannes, gestion d’erreurs, suivi et maintenance.',project:'Automation Production Pack : workflow opérationnel, tests de panne, alertes, mesure du gain réel, documentation et procédure de reprise.',demo:['Recevoir une demande ou un document','Classer les informations et préparer une action','Contrôler le résultat, signaler une erreur et demander validation si nécessaire']},
- {id:'daily',title:'Simplifier les processus du quotidien',short:'IA au quotidien',url:'formations/ia-au-quotidien.html',tags:['quotidien','debutant','debuter','facile','simple','organiser','organisation','recherche','rediger','redaction','resume','synthese','notes','planning','agenda','reunion','documents','fichier','playbook','personnel','utilisation'],description:'Utiliser l’IA comme copilote pour rechercher, rédiger, synthétiser, préparer et organiser son travail.',audience:'Débutants et intermédiaires, sans prérequis technique. Un assistant IA textuel suffit pour commencer.',tools:'Assistants IA généralistes, documents de travail, modèles de prompts et méthodes de vérification.',program:'9 modules (0 à 8) : diagnostic, travail avec l’IA, recherche fiable, rédaction, fichiers, réunions, organisation, système personnel et confidentialité.',project:'Playbook IA du quotidien : 5 à 10 processus récurrents documentés avec modèles réutilisables et règles de vérification.',demo:['Partir d’un document ou de notes','Extraire les points importants et préparer les prochaines actions','Constituer une méthode réutilisable avec contrôle humain']}
+const endpoint=(window.IAgileChatConfig?.endpoint||((location.hostname==='cosscoll.github.io')?'':'/api/chat')).trim();
+const paths=[
+ ['Site web 3D','formations/sites-web-3d.html'],['Agents IA','formations/agents-personnalises.html'],
+ ['Automatisation','formations/automatiser-tache.html'],['IA au quotidien','formations/ia-au-quotidien.html']
 ];
-const $=(s,r=document)=>r.querySelector(s);const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
-const words=s=>norm(s).split(/\s+/).filter(Boolean);
-const contains=(s,terms)=>terms.some(t=>norm(s).includes(norm(t)));
-const urlFor=path=>prefix+path;
-const shell=document.createElement('aside');shell.className='ia-chat-shell';shell.id='iaChatShell';shell.setAttribute('aria-label','Assistant IAgile');
-shell.innerHTML=`<button class="ia-chat-launch" id="iaChatLaunch" type="button" aria-controls="iaChatPanel" aria-expanded="false" aria-label="Ouvrir l'assistant IAgile"><span class="ia-chat-glyph" aria-hidden="true"></span><span class="ia-chat-launch-copy"><b>Une question sur l'IA ?</b><small>ASSISTANT IAGILE · DÉMO</small></span></button><section class="ia-chat-panel" id="iaChatPanel" role="dialog" aria-modal="false" aria-label="Assistant IAgile — démonstration guidée" hidden><div class="ia-chat-panel-head"><span class="ia-chat-headmark" aria-hidden="true">✳</span><div class="ia-chat-heading"><strong>IAgile Assistant</strong><span><i class="ia-chat-live"></i>DÉMONSTRATION GUIDÉE / CHROME</span></div><button class="ia-chat-close" id="iaChatReset" type="button" aria-label="Recommencer la conversation" title="Recommencer">↺</button><button class="ia-chat-close" id="iaChatClose" type="button" aria-label="Fermer l'assistant">×</button></div><div class="ia-chat-thread" id="iaChatThread" role="log" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></div><form class="ia-chat-bottom" id="iaChatForm"><label class="ia-chat-visually-hidden" for="iaChatInput">Votre question</label><div class="ia-chat-composer"><textarea id="iaChatInput" rows="1" maxlength="500" placeholder="Posez votre question…" autocomplete="off"></textarea><button type="submit" class="ia-chat-send" aria-label="Envoyer le message">↗</button></div><div class="ia-chat-bottom-note"><b>Démo informative :</b> réponses locales issues des programmes, sans IA générative ni collecte de données.</div></form></section>`;
-document.body.appendChild(shell);
-const launch=$('#iaChatLaunch'),panel=$('#iaChatPanel'),close=$('#iaChatClose'),thread=$('#iaChatThread'),form=$('#iaChatForm'),input=$('#iaChatInput');
-let started=false,lastCourse=isCoursePage?(courses.find(c=>location.pathname.endsWith('/'+c.url))||null):null,history=[];
-const suggestionsDefault=['Quelle formation choisir ?','Montre-moi un projet concret','Quels outils vais-je apprendre ?','Quand peut-on s’inscrire ?'];
-function appendMessage(author,text,links=[],chips=[],demo=null){
+const context=isCoursePage?paths.find(p=>location.pathname.endsWith('/'+p[1]))?.[0]:null;
+const samplePrompts=context?['Que vais-je savoir faire à la fin ?','Est-ce adapté à mon niveau ?','Quel projet final vais-je créer ?','Quels outils sont au programme ?']:
+ ['J’ai une petite entreprise : que me conseilles-tu ?','Comment créer un agent IA personnalisé ?','Je débute, par où commencer ?','Quelles différences entre les 4 formations ?'];
+const html=`<button class="ia-chat-launch" id="iaChatLaunch" type="button" aria-controls="iaChatPanel" aria-expanded="false" aria-label="Ouvrir IAgile Assistant"><span class="ia-chat-glyph" aria-hidden="true"></span><span class="ia-chat-launch-copy"><b>Parlons de votre projet</b><small>ASSISTANT IA · CHROME</small></span></button>
+<section class="ia-chat-panel" id="iaChatPanel" role="dialog" aria-modal="false" aria-label="IAgile Assistant IA" hidden>
+ <div class="ia-chat-panel-head"><span class="ia-chat-headmark" aria-hidden="true">✳</span><div class="ia-chat-heading"><strong>IAgile Assistant</strong><span><i class="ia-chat-live" id="iaChatStatusDot"></i><span id="iaChatStatus">VÉRIFICATION DU SERVICE…</span></span></div><button class="ia-chat-close" type="button" id="iaChatReset" aria-label="Nouvelle conversation" title="Nouvelle conversation">↺</button><button class="ia-chat-close" type="button" id="iaChatClose" aria-label="Fermer l'assistant">×</button></div>
+ <div class="ia-chat-thread" id="iaChatThread" role="log" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></div>
+ <form class="ia-chat-bottom" id="iaChatForm"><label class="ia-chat-visually-hidden" for="iaChatInput">Votre question</label><div class="ia-chat-composer"><textarea id="iaChatInput" rows="1" maxlength="850" placeholder="Écrivez votre question…" autocomplete="off"></textarea><button type="submit" class="ia-chat-send" id="iaChatSend" aria-label="Envoyer votre question">↗</button></div><div class="ia-chat-bottom-note">Réponses générées par IA après connexion au moteur. Ne partagez pas de données sensibles.</div></form>
+</section>`;
+const shell=document.createElement('aside');shell.id='iaChatShell';shell.className='ia-chat-shell';shell.setAttribute('aria-label','Assistant conversationnel IAgile');shell.innerHTML=html;document.body.appendChild(shell);
+const $=(s,root=document)=>root.querySelector(s);
+const launch=$('#iaChatLaunch'),panel=$('#iaChatPanel'),close=$('#iaChatClose'),thread=$('#iaChatThread'),form=$('#iaChatForm'),input=$('#iaChatInput'),send=$('#iaChatSend'),status=$('#iaChatStatus'),dot=$('#iaChatStatusDot');
+let ready=false,checked=false,busy=false,history=[],requestAbort=null,started=false;
+function setStatus(text,ok){status.textContent=text;dot.classList.toggle('ia-chat-connected',Boolean(ok));}
+function append(author,text,opts={}){
  const row=document.createElement('div');row.className='ia-chat-row '+(author==='user'?'user':'assistant');
  const inner=document.createElement('div');inner.className='ia-chat-response';
- const bubble=document.createElement('div');bubble.className='ia-chat-bubble';bubble.textContent=text;
- if(author!=='user'){let lab=document.createElement('div');lab.className='ia-chat-author';lab.textContent='IAgile / RÉPONSE GUIDÉE';inner.appendChild(lab)}
- inner.appendChild(bubble);
- if(demo){const block=document.createElement('div');block.className='ia-chat-demo';const h=document.createElement('div');h.className='ia-chat-demo-head';h.textContent='PARCOURS CONCRET / DÉMONSTRATION DE MÉTHODE';block.append(h);demo.forEach((step,i)=>{let el=document.createElement('div');el.className='ia-chat-demo-step';let num=document.createElement('span');num.className='ia-chat-demo-num';num.textContent=String(i+1).padStart(2,'0');let label=document.createElement('span');label.textContent=step;el.append(num,label);block.append(el)});inner.append(block)}
- if(links.length){const list=document.createElement('div');list.className='ia-chat-links';links.forEach(a=>{const el=document.createElement('a');el.className='ia-chat-link';el.href=urlFor(a.url);el.textContent=a.text+'  ↗';list.append(el)});inner.append(list)}
- if(chips.length){const list=document.createElement('div');list.className='ia-chat-chipline';chips.slice(0,5).forEach(s=>{const el=document.createElement('button');el.type='button';el.className='ia-chat-chip';el.textContent=s;el.addEventListener('click',()=>ask(s));list.append(el)});inner.append(list)}
- row.append(inner);thread.append(row);while(thread.children.length>24)thread.firstElementChild?.remove();thread.scrollTop=thread.scrollHeight;
+ if(author!=='user'){const label=document.createElement('div');label.className='ia-chat-author';label.textContent=opts.system?'INFORMATION / SERVICE':'IAgile / IA GÉNÉRATIVE';inner.append(label);}
+ const bubble=document.createElement('div');bubble.className='ia-chat-bubble';bubble.textContent=text;inner.append(bubble);
+ if(opts.suggest?.length){const chips=document.createElement('div');chips.className='ia-chat-chipline';opts.suggest.slice(0,4).forEach(q=>{const b=document.createElement('button');b.className='ia-chat-chip';b.type='button';b.textContent=q;b.addEventListener('click',()=>ask(q));chips.append(b)});inner.append(chips);}
+ if(opts.links){const links=document.createElement('div');links.className='ia-chat-links';paths.forEach(p=>{const a=document.createElement('a');a.className='ia-chat-link';a.href=prefix+p[1];a.textContent=p[0]+' ↗';links.append(a)});inner.append(links);}
+ row.append(inner);thread.append(row);thread.scrollTop=thread.scrollHeight;while(thread.children.length>40)thread.firstElementChild?.remove();return row;
 }
-const courseLink=c=>[{text:'Découvrir '+c.short,url:c.url}];
-const courseListLinks=()=>courses.map(c=>({text:c.short,url:c.url}));
-function scoreCourses(text){const normalized=norm(text),w=words(text);return courses.map(c=>{let score=0;for(const t of c.tags){let tag=norm(t);if(tag.includes(' ')){if(normalized.includes(tag))score+=4}else if(w.includes(tag))score+=3;else if(tag.length>=5&&normalized.includes(tag))score+=1}if(c.id==='daily'&&contains(text,['je debute','sans coder','aucune connaissance','aucun prerequis','pour commencer','au travail de tous les jours']))score+=7;if(c.id==='web'&&contains(text,['site internet','site vitrine','webgl','site anime','animation 3d']))score+=8;if(c.id==='agent'&&contains(text,['mon propre chatbot','agent ia','assistant intelligent','chat bot','bot personnalise']))score+=8;if(c.id==='automation'&&contains(text,['taches repetitives','reception des emails','automatiser les emails','gagner du temps sur']))score+=8;return {c,score}}).sort((a,b)=>b.score-a.score)}
-const intents={
- cost:['prix','tarif','coute','cout','payer','gratuit','paiement','acheter','combien ca coute','devis'],
- enrollment:['inscription','inscrire','rejoindre','disponible','ouverture','date de lancement','commencer la formation','acheter','acces'],
- compare:['comparer','difference','differenc','versus','choisir entre','quelle est la meilleure','formations disponibles','quelles formations','catalogue'],
- guidance:['quelle formation','quel parcours','pour moi','conseille','recommande','par ou commencer','choisir une formation','je veux apprendre'],
- modules:['programme','module','contenu','chapitre','cours','lecons','syllabus','qu est ce qu on apprend'],
- tools:['outils','logiciel','technologie','plateforme','tech','stack','applications','no code','n8n','make','three js'],
- project:['projet final','livrable','creer a la fin','resultat','realisation','portfolio','preuve','exemple','demo','demonstration'],
- prerequisites:['prerequis','debutant','niveau','savoir coder','experience','connaissance','sans code','est ce difficile'],
- duration:['duree','combien de temps','heures','semaines','mois','rythme'],
- human:['humain','support','contact','parler a quelqu un','telephone','email','personne'],
- privacy:['donnees','confidentialite','renseignements personnels','sauvegarder','historique','stockage','conserve'],
- real:['vraie ia','intelligence artificielle','es tu une ia','vrai chatbot','generatif','modele','gpt','limova']
-};
-function detectIntent(q){const n=norm(q),w=words(q);const scores=Object.entries(intents).map(([id,terms])=>({id,score:terms.reduce((acc,t)=>acc+(n.includes(norm(t))?t.length>8?3:2:0),0)})).sort((a,b)=>b.score-a.score);return scores[0]?.score? scores[0].id:null}
-function classify(text){const q=norm(text),s=scoreCourses(text);const explicit=s[0]?.score>=3?s[0].c:null;const selected=explicit||lastCourse;const intent=detectIntent(text);
- if(contains(q,['bonjour','salut','hello','bonsoir'])&&words(q).length<=3)return {text:'Bonjour ! Je peux vous orienter vers les quatre formations IAgile, expliquer leurs programmes et vous montrer les projets à réaliser.',chips:suggestionsDefault};
- if(intent==='privacy')return {text:'Cette démonstration fonctionne dans votre navigateur. Vos messages ne sont pas envoyés à un service d’IA et ne sont pas conservés sur un serveur. En rechargeant la page, la conversation disparaît. Fermer ce panneau conserve les messages uniquement pendant la visite.',chips:['Quelles formations proposez-vous ?','Est-ce un vrai chatbot IA ?']};
- if(intent==='real')return {text:'Cet assistant est une démonstration conversationnelle guidée : il analyse des mots et thèmes pour retrouver des réponses issues des programmes IAgile. Il ne s’appuie pas sur un modèle génératif connecté et n’exécute aucune action externe. Une version IA complète nécessiterait un service sécurisé côté serveur. La formation « Créer des agents personnalisés » explique justement comment construire ce type de système de manière fiable.',links:courseLink(courses[1]),chips:['Quel est le programme des agents ?','Montre-moi un exemple d’agent']};
- if(intent==='cost'||intent==='enrollment')return {text:'Les quatre formations sont en phase de finalisation et de validation. Aucune date d’ouverture ni aucun tarif n’est encore confirmé, et les inscriptions ne sont pas ouvertes. Vous pouvez consulter librement les programmes. Je ne peux pas prendre de réservation ou enregistrer d’adresse e-mail pour le moment.',links:selected?courseLink(selected):courseListLinks(),chips:['Que contient le programme ?','Comparer les 4 formations']};
- if(intent==='human')return {text:'IAgile n’a pas encore publié d’adresse de contact ou de support vérifiée sur ce site. Je peux répondre aux questions documentées sur les formations, mais je ne peux pas transmettre votre message à une personne.',links:courseListLinks(),chips:['Quelle formation choisir ?']};
- if(intent==='duration')return {text:'La durée, le rythme et les modalités exactes ne sont pas encore arrêtés pour les nouvelles formations. Les pages présentent la progression en modules mais pas de calendrier officiel. Je préfère ne pas vous donner une durée inventée.',links:selected?courseLink(selected):courseListLinks(),chips:['Quels sont les modules ?','Quel projet vais-je réaliser ?']};
- if(intent==='compare'||(contains(q,['toutes les formations','les 4 formations','quatre formations']))){return {text:'IAgile propose quatre compétences distinctes :\n\n01 — Sites web 3D : construire une expérience web immersive.\n02 — Agents IA : développer un assistant spécialisé avec des outils et des limites.\n03 — Automatisation : créer des workflows fiables pour supprimer des tâches répétitives.\n04 — IA au quotidien : mieux rechercher, rédiger et organiser son travail.\n\nDites-moi ce que vous aimeriez produire et je vous orienterai.',links:courseListLinks(),chips:['Je veux créer un site 3D','Je veux un agent pour mon entreprise','Je veux automatiser des e-mails','Je débute en IA']};}
- if((intent==='guidance'||!intent)&&explicit){lastCourse=explicit;return {text:'Au vu de votre objectif, je vous orienterais vers « '+explicit.title+' ».\n\n'+explicit.description+'\n\nProjet final : '+explicit.project,links:courseLink(explicit),chips:['Quels sont les prérequis ?','Quels outils ?','Voir le programme','Montre-moi le projet final']};}
- if(intent==='guidance'&&!explicit){lastCourse=null;return {text:'Pour vous proposer un parcours adapté, dites-moi plutôt ce que vous voulez réaliser : créer un site immersif, concevoir un agent IA, automatiser une tâche ou mieux utiliser l’IA au quotidien.',links:courseListLinks(),chips:['Créer un site web 3D','Créer un agent IA','Automatiser une tâche','Je débute en IA']};}
- if(selected&&['modules','tools','project','prerequisites'].includes(intent||'')){lastCourse=selected;const t={modules:'Voici la progression annoncée pour « '+selected.title+' » :\n\n'+selected.program,tools:'Outils et méthodes étudiés pour ce parcours :\n\n'+selected.tools+'\n\nLes outils précis peuvent évoluer avant la sortie.',project:'Le projet final prévu est le suivant :\n\n'+selected.project+'\n\nVoici trois étapes pour imaginer sa réalisation :',prerequisites:'Public visé et prérequis :\n\n'+selected.audience}[intent];return {text:t,links:courseLink(selected),demo:intent==='project'?selected.demo:null,chips:['Voir le programme','Quels outils ?','Comparer les 4 formations']};}
- if(intent==='project'&&!selected){return {text:'Chaque formation aboutit à un livrable concret : un site 3D publié, un agent documenté, un workflow testé ou un Playbook IA personnel. Choisissez un parcours pour voir les étapes du projet final.',links:courseListLinks(),chips:['Projet du site 3D','Projet d’un agent IA','Projet d’automatisation','Projet IA au quotidien']};}
- if(explicit){lastCourse=explicit;return {text:'« '+explicit.title+' » vise à '+explicit.description.charAt(0).toLowerCase()+explicit.description.slice(1)+'\n\n'+explicit.program,links:courseLink(explicit),chips:['Quels sont les prérequis ?','Quel est le projet final ?']};}
- return {text:'Je peux vous aider à choisir parmi les quatre formations et répondre aux questions sur leurs programmes, outils, prérequis et projets finaux. Je ne dispose pas d’informations vérifiées au-delà de ces sujets.\n\nQue souhaitez-vous apprendre ou construire ?',links:courseListLinks(),chips:suggestionsDefault};
+function errorText(message){append('assistant',message,{system:true,links:!ready});}
+function busyState(b){busy=b;send.disabled=b;input.disabled=b;send.textContent=b?'···':'↗';shell.classList.toggle('ia-chat-busy',b);}
+async function testConnection(){
+ if(checked)return ready;
+ checked=true;
+ if(!endpoint){setStatus('MOTEUR IA NON CONNECTÉ',false);return false;}
+ const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),8000);
+ try{const r=await fetch(endpoint,{method:'GET',signal:controller.signal,cache:'no-store'});const data=await r.json();ready=r.ok&&data.ready===true&&data.generative===true;}
+ catch{ready=false;} finally{clearTimeout(timer)}
+ setStatus(ready?'IA GÉNÉRATIVE CONNECTÉE':'MOTEUR IA INDISPONIBLE',ready);
+ return ready;
 }
-function ask(q){const text=q.trim().slice(0,500);if(!text)return;appendMessage('user',text);history.push({role:'user',text});const reply=classify(text);appendMessage('assistant',reply.text,reply.links,reply.chips,reply.demo);history.push({role:'assistant',text:reply.text});input.value='';input.style.height='auto';}
-function open(){panel.hidden=false;launch.hidden=true;launch.setAttribute('aria-expanded','true');if(!started){started=true;const intro=lastCourse?'Je suis l’assistant de démonstration IAgile. Vous consultez « '+lastCourse.title+' ». Je peux vous expliquer le programme, les prérequis et le projet final.':'Bonjour ! Je suis l’assistant IAgile. Je peux vous aider à trouver une formation et à découvrir ce que vous pourrez construire.';appendMessage('assistant',intro,[],lastCourse?['Voir le programme','Quels sont les prérequis ?','Montre-moi le projet final','Comparer les 4 formations']:suggestionsDefault);}input.focus();}
-function shut(){panel.hidden=true;launch.hidden=false;launch.setAttribute('aria-expanded','false');launch.focus();}
-document.getElementById('iaChatReset').addEventListener('click',()=>{thread.replaceChildren();started=false;lastCourse=isCoursePage?(courses.find(c=>location.pathname.endsWith('/'+c.url))||null):null;open();});launch.addEventListener('click',open);close.addEventListener('click',shut);document.querySelectorAll('[data-open-iagile-chat]').forEach(el=>el.addEventListener('click',open));
+async function ask(q){
+ const text=String(q||'').trim();if(!text||busy)return;
+ append('user',text);input.value='';input.style.height='auto';
+ if(!await testConnection()){errorText('La connexion au modèle IA n’est pas encore activée. Les réponses automatiques ont été retirées : je ne vais pas vous présenter une réponse prédéfinie comme si elle venait d’une IA.');return;}
+ busyState(true);const previous=history.slice(-10), controller=new AbortController();requestAbort=controller;
+ const timeout=setTimeout(()=>controller.abort(),23000);const typing=append('assistant','Je prépare une réponse adaptée à votre question…',{system:true});
+ try{
+   const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,history:previous,page:location.pathname}),signal:controller.signal});
+   const data=await r.json().catch(()=>({}));
+   typing.remove();
+   if(!r.ok||typeof data.answer!=='string'){errorText(data.error||'Le moteur IA rencontre un problème temporaire.');return;}
+   const answer=data.answer.trim();if(!answer){errorText('Le modèle n’a pas produit de réponse exploitable.');return;}
+   append('assistant',answer,{links:true});history.push({role:'user',content:text},{role:'assistant',content:answer});history=history.slice(-12);
+ }catch(err){typing.remove();errorText(err?.name==='AbortError'?'Le modèle met trop de temps à répondre. Réessayez.':'Connexion impossible avec le moteur IA.');}
+ finally{clearTimeout(timeout);requestAbort=null;busyState(false);input.focus();}
+}
+async function open(){panel.hidden=false;launch.hidden=true;launch.setAttribute('aria-expanded','true');
+ if(!started){started=true;append('assistant',context?`Vous explorez la formation « ${context} ». Expliquez-moi votre projet ou votre question, et je vous répondrai en tenant compte du programme.`:'Bonjour. Décrivez-moi ce que vous aimeriez apprendre ou réaliser avec l’IA. Je pourrai vous orienter vers le bon parcours.',{system:true,suggest:samplePrompts});
+ const ok=await testConnection();if(!ok)errorText('Le service de génération n’est pas encore configuré. Vous pouvez découvrir les quatre programmes, mais aucune réponse ne sera simulée.',true);
+ }input.focus();}
+function shut(){panel.hidden=true;launch.hidden=false;launch.setAttribute('aria-expanded','false');launch.focus()}
+function reset(){requestAbort?.abort();thread.replaceChildren();history=[];started=false;checked=false;ready=false;busyState(false);setStatus('VÉRIFICATION DU SERVICE…',false);open();}
+$('#iaChatReset').addEventListener('click',reset);launch.addEventListener('click',open);close.addEventListener('click',shut);
+document.querySelectorAll('[data-open-iagile-chat]').forEach(b=>b.addEventListener('click',open));
 form.addEventListener('submit',e=>{e.preventDefault();ask(input.value)});
-input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask(input.value)}if(e.key==='Escape')shut()});
+input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask(input.value)}else if(e.key==='Escape')shut();});
 input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(96,input.scrollHeight)+'px'});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden){shut()}});
-window.IAgileAssistant={open,close:shut,ask,isGenerative:false,courses:4};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)shut()});
+window.IAgileAssistant={open,close:shut,ask,reset,isGenerative:true,get connected(){return ready}};
 })();
