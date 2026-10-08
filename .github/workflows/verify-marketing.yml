@@ -1,0 +1,22 @@
+name: Verify IAgile marketing resources
+on:
+  pull_request:
+    paths:
+      - 'ressources/**'
+      - 'formations/**'
+      - 'sitemap.xml'
+      - 'tests/**'
+      - 'package.json'
+      - '.github/workflows/verify-marketing.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify site structure and resources
+        run: npm test
