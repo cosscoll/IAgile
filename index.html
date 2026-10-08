@@ -7,7 +7,7 @@
 <title>IAgile® — Entrez dans le champ des possibles</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
+<style data-source="styles.css">
 :root{--ivory:#F4F2ED;--paper:#FBFAF7;--ink:#141414;--silver:#A8B2BC;--cobalt:#235BFF;--deep:#0A0F18;--dim:#929baa;--line:#bcc3cc;--mono:'DM Mono',monospace;--display:'Sora',sans-serif;--body:'Manrope',sans-serif;--ease:cubic-bezier(.18,.78,.18,1)}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:75px}body{margin:0;background:var(--ivory);color:var(--ink);font-family:var(--body);overflow-x:clip}a{color:inherit;text-decoration:none}button{cursor:pointer;font:inherit}button:focus-visible,a:focus-visible{outline:2px solid var(--cobalt);outline-offset:4px}[hidden]{display:none!important}::selection{background:var(--cobalt);color:#fff}.skip{position:fixed;left:14px;top:-100px;z-index:1000;background:var(--cobalt);color:white;padding:15px}.skip:focus{top:14px}.progress{position:fixed;z-index:205;top:0;left:0;width:100%;height:3px;pointer-events:none}.progress>div{background:var(--cobalt);width:0;height:100%;box-shadow:0 0 12px #235bff70}
 .header{z-index:150;position:fixed;top:0;left:0;right:0;height:76px;display:flex;align-items:center;gap:4vw;padding:0 4.5%;background:rgba(244,242,237,.94);backdrop-filter:blur(20px);border-bottom:1px solid #14141416;color:var(--ink)}.brand{font:800 35px/1 var(--display);letter-spacing:-.105em;white-space:nowrap}.brand span{color:var(--cobalt)}.brand sup{font:500 8px var(--mono);margin-left:6px;letter-spacing:0;vertical-align:top}.header-links{display:flex;align-items:center;gap:36px;margin:auto}.header-links a{font:700 12px var(--body);transition:color .25s}.header-links a:hover{color:var(--cobalt)}.world-trigger{height:48px;border:0;background:var(--ink);color:white;padding:0 16px;display:flex;gap:18px;align-items:center;letter-spacing:.07em;font:500 10px var(--mono);transition:background .3s}.world-trigger:hover{background:var(--cobalt)}.world-trigger .arr{font:23px var(--body)}.trigger-3d{font-size:27px;color:#a8b2bc;animation:spin3d 5s infinite linear}@keyframes spin3d{to{transform:rotateY(360deg)}}
@@ -53,6 +53,90 @@
 @keyframes agentProcess{35%{filter:brightness(1.3);transform:rotateY(-14deg) translateX(35px) translateZ(40px)}100%{filter:none}}
 @media(prefers-reduced-motion:reduce){.motion-ready .entrance-reveal{opacity:1;transform:none;filter:none}.studio-stage *{animation:none!important}}
 
+</style><style data-source="chrome-v10.css">
+/* IAgile / CHROME V10 — original brand restored.
+   Primary ivory #F4F2ED, secondary polished silver #A8B2BC,
+   graphite #141414 for type, cobalt #235BFF exclusively as a small signal.
+   Spatial navigation, scroll storytelling and real 3D engine stay intact. */
+:root{--ivory:#F4F2ED;--paper:#FBFAF7;--ink:#141414;--silver:#A8B2BC;--cobalt:#235BFF;--deep:#F4F2ED;--dim:#626972;--line:#D7D9D7}
+body{background:var(--ivory);color:var(--ink)}
+::selection{background:#cbd1d6;color:var(--ink)}
+.progress{height:2px}.progress>div{background:#838d97;box-shadow:none}
+.skip{background:var(--ink)}
+.header{background:rgba(244,242,237,.93);border-bottom-color:#9ca5ae3d}
+.brand span{color:var(--ink)}.brand span:after{content:'';display:inline-block;width:5px;height:5px;margin-left:2px;background:var(--cobalt);vertical-align:top;border-radius:50%}
+.header-links a:hover{color:var(--ink);text-decoration:underline;text-decoration-color:var(--cobalt);text-underline-offset:7px}
+.world-trigger{background:#202225;color:#f9f9f6;border:1px solid #202225;transition:background .3s,color .3s,border-color .3s}
+.world-trigger:hover{background:#f7f7f3;color:#141414;border-color:#959da6}.trigger-3d{color:#d5dce1}
+/* The entire scroll-gallery is a daylight chrome architectural space, no night-blue takeover. */
+.odyssey,.odyssey-pin{background:#F4F2ED;color:#141414}
+.gallery-viewport{background:radial-gradient(ellipse 68% 76% at 77% 47%,#fbfbf8 0,#e5e8e7 48%,#d4dadb 100%)}
+.gallery-vignette{background:linear-gradient(90deg,#F4F2ED 0%,rgba(244,242,237,.98) 22%,rgba(244,242,237,.60) 43%,rgba(244,242,237,.04) 74%),linear-gradient(0deg,#F4F2EDba 0%,transparent 20%,transparent 82%,#f4f2ed55 100%)}
+.fallback-grid{background-image:linear-gradient(#636f7830 1px,transparent 1px),linear-gradient(90deg,#636f7830 1px,transparent 1px);opacity:.45}
+.fallback-gate,.fallback-gate.a,.fallback-gate.b,.fallback-gate.c{border-color:#8b969a70;box-shadow:3px 9px 18px #8c969328,inset 0 0 15px #fefefe94}
+.fallback-floor{background:radial-gradient(ellipse at center,#949fa52a,transparent 72%)}
+.topline,.scene-indicator,.scene-indicator>span{color:#58616a}.topline span:last-child{color:#667077}
+.status-dot{background:var(--cobalt);box-shadow:0 0 0 4px #235bff1b}
+.scene-indicator>div{background:#69747b5c}.scene-indicator i{background:var(--cobalt);box-shadow:none}
+.chapter{color:var(--ink)}.chapter-eyebrow{color:#5c646b}.chapter-eyebrow span{color:#4c5968}.chapter-eyebrow i{background:#9ea8b0}
+.chapter h1,.chapter h2{color:#141414}.chapter h1 em,.chapter h2 em{color:#828d97;background:linear-gradient(125deg,#737d89,#c5cdd2 38%,#555f6a 78%);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.chapter h1 .dot,.chapter h2 .dot{color:var(--cobalt)}
+.chapter p{color:#555d64}.round-action{color:var(--ink)}.round-action span{background:#252a30;color:#fff}.round-action:hover span{background:#59646b}
+.odyssey-foot{color:#6d767c}.chapter-controls button{color:#59636b;border-top-color:#9aa5ac}.chapter-controls button.is-active{color:#141414;border-top-color:var(--ink)}
+.chapter-controls button.is-active b{color:var(--cobalt)}.scroll-hint{color:#666d73}.scroll-hint i{color:var(--ink)}
+/* Sculptural installations: silver casing, light ivory studio instead of dark screens. */
+.exhibit-frame{background:linear-gradient(132deg,#fefefd,#c6cdd2 43%,#edf0f0);border-color:#a9b2b6;box-shadow:inset 0 0 0 2px #fff,10px 14px 0 #89949a,22px 34px 55px #65707942,0 50px 80px #b0b8b82b}
+.exhibit-back{background:#929ca2;box-shadow:0 38px 66px #59626645}
+.exhibit-top{background:linear-gradient(100deg,#fdfdfb,#c8d0d2);border-bottom-color:#d3d8d9;color:#303a3f}
+.exhibit-foot{background:#eff0ed;color:#4b545d}
+.exhibit-core-screen{background:radial-gradient(ellipse at 50% 43%,#fafafa,#dbe0e2 64%,#adb8c0)}
+.horizon-grid{background-image:linear-gradient(#6e788b14 1px,transparent 1px),linear-gradient(90deg,#6e788b14 1px,transparent 1px)}
+.big-monogram{color:#424d56;text-shadow:9px 13px 0 #adb6be,18px 24px 26px #69758034}.big-monogram span{color:#a3aeb7}
+.core-chip{color:#3f4e5b}.satellite{background:#fefefd;border-color:#c9cecd;color:#3d4850;box-shadow:0 15px 25px #67717b2e}
+.visual-cover h3 em{color:#e8eded}.visual-website-bottom span{color:#566574}
+.pipeline{background:radial-gradient(ellipse,#f1f1ee,#c9d0d2)}.pipe-card{background:linear-gradient(135deg,#fff,#e8ebea);border-color:#b3bdc2;color:#3e464c;box-shadow:6px 10px 0 #a2abb3,8px 19px 22px #88959b4d}
+.pipeline-log{background:#dfe4e5;color:#46535e}.pipeline-log span{color:#344b61}
+.agent-display{background:#f7f7f4;color:#2a3338}
+/* Editorial sections use the brand ivory and gentle silvers throughout. */
+.chapter-break{background:#F4F2ED}.break-head em,.showcase-head em,.possibilities-header em,.academy-header em{color:#7a8790}
+.showcase{background:#f7f6f2}.section-mark{color:#70777c}
+.showcase-head>p,.possibilities-header>p,.academy-header>p{color:#555c61}
+.experience-tabs{border-color:#cbd1d2}.experience-tabs button{background:#eeefeb;border-right-color:#cbd1d2;color:#636c73}.experience-tabs button span{color:#737c85}
+.experience-tabs button.is-active{background:#e0e4e4;color:#141414;box-shadow:inset 0 -3px #404b53}.experience-tabs button.is-active span{color:#425361}
+.studio-stage{background:#e6e9e7;border-color:#ccd2d2}.studio-preview{background:radial-gradient(ellipse at 55% 42%,#fafaf8,#d6dcdd 74%)}
+.studio-controls{background:#F4F2ED;color:#141414}.studio-controls-kicker{color:#53636e}
+.action-primary{background:#22272a;color:#fff}.action-primary:hover{background:#414c54}.action-primary:focus-visible{outline-color:var(--cobalt)}
+.wf-card{background:linear-gradient(120deg,#fefefd,#dce1e2);color:#263139;box-shadow:8px 10px 0 #aab6bb,14px 21px 35px #5e6c7250}
+.wf-card.ai{background:linear-gradient(120deg,#fcfcfb,#c2cdd0)}.wf-card b{color:#4e626e}.wf-card span{color:#5a666e}.wf-wire{background:#7b8e93}
+.copilot-window{background:#f8f8f5;color:#242d33;box-shadow:14px 18px 0 #a2aeb5,24px 36px 45px #71818b42}
+.possibilities{background:#FBFAF7}.possibility-card{border-color:#c8cdcb;background:#fcfcfa}.possibility-card:hover{background:#f2f3ef}
+.poss-art{background:#e5e9e7}.poss-art-web{background:linear-gradient(135deg,#eeebe5,#cbd2cf)}.poss-art-flow{background:radial-gradient(ellipse,#e8eceb,#bdc6cb)}.poss-art-agent{background:radial-gradient(ellipse,#e7ebea,#adb7bb)}
+.academy{background:#ecefeb}.academy-list,.academy-course{border-color:#b8c1c0}.academy-course:hover{background:#fbfaf7}.academy-course>a:hover{background:#535d63}
+/* The final CTA also returns to daylight; remove the navy hero-at-the-bottom. */
+.outro{background:radial-gradient(ellipse at 68% 51%,#fdfdfb,#e7e9e5 60%,#dfe4e2);color:#141414}
+.outro p{color:#56616a}.outro h2{color:#141414}.outro h2 em{color:#8b969d}.outro-cta{background:#23272a;color:white}.outro-cta span{color:#f5f5f2}
+.outro-aura{border-color:#9ea9ad91;box-shadow:0 0 0 58px #abb9b321,0 0 0 122px #a8b2bc19,0 0 0 200px #99a5a50e}
+.outro-end{color:#58646a}footer{background:#F4F2ED;color:#141414}
+/* Spatial full-screen navigation — ivory gallery with metal doors, no blue flood. */
+.world-overlay{background:#F4F2ED;color:#141414}
+.world-overlay-bg{background:radial-gradient(ellipse at 58% 61%,#fbfaf7 0%,#e6e9e7 65%,#d5dddf 100%)}
+.universe-grid{background-image:linear-gradient(#67758119 1px,transparent 1px),linear-gradient(90deg,#67758119 1px,transparent 1px)}
+.world-arch{border-color:#96a4a7a8;box-shadow:2px 15px 43px #63727a30,inset 0 0 28px #fff9}
+.overlay-heading span{color:#4e5f68}.overlay-heading h2{color:#141414}.overlay-heading em{color:#849098}
+.world-overlay-top,.overlay-bottom{color:#46535b}.world-overlay-top button{background:#f4f2ed;color:#141414;border-color:#9eaaae}.world-overlay-top button:hover{background:#dfe4e5}
+.universe-door{background:linear-gradient(140deg,#fdfdfc,#c1cacb 45%,#f4f4f0);color:#222e33;border-color:#a0acb1;box-shadow:12px 19px 0 #8b989e,18px 35px 50px #5a666c4b}
+.universe-door:hover,.universe-door:focus-visible{border-color:#586b75;box-shadow:12px 17px 0 #9ea9ae,20px 30px 52px #66757963}
+.door-art{background:radial-gradient(ellipse at 35% 35%,#fff,#c9d2d4 50%,#88979b 100%);color:#35414a;text-shadow:6px 8px 0 #a4aeb6}
+.universe-door:nth-child(2) .door-art{background:radial-gradient(ellipse at 35% 35%,#fff,#e1e4df 48%,#a9b6bb)}
+.universe-door:nth-child(3) .door-art{background:radial-gradient(ellipse at 35% 35%,#fafaf9,#c4cdd1 62%,#93a4aa)}
+.universe-door:nth-child(4) .door-art{background:radial-gradient(ellipse at 35% 35%,#fff,#cfd4d1 57%,#a8b2bc)}
+/* Thin cobalt signatures only: tiny progress dot, text cursor, chosen UI focus. */
+@media(max-width:560px){
+ .gallery-vignette{background:linear-gradient(180deg,#F4F2EDf2 0%,#F4F2ED80 36%,transparent 56%,#f4f2edc7 100%)}
+ .chapter h1 em,.chapter h2 em{background:linear-gradient(125deg,#65717b,#aebac2 60%,#48525e);background-clip:text;-webkit-background-clip:text}
+ .exhibit-frame{box-shadow:inset 0 0 0 2px #fff,7px 11px 0 #919ea3,14px 24px 34px #69748055}
+}
+
 </style>
 </head>
 <body>
@@ -87,20 +171,20 @@
 <section class="outro" id="contact"><div class="outro-aura"></div><span class="section-mark">IAGILE / 05 — LA SUITE COMMENCE ICI</span><p>L'AVENIR N'EST PAS UN SPECTACLE.</p><h2>À VOUS<br>DE <em>LE CRÉER.</em></h2><button id="restart" type="button" class="outro-cta">REPRENDRE LE VOYAGE <span>↗</span></button><div class="outro-end"><span>IAgile® — UN NOUVEAU REGARD SUR L'INTELLIGENCE ARTIFICIELLE</span><span>PROTOTYPE · 2026</span></div></section>
 </main><footer><a class="brand" href="#accueil">I<span>A</span>gile<sup>®</sup></a><span>APPRENDRE. EXPÉRIMENTER. CONSTRUIRE.</span><a href="#accueil">REMONTER ↑</a></footer>
 <div class="world-overlay" id="worldOverlay" role="dialog" aria-modal="true" aria-label="Explorer l'univers IAgile" aria-hidden="true" hidden><div class="world-overlay-bg"><div class="universe-grid"></div><div class="world-arch arch-far"></div><div class="world-arch arch-mid"></div><div class="world-arch arch-near"></div></div><div class="world-overlay-top"><span>IAGILE / LA CARTE DES POSSIBLES</span><button type="button" id="closeUniverse">FERMER <b>✕</b></button></div><div class="overlay-heading"><span>CHOISISSEZ VOTRE DESTINATION</span><h2>UN UNIVERS<br><em>À EXPLORER.</em></h2></div><div class="universe-space" id="universeSpace"><button class="universe-door" data-destination="accueil"><span class="door-index">00 / ENTRÉE</span><span class="door-art">◈</span><strong>LE VOYAGE</strong><small>ENTRER DANS L'EXPÉRIENCE</small></button><button class="universe-door" data-destination="studio"><span class="door-index">01 / CRÉATION</span><span class="door-art">▧</span><strong>LE LABORATOIRE</strong><small>ESSAYER LES DÉMOS</small></button><button class="universe-door" data-destination="possibilites"><span class="door-index">02 / CAPACITÉS</span><span class="door-art">✳</span><strong>LES POSSIBLES</strong><small>VOIR LES RÉSULTATS</small></button><button class="universe-door" data-destination="formations"><span class="door-index">03 / ACADEMY</span><span class="door-art">↗</span><strong>LES FORMATIONS</strong><small>APPRENDRE À CONSTRUIRE</small></button></div><div class="overlay-bottom"><span>BOUGEZ LA SOURIS POUR EXPLORER L'ESPACE</span><span>OU CHOISISSEZ UNE PORTE POUR ENTRER</span></div></div>
-<script>
+<script data-source="engine.js">
 /* IAgile CHROME V9 — native WebGL architectural gallery. Fully self-contained, no CDN. */
 (()=>{
 'use strict';
 const canvas=document.getElementById('universeCanvas');if(!canvas)return;
 let gl;try{gl=canvas.getContext('webgl',{alpha:true,antialias:true,depth:true,powerPreference:'low-power'});}catch(e){}
 if(!gl){window.__IAgileRender='CSS perspective fallback';return;}
-const vsrc=`attribute vec3 aP;attribute vec3 aN;attribute vec3 aC;uniform mat4 uView;uniform mat4 uProj;uniform vec3 uEye;uniform float uTime;varying vec3 vC;varying float vF;void main(){vec3 p=aP;float d=length(p-uEye);vec3 n=normalize(aN);vec3 light=normalize(vec3(-.40,.73,.48));float nd=max(dot(n,light),0.);float shine=pow(max(dot(reflect(-light,n),normalize(uEye-p)),0.),24.);float edge=pow(1.-max(dot(n,normalize(uEye-p)),0.),2.);vC=aC*(.52+nd*.51)+vec3(.68,.77,1.)*shine*.57+vec3(.15,.31,.72)*edge*.23;vF=clamp((d-5.)/59.,0.,1.);gl_Position=uProj*uView*vec4(p,1.);}`;
-const fsrc=`precision mediump float;varying vec3 vC;varying float vF;void main(){vec3 haze=vec3(.07,.11,.19);vec3 c=mix(vC,haze,pow(vF,1.38)*.72);gl_FragColor=vec4(c,1.);}`;
+const vsrc=`attribute vec3 aP;attribute vec3 aN;attribute vec3 aC;uniform mat4 uView;uniform mat4 uProj;uniform vec3 uEye;uniform float uTime;varying vec3 vC;varying float vF;void main(){vec3 p=aP;float d=length(p-uEye);vec3 n=normalize(aN);vec3 light=normalize(vec3(-.40,.73,.48));float nd=max(dot(n,light),0.);float shine=pow(max(dot(reflect(-light,n),normalize(uEye-p)),0.),24.);float edge=pow(1.-max(dot(n,normalize(uEye-p)),0.),2.);vC=aC*(.52+nd*.51)+vec3(.94,.96,.93)*shine*.70+vec3(.42,.51,.56)*edge*.19;vF=clamp((d-5.)/59.,0.,1.);gl_Position=uProj*uView*vec4(p,1.);}`;
+const fsrc=`precision mediump float;varying vec3 vC;varying float vF;void main(){vec3 haze=vec3(.91,.92,.91);vec3 c=mix(vC,haze,pow(vF,1.38)*.72);gl_FragColor=vec4(c,1.);}`;
 function shader(type,source){let s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){console.warn('3D shader',gl.getShaderInfoLog(s));return null;}return s;}
 let vs=shader(gl.VERTEX_SHADER,vsrc),fs=shader(gl.FRAGMENT_SHADER,fsrc);if(!vs||!fs)return;
 let prog=gl.createProgram();gl.attachShader(prog,vs);gl.attachShader(prog,fs);gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))return;
 gl.useProgram(prog);
-const buf=[];const silver=[.63,.70,.82], bright=[.88,.92,.98], dark=[.28,.38,.55], blue=[.12,.32,1], white=[.96,.97,1], floor=[.18,.24,.33];
+const buf=[];const silver=[.71,.77,.79], bright=[.94,.95,.93], dark=[.47,.54,.57], blue=[.48,.56,.59], white=[.99,.99,.97], floor=[.86,.89,.88];
 function tri(a,b,c,n,col){for(const p of [a,b,c])buf.push(...p,...n,...col)}
 function quad(a,b,c,d,n,col){tri(a,b,c,n,col);tri(a,c,d,n,col)}
 function box(cx,cy,cz,sx,sy,sz,col){let x=cx-sx/2,X=cx+sx/2,y=cy-sy/2,Y=cy+sy/2,z=cz-sz/2,Z=cz+sz/2;
@@ -119,9 +203,9 @@ for(let i=0;i<12;i++){
 let z=-5-i*6.5; const active=i%3===1;let rail=active?bright:silver;
 box(-5.05,0,z,.27,6.5,.28,rail);box(5.05,0,z,.27,6.5,.28,rail);box(0,3.24,z,10.42,.27,.28,rail);
 box(-5.02,-3.23,z,.18,.2,.23,dark);box(5.02,-3.23,z,.18,.2,.23,dark);
-box(-4.87,0,z+.19,.09,5.97,.08,active?blue:dark);box(4.87,0,z+.19,.09,5.97,.08,active?blue:dark);box(0,3.07,z+.19,9.8,.08,.08,active?blue:dark);
+box(-4.87,0,z+.19,.09,5.97,.08,i===7?blue:dark);box(4.87,0,z+.19,.09,5.97,.08,i===7?blue:dark);box(0,3.07,z+.19,9.8,.08,.08,i===7?blue:dark);
 // Structured split line, a visual architectural cue for route branching.
-if(i%3===0){box(-3.6,2.92,z+1,2.1,.08,.15,blue);box(3.6,2.92,z+1,2.1,.08,.15,blue);}
+if(i%3===0){box(-3.6,2.92,z+1,2.1,.08,.15,silver);box(3.6,2.92,z+1,2.1,.08,.15,silver);}
 if(i%4===0){torus(0,-.25,z-2,1.25,.075,active?blue:silver,.17);torus(0,-.25,z-2,1.75,.028,dark,-.2);}
 }
 // Actual walkway under the camera, with visible converging perspective lines.
@@ -132,7 +216,7 @@ for(let x of [-5.7,5.7]){tube([x,-3.35,5],[x,-3.35,-78],.055,silver);tube([x,2.8
 for(let i=0;i<4;i++){let z=-7-i*17.8;
 // Functional learning pavilions, made of recognizable architectural volumes.
 box(-6.1,-1.6,z-3,1.45,3.0,4.1,i%2?dark:silver);box(6.1,-1.7,z-3,1.45,2.8,4.1,silver);
-box(-6.1,.1,z-3,1.65,.14,4.4,blue);box(6.1,-.16,z-3,1.65,.11,4.4,blue);
+box(-6.1,.1,z-3,1.65,.14,4.4,bright);box(6.1,-.16,z-3,1.65,.11,4.4,silver);
 box(-6.12,-1.8,z-.7,.04,1.9,.1,white);box(6.13,-1.8,z-.7,.04,1.9,.1,white);
 }
 const bytes=new Float32Array(buf);let buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,bytes,gl.STATIC_DRAW);
@@ -152,11 +236,11 @@ let cameraProgress=Math.max(0,Math.min(1,step)),camZ=3-cameraProgress*54;let eye
 gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 gl.uniformMatrix4fv(uniP,false,perspective(66*Math.PI/180,w/h,.15,150));gl.uniformMatrix4fv(uniV,false,lookAt(eye,target,[0,1,0]));gl.uniform3fv(uniE,new Float32Array(eye));gl.drawArrays(gl.TRIANGLES,0,bytes.length/9);
 }
-requestAnimationFrame(frame);document.body.classList.add('webgl-ready');window.__IAgileRender='Native WebGL 3D gallery';
+requestAnimationFrame(frame);document.body.classList.add('webgl-ready');window.__IAgileRender='Native WebGL 3D gallery / CHROME V10 daylight';
 })();
 
 </script>
-<script>
+<script data-source="script.js">
 /* IAgile CHROME V9 — camera-linked narrative + interactive academy. */
 (()=>{
 'use strict';
@@ -194,7 +278,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)clo
 $('#restart').addEventListener('click',()=>window.scrollTo({top:0,behavior:reduce?'instant':'smooth'}));
 if(!reduce&&'IntersectionObserver' in window){const nodes=$$('.section-mark,.break-head,.showcase-head,.possibilities-header,.academy-header,.academy-course,.possibility-card');nodes.forEach(n=>n.classList.add('entrance-reveal'));const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}}),{threshold:.12,rootMargin:'0px 0px -20px 0px'});nodes.forEach(n=>observer.observe(n));document.body.classList.add('motion-ready');}
 $$('.possibility-card').forEach(card=>{card.addEventListener('pointermove',e=>{if(reduce||matchMedia('(pointer:coarse)').matches)return;const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;card.style.setProperty('--card-x',(x*9).toFixed(2)+'deg');card.style.setProperty('--card-y',(-y*7).toFixed(2)+'deg')});card.addEventListener('pointerleave',()=>{card.style.setProperty('--card-x','0deg');card.style.setProperty('--card-y','0deg')})});
-window.__IAgileVersion='CHROME V9 / IMMERSIVE 3D GALLERY';window.__IAgileDemoNote='Three static simulations; no live AI connected.';
+window.__IAgileVersion='CHROME V10 / IVORY 3D GALLERY';window.__IAgileDemoNote='Three static simulations; no live AI connected.';
 })();
 
 </script>
