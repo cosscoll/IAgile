@@ -164,6 +164,8 @@ body[data-orbit-section='atelier'] .orbit-hud{opacity:0!important;pointer-events
   <script src="script.js" defer></script>
   <script src="learning-engine.js" defer></script>
   
+  <link rel="stylesheet" href="nav-world.css">
+  <script src="nav-world.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#formations">Aller aux formations</a>
@@ -183,7 +185,7 @@ body[data-orbit-section='atelier'] .orbit-hud{opacity:0!important;pointer-events
   <header class="site-header" id="siteHeader">
     <a href="#accueil" class="logo" aria-label="IAgile accueil">ia<span>gile</span><b>.</b><sup>®</sup></a>
     <nav class="header-nav" aria-label="Navigation principale"><a href="#approche">L'APPROCHE</a><a href="#atelier">STUDIO 3D</a><a href="#experience">LE LAB</a><a href="#formations">FORMATIONS</a></nav>
-    <div class="nav-actions"><span class="online-indicator"><i></i> STUDIO EN LIGNE</span><a class="nav-cta magnetic" href="#formations"><span>EXPLORER</span><b>↗</b></a><button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button></div>
+    <div class="nav-actions"><button type="button" class="nw-open nw-header-cta" data-nw-open aria-label="Ouvrir la navigation immersive 3D"><span class="nw-diamond" aria-hidden="true"></span> EXPLORER EN 3D <span aria-hidden="true">↗</span></button><span class="online-indicator"><i></i> STUDIO EN LIGNE</span><a class="nav-cta magnetic" href="#formations"><span>EXPLORER</span><b>↗</b></a><button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button></div>
   </header>
   <div class="mobile-menu" id="mobileMenu"><a href="#approche">L'APPROCHE ↗</a><a href="#atelier">STUDIO 3D ↗</a><a href="#experience">LE LAB ↗</a><a href="#formations">FORMATIONS ↗</a><a href="#contact">CONTACT ↗</a></div>
 
@@ -222,7 +224,7 @@ body[data-orbit-section='atelier'] .orbit-hud{opacity:0!important;pointer-events
         </div>
         <div class="side-coordinate" aria-hidden="true">IA—03 // LEARNING SYSTEM</div>
         <div class="frame-top"><span><i class="live-dot"></i> APPRENDRE / EXPÉRIMENTER / APPLIQUER</span><span>IAgile — CHROME EXPERIENCE © 2026</span></div>
-        <div class="scene-copy scene-copy-0 active" data-scene="0"><p class="eyebrow"><span class="eyebrow-line"></span> TROIS COMPÉTENCES. UNE PROGRESSION.</p><h1>LE FUTUR<br><span class="chrome-type">SE <em>CRÉE.</em></span></h1><p class="scene-intro">L'intelligence artificielle change les règles.<br>Apprenez à écrire les vôtres.</p><a class="circle-cta magnetic" href="#formations" aria-label="Découvrir les formations"><span>↗</span></a></div>
+        <div class="scene-copy scene-copy-0 active" data-scene="0"><p class="eyebrow"><span class="eyebrow-line"></span> TROIS COMPÉTENCES. UNE PROGRESSION.</p><h1>LE FUTUR<br><span class="chrome-type">SE <em>CRÉE.</em></span></h1><p class="scene-intro">L'intelligence artificielle change les règles.<br>Apprenez à écrire les vôtres.</p><button class="nw-open nw-hero-entry" data-nw-open type="button"><span><small>EXPÉRIENCE CHROME / 3D NAVIGATION</small>ENTRER DANS LES UNIVERS IA</span><span>↗</span></button><a class="circle-cta magnetic" href="#formations" aria-label="Découvrir les formations"><span>↗</span></a></div>
         <div class="scene-copy scene-copy-1" data-scene="1"><p class="eyebrow"><span class="eyebrow-line"></span> 01 / CHANGER DE PERSPECTIVE</p><h2>NE SUIVEZ<br>PLUS LE<br><span class="chrome-type">MOUVEMENT.</span></h2><p class="scene-intro">01 / COMPRENDRE — Ce qui se passe derrière les outils.<br>Un savoir pour décider avec méthode.</p></div>
         <div class="scene-copy scene-copy-2" data-scene="2"><p class="eyebrow"><span class="eyebrow-line"></span> 02 / PRENDRE LE CONTRÔLE</p><h2>L'IA N'EST<br>PLUS UNE<br><span class="chrome-type">OPTION.</span></h2><p class="scene-intro">02 / EXPÉRIMENTER — Formuler, tester et améliorer.<br>Un espace pour apprendre en pratiquant.</p></div>
         <div class="scene-copy scene-copy-3" data-scene="3"><p class="eyebrow"><span class="eyebrow-line"></span> 03 / PASSER À L'ACTION</p><h2>VOUS AVEZ<br>UNE LONGUEUR<br><span class="chrome-type">D'AVANCE.</span></h2><p class="scene-intro">03 / APPLIQUER — Transformer les acquis en usages concrets.<br>Choisissez le parcours qui vous ressemble.</p><a class="scene-link" href="#formations">DÉCOUVRIR LES FORMATIONS <span>↗</span></a></div>
@@ -405,5 +407,29 @@ window.__IAgileV6Ready={studio:true,navigation:true,scenarios:3,realAIConnected:
 
 });
 </script>
+  <button class="nw-open nw-fixed-trigger" data-nw-open type="button" aria-label="Ouvrir l’Atlas 3D interactif">
+    <span class="nw-trigger-visual" aria-hidden="true"><span class="nw-trigger-cube"><i>IA</i><i></i><i></i></span></span>
+    <span class="nw-trigger-label"><small>IAgile / IMMERSIVE MAP</small><strong>NAVIGUER EN 3D</strong></span><span class="nw-trigger-arrow" aria-hidden="true">↗</span>
+  </button>
+  <section class="nw-atlas" id="nwAtlas" role="dialog" aria-modal="true" aria-label="Atlas 3D : explorez les univers IAgile" data-open="false" aria-hidden="true" inert>
+    <header class="nw-atlas-top"><div class="nw-brand">ia<span>gile</span><em>.</em></div><span class="nw-atlas-kicker">L’ATLAS DES POSSIBLES / EXPÉRIENCE 3D</span><button class="nw-close" id="nwClose" type="button">FERMER ✕</button></header>
+    <div class="nw-map-flag">◈ &nbsp; ATLAS INTERACTIF / 4 UNIVERS</div>
+    <div class="nw-map-title"><h2>NAVIGUEZ<br><em>AUTREMENT.</em></h2><p>Quatre univers. Une exploration en profondeur. Glissez, faites défiler et entrez dans la section de votre choix.</p></div>
+    <div class="nw-stage" id="nwStage" aria-label="Déplacez-vous parmi les quatre cartes 3D">
+      <div class="nw-depth-grid" aria-hidden="true"></div><div class="nw-orbit" aria-hidden="true"></div>
+      <div class="nw-camera" id="nwCamera">
+        <button class="nw-node" type="button" data-index="0" aria-label="DÉCOUVRIR — Votre point de départ"><span class="nw-node-shell"><span class="nw-side"></span><span class="nw-node-back"></span><span class="nw-node-front"><span class="nw-node-metal"></span><span class="nw-node-n">IAgile / CHROME // 01</span><span class="nw-node-sculpt"><span class="nw-sculpt-cube"><i>IA</i><i></i><i></i></span></span><span class="nw-node-title">DÉCOUVRIR</span><span class="nw-node-desc">VOTRE POINT DE DÉPART ↗</span></span></span></button>
+        <button class="nw-node" type="button" data-index="1" aria-label="CRÉER — Des projets concrets"><span class="nw-node-shell"><span class="nw-side"></span><span class="nw-node-back"></span><span class="nw-node-front"><span class="nw-node-metal"></span><span class="nw-node-n">IAgile / CHROME // 02</span><span class="nw-node-sculpt"><span class="nw-sculpt-cube"><i>↗</i><i></i><i></i></span></span><span class="nw-node-title">CRÉER</span><span class="nw-node-desc">DES PROJETS CONCRETS ↗</span></span></span></button>
+        <button class="nw-node" type="button" data-index="2" aria-label="ESSAYER — Expérimentez les méthodes"><span class="nw-node-shell"><span class="nw-side"></span><span class="nw-node-back"></span><span class="nw-node-front"><span class="nw-node-metal"></span><span class="nw-node-n">IAgile / CHROME // 03</span><span class="nw-node-sculpt"><span class="nw-sculpt-cube"><i>✳</i><i></i><i></i></span></span><span class="nw-node-title">ESSAYER</span><span class="nw-node-desc">EXPÉRIMENTEZ LES MÉTHODES ↗</span></span></span></button>
+        <button class="nw-node" type="button" data-index="3" aria-label="APPRENDRE — Passez à la maîtrise"><span class="nw-node-shell"><span class="nw-side"></span><span class="nw-node-back"></span><span class="nw-node-front"><span class="nw-node-metal"></span><span class="nw-node-n">IAgile / CHROME // 04</span><span class="nw-node-sculpt"><span class="nw-sculpt-cube"><i>+</i><i></i><i></i></span></span><span class="nw-node-title">APPRENDRE</span><span class="nw-node-desc">PASSEZ À LA MAÎTRISE ↗</span></span></span></button>
+      </div>
+    </div>
+    <span class="nw-instruction">← → &nbsp; CHANGER D’UNIVERS &nbsp; / &nbsp; MOLETTE OU GLISSER</span>
+    <footer class="nw-footer"><div class="nw-step-label"><b id="nwNumber">01</b><span id="nwCurrentTitle">LE POINT DE DÉPART</span></div>
+      <div class="nw-beacons" aria-label="Choisir un univers"><button type="button" aria-label="Univers 1"></button><button type="button" aria-label="Univers 2"></button><button type="button" aria-label="Univers 3"></button><button type="button" aria-label="Univers 4"></button></div>
+      <div class="nw-switch"><button type="button" id="nwPrev" aria-label="Univers précédent">←</button><button type="button" id="nwNext" aria-label="Univers suivant">→</button></div>
+      <button type="button" id="nwEnter" class="nw-enter"><span>ENTRER : DÉCOUVRIR</span><b>↗</b></button></footer>
+  </section>
+
 </body>
 </html>
