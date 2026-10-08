@@ -23,7 +23,8 @@ function headers(origin) {
   return out;
 }
 function isAllowedOrigin(origin) {
-  const allowed = [process.env.CHAT_ALLOWED_ORIGIN || 'https://cosscoll.github.io'];
+  const allowed = (process.env.CHAT_ALLOWED_ORIGIN || 'https://cosscoll.github.io').split(',').map(s=>s.trim());
+  if (process.env.VERCEL_URL) allowed.push('https://'+process.env.VERCEL_URL);
   if (process.env.CHAT_DEV_ORIGIN) allowed.push(process.env.CHAT_DEV_ORIGIN);
   return allowed.includes(origin);
 }
