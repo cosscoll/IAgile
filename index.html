@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="orbit.css">
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -22,6 +23,13 @@
   <div class="pointer-halo" id="pointerHalo" aria-hidden="true"></div>
   <div class="page-progress" aria-hidden="true"><div id="pageProgress"></div></div>
 
+  <!-- The same 3D sculpture continues travelling with visitors across the site. -->
+  <aside class="orbit-hud" id="orbitHUD" aria-label="Contrôle de la sculpture 3D permanente">
+    <div class="orbit-hud-pulse" aria-hidden="true"></div>
+    <div class="orbit-hud-copy"><span>IAgile / CORE 3D</span><strong id="orbitStage">INTRODUCTION</strong></div>
+    <button type="button" id="orbitMode" aria-label="Changer le rendu de la sculpture 3D" title="Alterner chrome et rayons X">↗</button>
+  </aside>
+
   <header class="site-header" id="siteHeader">
     <a href="#accueil" class="logo" aria-label="IAgile accueil">ia<span>gile</span><b>.</b><sup>®</sup></a>
     <nav class="header-nav" aria-label="Navigation principale"><a href="#approche">L'APPROCHE</a><a href="#experience">LE LAB</a><a href="#formations">FORMATIONS</a></nav>
@@ -30,7 +38,7 @@
   <div class="mobile-menu" id="mobileMenu"><a href="#approche">L'APPROCHE ↗</a><a href="#experience">LE LAB ↗</a><a href="#formations">FORMATIONS ↗</a><a href="#contact">CONTACT ↗</a></div>
 
   <main>
-    <!-- Real WebGL ray-marched 3D sculpture, moved through this 4-viewport scroll sequence. -->
+    <!-- A persistent 3D sculpture powers the entire site, with a four-chapter cinematic introduction. -->
     <section class="cinema" id="accueil" aria-label="Une introduction 3D immersive à IAgile">
       <div class="cinema-pin" id="cinemaPin">
         <div class="cinema-lightfield" aria-hidden="true"></div><div class="cinema-grid" aria-hidden="true"></div><div class="cinema-aura" id="cinemaAura" aria-hidden="true"></div>
