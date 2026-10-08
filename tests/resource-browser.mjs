@@ -11,7 +11,7 @@ const server = http.createServer(async (req,res)=>{
   try {
     const parsed = new URL(req.url, 'http://localhost');
     const raw = decodeURIComponent(parsed.pathname);
-    const rel = raw.replace(/^\\/+/, '') || 'index.html';
+    const rel = (raw.startsWith('/') ? raw.slice(1) : raw) || 'index.html';
     const requested = path.resolve(root, rel);
     if (requested!==root && !requested.startsWith(root+path.sep)) {res.writeHead(403).end();return;}
     const file = (await fs.stat(requested)).isDirectory()?path.join(requested,'index.html'):requested;
