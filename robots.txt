@@ -1,3 +1,4 @@
 User-agent: *
+Disallow: /IAgile/pilote/
 Allow: /IAgile/
 Sitemap: https://cosscoll.github.io/IAgile/sitemap.xml
