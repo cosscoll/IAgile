@@ -58,6 +58,14 @@ async function openCourse(course){
   if(error||progressError){message('Les modules ne sont pas disponibles actuellement.');return;}
   const done=new Set((progress||[]).filter(x=>x.completed).map(x=>x.module_index));
   const existingNotes=new Map((progress||[]).map(x=>[x.module_index,x.notes]));
+  const refreshProgress=()=>{
+    const total=(modules||[]).length;
+    const completed=(modules||[]).filter(x=>done.has(x.module_index)).length;
+    $('progressText').textContent=total?completed+' module(s) sur '+total+' terminés':'Aucun module disponible';
+    $('progressMeter').max=Math.max(1,total);
+    $('progressMeter').value=completed;
+  };
+  refreshProgress();
   if(!modules?.length){$('modules').append(node('p','Les leçons de cette formation ne sont pas encore disponibles.'));message('');await loadDeliverables({supabase,user,course,target:$('prompts'),message});return;}
   for(const mod of modules){
     const card=node('article',undefined,'module-card'),title=node('h3',mod.title),label=node('span',done.has(mod.module_index)?'Terminé':'À découvrir','pill');
@@ -77,7 +85,7 @@ async function openCourse(course){
         const {error:saveError}=await supabase.from('academy_module_progress').upsert(payload,{onConflict:'user_id,course_slug,module_index'});
         complete.disabled=false;if(saveError){message('Progression non enregistrée.');return;}
         if(completed)done.add(mod.module_index);else done.delete(mod.module_index);
-        label.textContent=completed?'Terminé':'À découvrir';complete.textContent=completed?'Marquer comme non terminé':'Marquer comme terminé';message('Progression enregistrée.');
+        label.textContent=completed?'Terminé':'À découvrir';complete.textContent=completed?'Marquer comme non terminé':'Marquer comme terminé';refreshProgress();message('Progression enregistrée.');
       });
       const notesLabel=node('label','Mes notes de cours');
       const notesArea=node('textarea');
