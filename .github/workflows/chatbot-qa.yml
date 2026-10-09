@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [feature/iagile-assistant-generatif-v22]
+    branches: [main, feature/iagile-assistant-generatif-v22]
 permissions:
   contents: read
 jobs:
@@ -14,9 +14,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Vérifier fichiers et scripts
+      - name: Vérifier fichiers et scripts publics
         run: |
           npm test
           node --check chatbot.js
           node --check chatbot-ai.js
           node --check api/chat.js
+      - name: Tester la sécurité du backend isolé
+        working-directory: backend-iagile
+        run: npm test
