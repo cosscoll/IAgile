@@ -10,5 +10,5 @@ test('formateur: consultation seule',()=>{assert(js.includes("from('academy_deli
 test('formateur: sortie nettoie les donnees privees',()=>{
   assert(js.includes('function clearStudentData()'));
   assert(js.includes("['teacherCourses','learners','learnerDetails']"));
-  assert(js.includes("if(event==='SIGNED_OUT'){teacher=null;clearStudentData()"));
+  assert(/if\(event==='SIGNED_OUT'\)\{[^}]*authGuard\.invalidate\(\);[^}]*clearStudentData\(\)/.test(js));
 });
