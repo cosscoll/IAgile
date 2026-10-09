@@ -1,0 +1,39 @@
+/* IAgile CHROME V12 — cinematic 5-step formation introduction. CHROME brand unchanged. */
+.odyssey{height:640vh}
+.chapter-controls{width:min(685px,73vw);max-width:74%;gap:10px}
+.chapter-controls button{min-width:0;white-space:normal}
+.chapter-controls button span{font-size:8px;line-height:1.4;letter-spacing:.045em}
+.chapter-controls button:focus-visible{outline:2px solid #235bff;outline-offset:4px}
+.chapter{transition:opacity .74s ease,filter .92s ease,transform 1.05s cubic-bezier(.2,.8,.22,1),visibility .74s;transform:translateY(36px) scale(.98);filter:blur(8px)}
+.chapter.is-active{transform:translateY(0) scale(1);filter:none}
+.chapter.is-exiting{transform:translateY(-28px) scale(1.015);filter:blur(6px)}
+/* Physical training installations, not an unrelated sidebar widget. */
+.exhibit{transition:opacity .9s ease,transform 1.22s cubic-bezier(.18,.76,.14,1),filter .9s ease;transform:translate3d(95px,35px,-270px) rotateY(-32deg) rotateX(9deg) scale(.8);}
+.exhibit.is-active{transform:translate3d(0,var(--scene-nudge,0px),0) rotateY(-13deg) rotateX(5deg) rotateZ(-2deg) scale(1);pointer-events:auto}
+.exhibit.is-exiting{transform:translate3d(-95px,-30px,165px) rotateY(14deg) rotateX(-5deg) scale(1.09);filter:blur(5px)}
+.exhibit:not(.is-active) a{pointer-events:none}
+.exhibit-course-cta{position:absolute;z-index:12;bottom:0;left:5%;right:2%;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:80px;padding:15px 19px;background:rgba(250,250,247,.95);border:1px solid #b7c0c3;color:#20282d;box-shadow:7px 14px 0 #a8b2bc,11px 25px 38px #626e752e;transform:translateZ(60px);pointer-events:auto;transition:background .3s,transform .3s}
+.exhibit-course-cta:hover,.exhibit-course-cta:focus-visible{background:#fff;transform:translateZ(68px) translateY(-3px);outline-color:var(--cobalt)}
+.exhibit-course-cta span{display:flex;flex-direction:column;gap:7px}
+.exhibit-course-cta small{font:500 8px var(--mono);color:#69737c;letter-spacing:.13em}
+.exhibit-course-cta strong{font:750 clamp(12px,1.4vw,19px) var(--display);letter-spacing:-.045em;line-height:1.1}
+.exhibit-course-cta>b{white-space:nowrap;font:600 9px var(--mono);letter-spacing:.025em;border-bottom:1px solid #9aa4a8;padding-bottom:7px}
+/* The fourth competence: a practical assistant turning scattered tasks into an organized workflow. */
+.daily-preview{display:grid;place-items:center;padding:22px;height:calc(100% - 44px);background:radial-gradient(ellipse at 50% 38%,#f9faf7,#cbd3d3 80%)}
+.daily-window{width:100%;max-width:475px;background:#fafaf8;border:1px solid #a2aeb2;box-shadow:10px 12px 0 #8e9ca1,17px 22px 25px #59666b37;padding:18px 20px 22px;transform:rotateY(6deg) rotateX(-2deg)}
+.daily-title{display:flex;align-items:center;gap:9px;font:600 8px var(--mono);letter-spacing:.07em;border-bottom:1px solid #c4cccb;padding:0 0 13px}
+.daily-title>span{font-size:19px;color:#75858d}.daily-title>b{margin-left:auto;font-weight:400;color:#a2adaf}
+.daily-inbox{background:#ecefeb;padding:13px 14px;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+.daily-window small{font:600 8px var(--mono);color:#65727b;letter-spacing:.1em}
+.daily-inbox>span{font-size:clamp(10px,1.1vw,13px);line-height:1.5;color:#4b565c}
+.daily-transform{display:flex;gap:11px;align-items:center;margin:13px 0;color:#64747c;font:500 8px var(--mono)}
+.daily-transform i{font-size:21px;font-style:normal;color:#235bff}
+.daily-tasks{border:1px solid #bbc4c4;padding:12px 13px;background:#fff}
+.daily-tasks>div{display:flex;align-items:center;gap:10px;border-top:1px solid #e0e5e3;padding-top:8px;margin-top:8px}
+.daily-tasks>div b{font:600 9px var(--mono);color:#7a8790}
+.daily-tasks>div span{font:600 11px var(--body);color:#253139}
+.daily-tasks>div i{font-style:normal;color:#436454;font:700 12px var(--mono);margin-left:auto}
+@media(max-width:1100px){.chapter-controls{max-width:77%}.exhibit-course-cta{min-height:68px;padding:12px 14px}.exhibit-course-cta>b{font-size:7px}}
+@media(max-width:800px){.odyssey{height:600vh}.chapter-controls{width:100%;max-width:none;gap:8px}.exhibit-course-cta{bottom:-8px;min-height:55px}.exhibit-course-cta strong{font-size:11px}.daily-preview{padding:10px}.daily-window{padding:9px 11px}.daily-title{padding-bottom:5px;font-size:6px}.daily-title>span{font-size:13px}.daily-inbox{margin-top:7px;padding:6px 9px;gap:4px}.daily-window small{font-size:6px}.daily-inbox>span{font-size:9px}.daily-transform{margin:4px 0;font-size:6px}.daily-transform i{font-size:15px}.daily-tasks{padding:5px 9px}.daily-tasks>div{padding-top:4px;margin-top:4px}.daily-tasks>div span{font-size:8px}.daily-tasks>div b,.daily-tasks>div i{font-size:8px}}
+@media(max-width:560px){.odyssey{height:600vh}.chapter-controls{gap:5px}.chapter-controls button{gap:6px;font-size:6px;padding-top:8px}.chapter-controls button span{font-size:6px}.exhibit{top:55%;height:29%}.exhibit-course-cta{left:4%;right:0;bottom:-1%;min-height:45px;padding:7px 9px;box-shadow:5px 8px 0 #a8b2bc,7px 12px 20px #626e7520}.exhibit-course-cta small{font-size:6px}.exhibit-course-cta strong{font-size:10px}.exhibit-course-cta>b{font-size:6px}.daily-preview{height:calc(100% - 28px);padding:5px}.daily-window{width:94%;padding:6px 8px}.daily-title{font-size:5px}.daily-title>span{font-size:10px}.daily-inbox{padding:4px 6px;margin-top:4px}.daily-window small{font-size:5px}.daily-inbox>span{font-size:7px}.daily-transform{gap:5px;margin:3px 0;font-size:5px}.daily-transform i{font-size:10px}.daily-tasks{padding:3px 5px}.daily-tasks>div{padding-top:2px;margin-top:2px;gap:5px}.daily-tasks>div span{font-size:7px}.daily-tasks>div b,.daily-tasks>div i{font-size:7px}}
+@media(prefers-reduced-motion:reduce){.chapter,.exhibit,.exhibit-course-cta{transition:none!important;filter:none!important}}

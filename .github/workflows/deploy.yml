@@ -1,4 +1,4 @@
-name: Deploy IAgile CHROME to GitHub Pages
+name: Deploy IAgile CHROME vitrine
 on:
   push:
     branches: [main]
@@ -8,23 +8,77 @@ permissions:
   pages: write
   id-token: write
 concurrency:
-  group: pages
+  group: iagile-pages
   cancel-in-progress: true
 jobs:
   deploy:
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Pages
+      - name: Stage approved public assets only
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public-site
+          files=(
+            "404.html"
+            "a-propos.html"
+            "assets/social-accueil.jpg"
+            "assets/social-agents-personnalises.jpg"
+            "assets/social-automatiser-tache.jpg"
+            "assets/social-ia-au-quotidien.jpg"
+            "assets/social-sites-web-3d.jpg"
+            "catalogue.css"
+            "chatbot.css"
+            "chatbot.js"
+            "chrome-v10.css"
+            "course-v13.css"
+            "engine.js"
+            "faq.html"
+            "favicon.svg"
+            "formation.css"
+            "formation.js"
+            "formations/agents-personnalises.html"
+            "formations/automatiser-tache.html"
+            "formations/ia-au-quotidien.html"
+            "formations/sites-web-3d.html"
+            "guide.css"
+            "index.html"
+            "intro-v12.css"
+            "ouverture.html"
+            "parcours.html"
+            "parcours.js"
+            "pilote/continuer.html"
+            "pilote/index.html"
+            "responsive-v19.css"
+            "robots.txt"
+            "script.js"
+            "site-v13.css"
+            "sitemap.xml"
+            "styles.css"
+            "v21-conversion.css"
+          )
+          for path in "${files[@]}"; do
+            test -f "$path" || { echo "Missing public asset: $path"; exit 1; }
+            mkdir -p "public-site/$(dirname "$path")"
+            cp "$path" "public-site/$path"
+          done
+          actual=$(find public-site -type f | wc -l)
+          test "$actual" -eq "${#files[@]}"
+          test ! -e public-site/docs
+          test ! -e public-site/learning-engine.js
+          test ! -e public-site/learning-engine.css
+          test ! -e public-site/.git
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-      - name: Upload site
+      - name: Upload approved static website
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
-      - name: Deploy
+          path: public-site
+      - name: Publish
         id: deployment
         uses: actions/deploy-pages@v4

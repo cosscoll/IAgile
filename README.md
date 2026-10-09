@@ -1,15 +1,15 @@
-# IAgile — CHROME V16
+# IAgile — CHROME V21
 
 Site public : https://cosscoll.github.io/IAgile/
 
 ## État actuel
 
-Site vitrine en pré-lancement, pas de vente ouverte. Les quatre parcours sont détaillés : sites web 3D, agents personnalisés, automatisation, IA au quotidien. La présentation immersive d’origine est conservée.
+Site vitrine en pré-lancement, pas de vente ouverte. Les quatre parcours disposent d'un aperçu commercial : sites web 3D, agents personnalisés, automatisation, IA au quotidien. La présentation immersive d’origine est conservée.
 
 ## Pages
 
 - `index.html` : 5 scènes immersives, 4 formations, simulations et chatbot guidé.
-- `formations/*.html` : programmes complets et projets finaux.
+- `formations/*.html` : aperçu commercial, public cible et résultat visé ; leçons réservées à des sites distincts.
 - `parcours.html` : orientation interactive, comparaison et export texte sans collecte.
 - `a-propos.html` : présentation du projet et état honnête du développement.
 - `faq.html` : réponses actualisées aux questions des futurs apprenants.
@@ -39,3 +39,11 @@ Voir `docs/ETAT-LANCEMENT.md`. Tant que le vendeur, l'offre, la conformité, la 
 - Le contenu de formation doit être stocké dans un dépôt privé et livré via une plateforme avec contrôle d'accès **côté serveur** après inscription/paiement. Un masquage HTML ou JavaScript ne protège pas les fichiers.
 - Le dossier `pilote/` contient exclusivement un aperçu commercial limité ; les anciennes versions pédagogiques V17/V18 restent visibles dans l'historique de ce dépôt public et ne doivent pas être considérées comme privées.
 - Les prix, modalités de vente et ouvertures d'inscriptions restent à valider.
+
+## Mise à jour V21 (9 octobre 2026)
+
+- V20 et V19 responsive intégrées à la V21 : parcours commercial, démonstrations courtes, liens directs vers les formations et transparence sur l'ouverture.
+- Préservation des cas de pratique ajoutés à la branche principale le 9 octobre, sans fournir les méthodes complètes.
+- Publication GitHub Pages limitée à 36 fichiers de vitrine explicitement autorisés, non aux dossiers internes du dépôt.
+- Les données juridiques, le contact réel et la validation de marque restent à finaliser avant commercialisation.
+- Le dépôt reste public, y compris l'historique des anciennes ressources pédagogiques.
