@@ -17,7 +17,9 @@ for (const page of pages) {
   for (let h of hits) {
     if (/^(?:https?:|mailto:|tel:|data:|javascript:)/.test(h)) continue;
     if (!h || h==='#') continue;
-    let [rel,fragment] = h.split('#');
+    let [urlPath,fragment] = h.split('#');
+    // URL query parameters change navigation, not the physical file path.
+    const rel = urlPath.split('?')[0];
     if(!rel && fragment){
       assert(source.includes(`id="${fragment}"`) || source.includes(`name="${fragment}"`), `${page}: missing local anchor #${fragment}`);
       links++; continue;
