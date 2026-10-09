@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, feature/iagile-assistant-generatif-v22, feature/academy-private-mvp]
+    branches: [main, feature/iagile-assistant-generatif-v22]
 concurrency:
   group: academy-unit-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
