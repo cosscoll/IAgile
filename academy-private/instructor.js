@@ -1,30 +1,42 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.79.0';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './config.js';
+import {createRequestGuard} from './request-guard.js';
 const db=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const $=id=>document.getElementById(id);
 const info=txt=>{$('teacherStatus').textContent=txt||'';};
 const el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;};
 let teacher;
+const authGuard=createRequestGuard();
+const viewGuard=createRequestGuard();
 function clearStudentData(){
   for(const id of ['teacherCourses','learners','learnerDetails'])$(id).replaceChildren();
   $('teacherDetails').hidden=true;$('teacherCourseTitle').textContent='';
 }
 async function start(){
+  const authTicket=authGuard.next();viewGuard.invalidate();
   const {data,error}=await db.auth.getUser();
+  if(!authGuard.valid(authTicket))return;
   teacher=error?null:data?.user;
   $('teacherAuth').hidden=!!teacher;$('teacherDashboard').hidden=!teacher;
   $('logout').hidden=!teacher;$('identity').textContent=teacher?.email||'';
   if(teacher)await loadCourses();
 }
 async function loadCourses(){
+  const uid=teacher?.id;
+  const sessionTicket=authGuard.current(),viewTicket=viewGuard.next();
+  const isCurrent=()=>authGuard.valid(sessionTicket)&&viewGuard.valid(viewTicket)&&teacher?.id===uid;
+  if(!uid)return;
   $('teacherCourses').hidden=false;$('teacherCourses').replaceChildren();$('teacherDetails').hidden=true;
   const {data:profile,error:profileError}=await db.from('academy_profiles').select('account_status').eq('user_id',teacher.id).maybeSingle();
+  if(!isCurrent())return;
   if(profileError||profile?.account_status!=='active'){info('Ce compte ne dispose pas d’un profil formateur actif.');return;}
   const {data:assignments,error}=await db.from('academy_instructor_courses').select('course_slug').eq('instructor_id',teacher.id);
+  if(!isCurrent())return;
   if(error){info('Impossible de vérifier les autorisations formateur.');return;}
   if(!assignments?.length){info('Aucune formation ne vous a été attribuée.');return;}
   const slugs=assignments.map(x=>x.course_slug);
   const {data:courses,error:courseError}=await db.from('academy_courses').select('slug,title').in('slug',slugs);
+  if(!isCurrent())return;
   if(courseError){info('Impossible de charger les formations.');return;}
   for(const course of courses||[]){
     const card=el('article');card.className='course-card';
@@ -35,13 +47,19 @@ async function loadCourses(){
   info('');
 }
 async function openCourse(course){
+  const uid=teacher?.id;
+  const sessionTicket=authGuard.current(),viewTicket=viewGuard.next();
+  const isCurrent=()=>authGuard.valid(sessionTicket)&&viewGuard.valid(viewTicket)&&teacher?.id===uid;
+  if(!uid)return;
   $('teacherCourses').hidden=true;$('teacherDetails').hidden=false;$('teacherCourseTitle').textContent=course.title;
   $('learners').replaceChildren();$('learnerDetails').replaceChildren();info('Chargement des apprenants…');
   const {data:enrollments,error}=await db.from('academy_enrollments').select('user_id,active').eq('course_slug',course.slug).eq('active',true);
+  if(!isCurrent())return;
   if(error){info('Impossible de consulter les inscriptions.');return;}
   if(!enrollments?.length){$('learners').append(el('p','Aucun apprenant inscrit pour le moment.'));info('');return;}
   const ids=enrollments.map(x=>x.user_id);
   const {data:profiles}=await db.from('academy_profiles').select('user_id,display_name').in('user_id',ids);
+  if(!isCurrent())return;
   const names=new Map((profiles||[]).map(x=>[x.user_id,x.display_name]));
   for(const e of enrollments){
     const row=el('article');row.className='module-card';
@@ -52,11 +70,16 @@ async function openCourse(course){
   info('');
 }
 async function openLearner(course,uid,name){
+  const instructorId=teacher?.id;
+  const sessionTicket=authGuard.current(),viewTicket=viewGuard.next();
+  const isCurrent=()=>authGuard.valid(sessionTicket)&&viewGuard.valid(viewTicket)&&teacher?.id===instructorId;
+  if(!instructorId)return;
   $('learnerDetails').replaceChildren();info('Chargement du suivi…');
   const [{data:progress,error:e1},{data:answers,error:e2}]=await Promise.all([
     db.from('academy_module_progress').select('module_index,completed,updated_at').eq('user_id',uid).eq('course_slug',course.slug),
     db.from('academy_deliverable_answers').select('deliverable_index,content,updated_at').eq('user_id',uid).eq('course_slug',course.slug)
   ]);
+  if(!isCurrent())return;
   if(e1||e2){info('Lecture du suivi non autorisée ou indisponible.');return;}
   const wrap=el('section');wrap.className='panel';
   wrap.append(el('h3',name||'Suivi apprenant'));
@@ -76,7 +99,13 @@ $('teacherLogin').addEventListener('submit',async e=>{
   if(error){info('Identifiants invalides ou accès indisponible.');return;}
   await start();
 });
-$('logout').addEventListener('click',async()=>{await db.auth.signOut();teacher=null;clearStudentData();await start();});
+$('logout').addEventListener('click',async()=>{
+  authGuard.invalidate();viewGuard.invalidate();teacher=null;clearStudentData();
+  $('teacherDashboard').hidden=true;$('teacherAuth').hidden=false;$('identity').textContent='';
+  const {error}=await db.auth.signOut();
+  if(error){info('Impossible de terminer la session distante. Veuillez réessayer.');return;}
+  info('Déconnexion effectuée.');
+});
 $('teacherBack').addEventListener('click',()=>{ $('teacherCourses').hidden=false;loadCourses(); });
-db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){teacher=null;clearStudentData();$('identity').textContent='';$('teacherDashboard').hidden=true;$('teacherAuth').hidden=false;}});
+db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){authGuard.invalidate();viewGuard.invalidate();teacher=null;clearStudentData();$('identity').textContent='';$('teacherDashboard').hidden=true;$('teacherAuth').hidden=false;}});
 start().catch(()=>info('Service formateur temporairement indisponible.'));
