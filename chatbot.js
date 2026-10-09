@@ -4,23 +4,24 @@
 (()=>{
 'use strict';
 if(document.getElementById('iaChatShell'))return;
+const scriptBase=new URL('.',document.currentScript?.src||location.href);
 /* Activation progressive : conserver l'assistant guidé jusqu'à la mise en service du backend. */
 if(typeof window.IAgileChatConfig?.endpoint==='string' && window.IAgileChatConfig.endpoint.trim()){
  const script=document.createElement('script');
- script.src=(location.pathname.includes('/formations/')?'../':'')+'chatbot-ai.js';
+ script.src=new URL('chatbot-ai.js',scriptBase).href;
  script.async=true;
  script.onerror=()=>{
    /* If the AI client fails to load, restore the clearly labelled local assistant. */
    window.IAgileChatConfig={endpoint:''};
    const guided=document.createElement('script');
-   guided.src=(location.pathname.includes('/formations/')?'../':'')+'chatbot.js';
+   guided.src=new URL('chatbot.js',scriptBase).href;
    guided.async=true;document.head.appendChild(guided);
  };
  document.head.appendChild(script);
  return;
 }
 const isCoursePage=location.pathname.includes('/formations/');
-const prefix=isCoursePage?'../':'';
+const siteBase=scriptBase;
 const courses=[
  {id:'web',title:'Créer des sites web 3D animés',short:'Sites web 3D',url:'formations/sites-web-3d.html',tags:['site','web','3d','three','threejs','r3f','blender','scroll','animation','design','developpement','portfolio','react','front-end','visuel','immersif','interface','cinema','gsap'],description:'Créer un site immersif publié, avec scène 3D, narration au scroll, navigation spatiale et tests de performance.',audience:'Créatifs, designers, profils digitaux et entrepreneurs. Un parcours de fondations web est prévu pour les débutants.',tools:'HTML, CSS, JavaScript, React, Three.js / R3F, GSAP, Blender, Git et GitHub.',program:'15 modules (0 à 14) et un module WebGPU/TSL avancé. Brief créatif, storyboard, bases web, Three.js, assets, motion, scroll, navigation 3D, interactions, shaders, responsive, performance et publication.',project:'Immersive Website Production Pack : site 3D publié, storyboard, dépôt Git, assets optimisés, tests et dossier de présentation.',demo:['Définir une idée et son storyboard spatial','Créer une scène 3D et synchroniser la caméra au scroll','Optimiser puis publier le site']},
  {id:'agent',title:'Créer des agents personnalisés',short:'Agents IA',url:'formations/agents-personnalises.html',tags:['agent','agents','chatbot','assistant','personnalise','entreprise','metier','support','service client','rh','sdk','outil','tools','memoire','rag','chat','bot','autonome'],description:'Concevoir un agent spécialisé qui utilise les bonnes connaissances et les bons outils, tout en restant contrôlable.',audience:'Entrepreneurs, équipes métiers, professionnels du support et personnes intéressées par des agents sur mesure. Parcours no-code ou technique.',tools:'Plateforme no-code/low-code (Make AI Agents ou équivalent) ou OpenAI Agents SDK, outils, APIs, recherche documentaire et évaluations.',program:'12 modules (0 à 11) : cadrage de l’agent, contrat de rôle, instructions, connaissances, outils, mémoire, premier agent, garde-fous, tests, traçage, multi-agent et maintenance.',project:'Agent Production Pack : agent fonctionnel, rôle, connaissances, permissions, tests, traces, validations humaines et guide de maintenance.',demo:['Définir la mission et les limites de l’agent','Lui fournir une source documentaire et un outil','Tester une demande et bloquer une action sans validation']},
@@ -31,7 +32,7 @@ const $=(s,r=document)=>r.querySelector(s);const escapeHtml=s=>String(s).replace
 const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 const words=s=>norm(s).split(/\s+/).filter(Boolean);
 const contains=(s,terms)=>terms.some(t=>norm(s).includes(norm(t)));
-const urlFor=path=>prefix+path;
+const urlFor=path=>new URL(path,siteBase).href;
 const shell=document.createElement('aside');shell.className='ia-chat-shell';shell.id='iaChatShell';shell.setAttribute('aria-label','Assistant IAgile');
 shell.innerHTML=`<button class="ia-chat-launch" id="iaChatLaunch" type="button" aria-controls="iaChatPanel" aria-expanded="false" aria-label="Ouvrir l'assistant IAgile"><span class="ia-chat-glyph" aria-hidden="true"></span><span class="ia-chat-launch-copy"><b>Une question sur l'IA ?</b><small>ASSISTANT IAGILE · DÉMO</small></span></button><section class="ia-chat-panel" id="iaChatPanel" role="dialog" aria-modal="false" aria-label="Assistant IAgile — démonstration guidée" hidden><div class="ia-chat-panel-head"><span class="ia-chat-headmark" aria-hidden="true">✳</span><div class="ia-chat-heading"><strong>IAgile Assistant</strong><span><i class="ia-chat-live"></i>DÉMONSTRATION GUIDÉE / CHROME</span></div><button class="ia-chat-close" id="iaChatReset" type="button" aria-label="Recommencer la conversation" title="Recommencer">↺</button><button class="ia-chat-close" id="iaChatClose" type="button" aria-label="Fermer l'assistant">×</button></div><div class="ia-chat-thread" id="iaChatThread" role="log" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></div><form class="ia-chat-bottom" id="iaChatForm"><label class="ia-chat-visually-hidden" for="iaChatInput">Votre question</label><div class="ia-chat-composer"><textarea id="iaChatInput" rows="1" maxlength="500" placeholder="Posez votre question…" autocomplete="off"></textarea><button type="submit" class="ia-chat-send" aria-label="Envoyer le message">↗</button></div><div class="ia-chat-bottom-note"><b>Démo informative :</b> réponses locales issues des programmes, sans IA générative ni collecte de données.</div></form></section>`;
 document.body.appendChild(shell);
