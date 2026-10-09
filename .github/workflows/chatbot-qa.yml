@@ -1,9 +1,9 @@
-name: IAgile - QA chatbot IA
+name: IAgile - QA chatbot et academy
 on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, feature/iagile-assistant-generatif-v22]
+    branches: [main, feature/iagile-assistant-generatif-v22, feature/academy-private-mvp]
 permissions:
   contents: read
 jobs:
@@ -14,12 +14,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Vérifier fichiers et scripts publics
+      - name: Vérifier les pages et les scripts publics
         run: |
           npm test
           node --check chatbot.js
           node --check chatbot-ai.js
           node --check api/chat.js
-      - name: Tester la sécurité du backend isolé
+      - name: Tester le backend isolé
         working-directory: backend-iagile
         run: npm test
+      - name: Contrôler le prototype Academy
+        run: |
+          node --check academy-private/app.js
+          node --test academy-private/tests/portal.test.mjs
