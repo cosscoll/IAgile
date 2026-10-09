@@ -39,10 +39,11 @@ async function openCourse(course){
   $('modules').replaceChildren();message('Chargement des modules…');
   const [{data:modules,error},{data:progress,error:progressError}]=await Promise.all([
     supabase.from('academy_course_modules').select('course_slug,module_index,title,published').eq('course_slug',course.slug).eq('published',true).order('module_index'),
-    supabase.from('academy_module_progress').select('module_index,completed').eq('course_slug',course.slug).eq('user_id',user.id)
+    supabase.from('academy_module_progress').select('module_index,completed,notes').eq('course_slug',course.slug).eq('user_id',user.id)
   ]);
   if(error||progressError){message('Les modules ne sont pas disponibles actuellement.');return;}
   const done=new Set((progress||[]).filter(x=>x.completed).map(x=>x.module_index));
+  const existingNotes=new Map((progress||[]).map(x=>[x.module_index,x.notes]));
   if(!modules?.length){$('modules').append(node('p','Les leçons de cette formation ne sont pas encore disponibles.'));message('');return;}
   for(const mod of modules){
     const card=node('article',undefined,'module-card'),title=node('h3',mod.title),label=node('span',done.has(mod.module_index)?'Terminé':'À découvrir','pill');
@@ -58,7 +59,7 @@ async function openCourse(course){
       const complete=node('button',done.has(mod.module_index)?'Marquer comme non terminé':'Marquer comme terminé');
       complete.type='button';complete.addEventListener('click',async()=>{
         complete.disabled=true;const completed=!done.has(mod.module_index);
-        const payload={user_id:user.id,course_slug:course.slug,module_index:mod.module_index,completed,notes:''};
+        const payload={user_id:user.id,course_slug:course.slug,module_index:mod.module_index,completed,notes:existingNotes.get(mod.module_index)||''};
         const {error:saveError}=await supabase.from('academy_module_progress').upsert(payload,{onConflict:'user_id,course_slug,module_index'});
         complete.disabled=false;if(saveError){message('Progression non enregistrée.');return;}
         if(completed)done.add(mod.module_index);else done.delete(mod.module_index);
