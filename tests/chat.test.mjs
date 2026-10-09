@@ -1,7 +1,14 @@
 import {test,after} from 'node:test';
+import {readFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import handler from '../api/chat.js';
 
+test('backend Vercel isolé identique au backend testé',()=> {
+ const source=readFileSync(fileURLToPath(new URL('../api/chat.js',import.meta.url)),'utf8');
+ const isolated=readFileSync(fileURLToPath(new URL('../backend-iagile/api/chat.js',import.meta.url)),'utf8');
+ assert.equal(isolated,source);
+});
 const originalFetch = globalThis.fetch;
 const originalKey = process.env.OPENAI_API_KEY;
 const originalAllowed = process.env.CHAT_ALLOWED_ORIGIN;

@@ -17,7 +17,7 @@ Site vitrine en pré-lancement, pas de vente ouverte. Les quatre parcours dispos
 
 ## Important : distinction chatbot
 
-`chatbot.js` utilise par défaut l'assistant guidé local. `chatbot-ai.js` et `api/chat.js` forment la version générative à activer après déploiement d'un backend sécurisé et configuration de `chat-config.js`. Ne jamais publier les clés API dans ce dépôt. Voir `docs/CHATBOT-IA-DEPLOIEMENT.md`. Tant que le serveur n'est pas activé, le site conserve son assistant guidé.
+`chatbot.js` utilise par défaut l'assistant guidé local. `chatbot-ai.js` et `backend-iagile/api/chat.js` forment la version générative à activer après déploiement d'un backend sécurisé et configuration de `chat-config.js`. Ne jamais publier les clés API dans ce dépôt. Voir `docs/CHATBOT-IA-DEPLOIEMENT.md`. Tant que le serveur n'est pas activé, le site conserve son assistant guidé.
 
 ## Tests
 
