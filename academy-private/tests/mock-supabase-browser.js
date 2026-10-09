@@ -14,9 +14,9 @@ export function createClient() {
       {slug:'automatisation',title:'Automatisation',summary:'Accès interdit',published:true}
     ],
     academy_course_modules:[{course_slug:'agents',module_index:0,title:'Premier module',body_markdown:'## Exercice\n- Réaliser une action',published:true}],
-    academy_module_progress:[],
+    academy_module_progress:instructor?[{user_id:'APPRENANT',course_slug:'agents',module_index:0,completed:true,notes:'Note de test'}]:[],
     academy_deliverable_prompts:[{course_slug:'agents',deliverable_index:0,title:'Projet final',instructions_markdown:'## Sujet\nPrésenter votre démarche',published:true}],
-    academy_deliverable_answers:[],
+    academy_deliverable_answers:instructor?[{user_id:'APPRENANT',course_slug:'agents',deliverable_index:0,content:'Projet de démonstration'}]:[],
     academy_course_assets:[{course_slug:'agents',asset_key:'test',title:'Support de test',storage_path:'agents/test.pdf',published:true}]
   };
   const from=table=>{
