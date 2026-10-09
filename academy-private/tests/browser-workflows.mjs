@@ -28,7 +28,7 @@ try {
  assert.match(await page.locator('.course-markdown').first().innerText(),/Exercice/);
  await page.getByRole('button',{name:'Marquer comme terminé'}).click();
  await page.getByText('1 module(s) sur 1 terminés').waitFor();
- assert.equal(await page.locator('#progressMeter').inputValue(),'1');
+ assert.equal(await page.locator('#progressMeter').evaluate(el=>el.value),1);
  await page.locator('#module-notes-agents-0').fill('Notes privées du cours');
  await page.getByRole('button',{name:'Enregistrer mes notes'}).click();
  await page.getByText('Notes enregistrées.').waitFor();
