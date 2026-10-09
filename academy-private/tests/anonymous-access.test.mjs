@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from '../config.js';
 
 const protectedTables = [
+  'academy_courses',
+  'academy_instructor_courses',
   'academy_course_modules',
   'academy_course_assets',
   'academy_deliverable_prompts',
