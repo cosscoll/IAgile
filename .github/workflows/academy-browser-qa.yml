@@ -30,3 +30,4 @@ jobs:
           python3 -m http.server 8123 >/tmp/academy-server.log 2>&1 &
           sleep 2
           node academy-private/tests/browser-smoke.mjs
+          node academy-private/tests/browser-workflows.mjs
