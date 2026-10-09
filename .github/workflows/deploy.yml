@@ -28,8 +28,11 @@ jobs:
         run: |
           set -euo pipefail
           node tests/site-check.mjs
+          node --test tests/chat.test.mjs
           node --check script.js
           node --check chatbot.js
+          node --check chatbot-ai.js
+          node --check api/chat.js
           node --check formation.js
           node --check parcours.js
       - name: Stage approved public assets only
@@ -47,6 +50,8 @@ jobs:
             "assets/social-sites-web-3d.jpg"
             "catalogue.css"
             "chatbot.css"
+            "chat-config.js"
+            "chatbot-ai.js"
             "chatbot.js"
             "chrome-v10.css"
             "course-v13.css"

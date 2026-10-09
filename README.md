@@ -17,7 +17,7 @@ Site vitrine en pré-lancement, pas de vente ouverte. Les quatre parcours dispos
 
 ## Important : distinction chatbot
 
-`chatbot.js` sur le site public est un assistant guidé sans génération de texte. La vraie version générative nécessite un backend sécurisé et des clés côté serveur. Le prototype de chatbot génératif est développé sur la branche `feature/assistant-ia-generative`, qui n'est **pas** la version publique. Ne jamais publier les clés API dans ce dépôt.
+`chatbot.js` utilise par défaut l'assistant guidé local. `chatbot-ai.js` et `api/chat.js` forment la version générative à activer après déploiement d'un backend sécurisé et configuration de `chat-config.js`. Ne jamais publier les clés API dans ce dépôt. Voir `docs/CHATBOT-IA-DEPLOIEMENT.md`. Tant que le serveur n'est pas activé, le site conserve son assistant guidé.
 
 ## Tests
 

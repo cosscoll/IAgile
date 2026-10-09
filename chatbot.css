@@ -58,3 +58,9 @@ body:has(#worldOverlay:not([hidden])) .ia-chat-shell{visibility:hidden;pointer-e
 .ia-chat-inline-link{display:inline-flex;gap:11px;align-items:center;justify-content:space-between;margin-top:13px;padding:13px 15px;border:1px solid #96a6b3;background:linear-gradient(125deg,#fdfefa,#dfe5e8);color:#192733;border-radius:9px;font:800 10px/1.35 'Manrope',sans-serif;letter-spacing:.04em;cursor:pointer;box-shadow:0 9px 25px #141f2917;max-width:100%}
 .ia-chat-inline-link span{color:#235bff;font-size:18px}
 .ia-chat-inline-link:hover{border-color:#566777;background:#f6f8f8}
+
+/* Mode génératif — état réel du serveur et attente pendant la réponse. */
+.ia-chat-connected{background:#367968;box-shadow:0 0 0 3px #36796818}
+.ia-chat-busy .ia-chat-send{opacity:.65;cursor:progress}
+.ia-chat-composer textarea:disabled{opacity:.7}
+@media(max-width:650px){.ia-chat-panel-head .ia-chat-heading strong{font-size:13px}}
