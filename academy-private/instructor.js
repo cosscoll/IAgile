@@ -5,6 +5,10 @@ const $=id=>document.getElementById(id);
 const info=txt=>{$('teacherStatus').textContent=txt||'';};
 const el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;};
 let teacher;
+function clearStudentData(){
+  for(const id of ['teacherCourses','learners','learnerDetails'])$(id).replaceChildren();
+  $('teacherDetails').hidden=true;$('teacherCourseTitle').textContent='';
+}
 async function start(){
   const {data,error}=await db.auth.getUser();
   teacher=error?null:data?.user;
@@ -72,7 +76,7 @@ $('teacherLogin').addEventListener('submit',async e=>{
   if(error){info('Identifiants invalides ou accès indisponible.');return;}
   await start();
 });
-$('logout').addEventListener('click',async()=>{await db.auth.signOut();teacher=null;await start();});
+$('logout').addEventListener('click',async()=>{await db.auth.signOut();teacher=null;clearStudentData();await start();});
 $('teacherBack').addEventListener('click',()=>{ $('teacherCourses').hidden=false;loadCourses(); });
-db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){teacher=null;$('teacherDashboard').hidden=true;$('teacherAuth').hidden=false;}});
+db.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){teacher=null;clearStudentData();$('identity').textContent='';$('teacherDashboard').hidden=true;$('teacherAuth').hidden=false;}});
 start().catch(()=>info('Service formateur temporairement indisponible.'));
