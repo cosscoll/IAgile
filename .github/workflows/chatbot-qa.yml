@@ -26,4 +26,4 @@ jobs:
       - name: Contrôler le prototype Academy
         run: |
           node --check academy-private/app.js
-          node --test academy-private/tests/portal.test.mjs
+          node --test academy-private/tests/*.test.mjs
