@@ -42,10 +42,20 @@ Un seul compte apprenant peut donner accès aux quatre formations, chacune ayant
 
 ## Dépendances et état réel
 
-Le 9 octobre 2026, la connexion Supabase renvoyait zéro projet accessible. Aucune table ni politique RLS n'a donc été déployée. Le backend de chatbot Vercel est préparé séparément mais non activé sur le site public ; le paramètre public de son URL reste vide. Aucun paiement ni compte apprenant n'a été validé.
+Le 9 octobre 2026, le projet Supabase IAgile Academy a été identifié et interrogé avec succès. Les tables et politiques RLS préexistantes ont été inspectées. Le backend de chatbot Vercel est préparé séparément mais non activé sur le site public ; le paramètre public de son URL reste vide. Aucun paiement ni compte apprenant n'a été validé.
 
 Avant tout déploiement apprenant : restaurer l'accès au bon projet Supabase, vérifier sa configuration et l'existant, tester toutes les politiques avec des comptes de démonstration. Les décisions commerciales et juridiques restent nécessaires avant la vente.
 
 ## Publication et contrôle
 
 À chaque changement GitHub : vérifier les tests, la publication Pages, puis l'accès effectif aux URL et les modifications visibles. Le contrôle en ligne automatisé a été ajouté au workflow ; il ne remplace pas les vérifications visuelles sur navigateur et appareils réels. Ne jamais annoncer « en ligne » avant confirmation du déploiement correspondant.
+
+## Audit Supabase vérifié — 9 octobre 2026
+
+Projet confirmé : `daabfmdlgcwcykevvrcm` (IAgile Academy), organisation IAgile, région Paris, état actif. L'accès SQL a fonctionné malgré une liste de projets vide fournie par le connecteur.
+
+Ne pas recréer les tables : 9 tables academy existent déjà, toutes avec RLS activée. Les privilèges SELECT des tables métier ne sont pas accordés au rôle anonyme ; les apprenants authentifiés ne peuvent pas écrire directement dans les inscriptions. Le stockage `iagile-course-files` est privé.
+
+Quatre formations existent avec `published=false` : `agents`, `automatisation`, `processus`, `sites-3d`. Neuf modules et sept consignes de livrables existent uniquement pour `processus`, tous non publiés. Aucun profil, aucune inscription et aucun actif de cours enregistré.
+
+Les règles d'accès conditionnent les modules et supports à une inscription active et un profil actif, avec un rôle formateur distinct. Des tests RLS en situation réelle restent à effectuer avant mise en production. Prochaine priorité : conserver le schéma existant, remplir progressivement les trois parcours manquants à partir des contenus pédagogiques validés, et connecter une interface privée sans exposer ces contenus sur GitHub Pages.
