@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.79.0';
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from './config.js';
 import { loadDeliverables } from './deliverables.js';
+import { loadCourseAssets } from './assets.js';
 import { renderCourseMarkdown } from './markdown.js';
 import { createRequestGuard } from './request-guard.js';
 const $ = id => document.getElementById(id);
@@ -13,7 +14,7 @@ const authGuard=createRequestGuard();
 const viewGuard=createRequestGuard();
 function showSignedIn(value) { $('auth').hidden=value; $('dashboard').hidden=!value; $('signout').hidden=!value; $('identity').textContent=value?(user?.email||'Compte connecté'):''; }
 function clearPrivateContent(){
-  for(const id of ['courses','modules','prompts'])$(id).replaceChildren();
+  for(const id of ['courses','modules','prompts','courseAssets'])$(id).replaceChildren();
   $('courseView').hidden=true;
   $('courseTitle').textContent='';$('courseDescription').textContent='';
 }
@@ -86,7 +87,10 @@ async function openCourse(course){
     $('progressMeter').value=completed;
   };
   refreshProgress();
-  if(!modules?.length){$('modules').append(node('p','Les leçons de cette formation ne sont pas encore disponibles.'));message('');await loadDeliverables({supabase,user,course,target:$('prompts'),message,isCurrent});return;}
+  if(!modules?.length){$('modules').append(node('p','Les leçons de cette formation ne sont pas encore disponibles.'));message('');await Promise.all([
+    loadDeliverables({supabase,user,course,target:$('prompts'),message,isCurrent}),
+    loadCourseAssets({supabase,course,target:$('courseAssets'),message,isCurrent})
+  ]);return;}
   for(const mod of modules){
     const card=node('article',undefined,'module-card'),title=node('h3',mod.title),label=node('span',done.has(mod.module_index)?'Terminé':'À découvrir','pill');
     const detail=node('div');detail.hidden=true;
@@ -139,7 +143,10 @@ async function openCourse(course){
     card.append(label,title,show,detail);$('modules').append(card);
   }
   message('');
-  await loadDeliverables({supabase,user,course,target:$('prompts'),message,isCurrent});
+  await Promise.all([
+    loadDeliverables({supabase,user,course,target:$('prompts'),message,isCurrent}),
+    loadCourseAssets({supabase,course,target:$('courseAssets'),message,isCurrent})
+  ]);
 }
 $('loginForm').addEventListener('submit',async(event)=>{
   event.preventDefault();$('loginBtn').disabled=true;message('Vérification de vos identifiants…');
