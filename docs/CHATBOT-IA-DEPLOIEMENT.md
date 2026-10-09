@@ -4,7 +4,7 @@
 Le site public conserve le chatbot guidé tant que `chat-config.js` comporte `endpoint: ''`. La présence du code serveur dans GitHub ne signifie pas que l'IA est opérationnelle. Aucun secret n'est requis pour GitHub Pages.
 
 ## Architecture
-- GitHub Pages : `chatbot.js`, `chat-config.js`, `chatbot-ai.js`, `chatbot.css`.
+- GitHub Pages : `chatbot.js`, `chat-config.js`, `chatbot-ai.js`, `chatbot.css` chargés sur toutes les pages publiques (accueil, formations, parcours, FAQ, à propos, ouverture et page 404).
 - Vercel : fonction Node `api/chat.js` hébergée côté serveur. La clé OpenAI n'apparaît jamais dans le navigateur.
 - OpenAI : Responses API, `store:false`. Le navigateur fournit les derniers messages au serveur, sans historique persistant dans une base. Le fournisseur API peut appliquer ses propres durées de conservation.
 - La base de réponses contient **uniquement** les quatre aperçus commerciaux publics. Aucun cours complet ni document pédagogique privé n'est intégré.
