@@ -20,6 +20,7 @@
 <button type="submit" id="loginBtn">Connexion</button></form>
 <p class="hint">Vous avez oublié votre mot de passe ? <button class="text-button" type="button" id="reset">Recevoir un e-mail de réinitialisation</button></p>
 </section>
+<section id="recovery" class="panel" hidden><h2>Choisir un nouveau mot de passe</h2><p>Ce formulaire n'est disponible qu'après ouverture d'un lien de réinitialisation valide.</p><form id="recoveryForm"><label for="newPassword">Nouveau mot de passe</label><input id="newPassword" type="password" autocomplete="new-password" minlength="10" required><label for="confirmPassword">Confirmer le mot de passe</label><input id="confirmPassword" type="password" autocomplete="new-password" minlength="10" required><button type="submit">Enregistrer le mot de passe</button></form></section>
 <section id="dashboard" hidden>
 <div class="section-header"><div><p class="eyebrow">MON ESPACE</p><h2>Mes formations</h2></div><button type="button" id="refresh">Actualiser</button></div>
 <div id="courses" class="courses" aria-live="polite"></div>
