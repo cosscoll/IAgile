@@ -5,8 +5,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, { auth: { 
 const message = text => { $('status').textContent = text || ''; };
 const node = (tag,text,cls) => { const e=document.createElement(tag); if(text!==undefined)e.textContent=text; if(cls)e.className=cls; return e; };
 let user = null;
+let recovering = false;
 function showSignedIn(value) { $('auth').hidden=value; $('dashboard').hidden=!value; $('signout').hidden=!value; $('identity').textContent=value?(user?.email||'Compte connecté'):''; }
 async function start() {
+  if(recovering)return;
   $('configuration').hidden=true;
   const {data,error}=await supabase.auth.getUser();
   if(error || !data?.user){ user=null; showSignedIn(false); return; }
@@ -80,7 +82,25 @@ $('refresh').addEventListener('click',()=>start());
 $('back').addEventListener('click',()=>listCourses());
 $('reset').addEventListener('click',async()=>{
   const email=$('email').value.trim();if(!email){message("Indiquez d'abord votre adresse e-mail.");$('email').focus();return;}
-  await supabase.auth.resetPasswordForEmail(email);message("Si cette adresse est enregistrée, un e-mail de réinitialisation sera envoyé.");
+  const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:new URL('index.html',location.href).href});
+  message(error?'La récupération du mot de passe est temporairement indisponible.':"Si cette adresse est enregistrée, un e-mail de réinitialisation sera envoyé.");
 });
-supabase.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT'){user=null;showSignedIn(false);}});
+supabase.auth.onAuthStateChange((event)=>{
+  if(event==='PASSWORD_RECOVERY'){
+    recovering=true;$('auth').hidden=true;$('dashboard').hidden=true;$('recovery').hidden=false;
+    message('Définissez un mot de passe d’au moins dix caractères.');
+  }
+  if(event==='SIGNED_OUT'){user=null;recovering=false;$('recovery').hidden=true;showSignedIn(false);}
+});
+$('recoveryForm').addEventListener('submit',async(event)=>{
+  event.preventDefault();
+  if(!recovering){message('Lien de réinitialisation requis.');return;}
+  const password=$('newPassword').value;
+  if(password!==$('confirmPassword').value){message('Les mots de passe ne correspondent pas.');return;}
+  const button=event.currentTarget.querySelector('button');button.disabled=true;
+  const {error}=await supabase.auth.updateUser({password});button.disabled=false;
+  if(error){message('Impossible de modifier ce mot de passe. Utilisez un nouveau lien.');return;}
+  $('recoveryForm').reset();recovering=false;$('recovery').hidden=true;message('Mot de passe modifié.');
+  await start();
+});
 start().catch(()=>{showSignedIn(false);message('Service indisponible. Réessayez plus tard.');});
