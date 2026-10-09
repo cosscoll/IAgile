@@ -10,6 +10,9 @@ on:
     paths:
       - "academy-private/**"
       - ".github/workflows/academy-browser-qa.yml"
+concurrency:
+  group: academy-browser-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
