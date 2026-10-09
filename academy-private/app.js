@@ -18,6 +18,12 @@ async function listCourses() {
   $('courseView').hidden=true; $('courses').hidden=false;
   $('courses').replaceChildren();
   message('Chargement de vos formations…');
+  const {data:profile,error:profileError}=await supabase.from('academy_profiles').select('account_status').eq('user_id',user.id).maybeSingle();
+  if(profileError){message('Impossible de vérifier le statut de votre compte.');return;}
+  if(!profile || profile.account_status!=='active'){
+    $('courses').append(node('p',"Ce compte apprenant n'est pas encore activé. Aucun contenu privé n'est accessible."));
+    message('');return;
+  }
   const {data:enrollments,error:accessError}=await supabase.from('academy_enrollments').select('course_slug').eq('user_id',user.id).eq('active',true);
   if(accessError){ message('Impossible de charger vos accès. Réessayez.'); return; }
   const slugs=[...new Set((enrollments||[]).map(x=>x.course_slug))];
