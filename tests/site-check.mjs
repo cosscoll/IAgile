@@ -44,4 +44,27 @@ assert((home.match(/data-chapter="[0-4]"/g)||[]).length===5,'home must have exac
 assert(home.includes('id="universeCanvas"'),'3D canvas must be preserved');
 for (const expected of ['a-propos.html','faq.html','parcours.html']) assert(home.includes(`href="${expected}"`));
 assert(!fs.existsSync(path.join(root,'.env')),'no credentials in published root');
+
+/* Validation des limites publiques des cours et de la livraison */
+const trainingPages = pages.filter(p => p.startsWith('formations/'));
+for (const page of trainingPages) {
+  const source = fs.readFileSync(path.join(root, page), 'utf8');
+  assert.equal((source.match(/id="cas-concret"/g) || []).length, 1, page + ' missing a single practical teaser');
+  assert.equal((source.match(/class="case-teaser-card"/g) || []).length, 3, page + ' missing problem/method/outcome');
+  assert(source.includes('href="#cas-concret"'), page + ' missing teaser link');
+}
+const workflow = fs.readFileSync(path.join(root, '.github/workflows/deploy.yml'), 'utf8');
+assert(workflow.includes('node tests/site-check.mjs'), 'CI does not run site checks before publication');
+const allowlist = workflow.match(/files=\(([\s\S]*?)\)/);
+assert(allowlist, 'public asset allowlist not found');
+const assets = [...allowlist[1].matchAll(/^\s*"([^"]+)"\s*$/gm)].map(m => m[1]);
+assert(assets.length >= 25, 'public asset allowlist unexpectedly small');
+assert.equal(new Set(assets).size, assets.length, 'duplicate files in public allowlist');
+for (const entry of assets) {
+  assert(fs.existsSync(path.join(root, entry)), 'public asset missing: ' + entry);
+  assert(!/(^|\/)(?:formateur|corriges|modules|private|\.github|tests|docs)(?:\/|$)/i.test(entry), 'private/source file exposed: ' + entry);
+  assert(!/(?:\.zip|\.env|\.pdf|\.map)$/i.test(entry), 'unapproved public file type: ' + entry);
+}
+assert(assets.includes('index.html') && assets.includes('formation.css'), 'essential public assets missing');
+
 console.log(`PASS — ${checked} HTML pages, ${links} internal assets/links, 8 sitemap URLs, 5 cinematic chapters`);

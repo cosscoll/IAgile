@@ -47,3 +47,9 @@ Voir `docs/ETAT-LANCEMENT.md`. Tant que le vendeur, l'offre, la conformité, la 
 - Publication GitHub Pages limitée à 36 fichiers de vitrine explicitement autorisés, non aux dossiers internes du dépôt.
 - Les données juridiques, le contact réel et la validation de marque restent à finaliser avant commercialisation.
 - Le dépôt reste public, y compris l'historique des anciennes ressources pédagogiques.
+
+## Qualité des déploiements — 9 octobre 2026
+
+- La publication GitHub Pages exécute désormais une **CI bloquante avant mise en ligne** : `node tests/site-check.mjs` et `node --check` sur les scripts principaux.
+- Le contrôle inspecte les pages, les ancres, le sitemap, les quatre aperçus des formations et la liste explicite des seuls actifs autorisés à être publiés.
+- Ces vérifications ne remplacent **pas** les tests visuels, mobiles, GPU ni les tests de parcours de conversion effectués dans un navigateur réel.
