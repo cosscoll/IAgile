@@ -6,7 +6,7 @@
 'use strict';
 if(document.getElementById('iaChatShell'))return;
 const isCoursePage=location.pathname.includes('/formations/');
-const prefix=isCoursePage?'../':'';
+const siteBase=new URL('.',document.currentScript?.src||location.href);
 const endpoint=(window.IAgileChatConfig?.endpoint||((location.hostname==='cosscoll.github.io')?'':'/api/chat')).trim();
 const paths=[
  ['Site web 3D','formations/sites-web-3d.html'],['Agents IA','formations/agents-personnalises.html'],
@@ -32,7 +32,7 @@ function append(author,text,opts={}){
  if(author!=='user'){const label=document.createElement('div');label.className='ia-chat-author';label.textContent=opts.system?'INFORMATION / SERVICE':'IAgile / IA GÉNÉRATIVE';inner.append(label);}
  const bubble=document.createElement('div');bubble.className='ia-chat-bubble';bubble.textContent=text;inner.append(bubble);
  if(opts.suggest?.length){const chips=document.createElement('div');chips.className='ia-chat-chipline';opts.suggest.slice(0,4).forEach(q=>{const b=document.createElement('button');b.className='ia-chat-chip';b.type='button';b.textContent=q;b.addEventListener('click',()=>ask(q));chips.append(b)});inner.append(chips);}
- if(opts.links){const links=document.createElement('div');links.className='ia-chat-links';paths.forEach(p=>{const a=document.createElement('a');a.className='ia-chat-link';a.href=prefix+p[1];a.textContent=p[0]+' ↗';links.append(a)});inner.append(links);}
+ if(opts.links){const links=document.createElement('div');links.className='ia-chat-links';paths.forEach(p=>{const a=document.createElement('a');a.className='ia-chat-link';a.href=new URL(p[1],siteBase).href;a.textContent=p[0]+' ↗';links.append(a)});inner.append(links);}
  row.append(inner);thread.append(row);thread.scrollTop=thread.scrollHeight;while(thread.children.length>40)thread.firstElementChild?.remove();return row;
 }
 function errorText(message){append('assistant',message,{system:true,links:!ready});}
