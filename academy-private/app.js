@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.79.0';
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from './config.js';
+import { loadDeliverables } from './deliverables.js';
 const $ = id => document.getElementById(id);
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
 const message = text => { $('status').textContent = text || ''; };
@@ -50,7 +51,7 @@ async function openCourse(course){
   if(error||progressError){message('Les modules ne sont pas disponibles actuellement.');return;}
   const done=new Set((progress||[]).filter(x=>x.completed).map(x=>x.module_index));
   const existingNotes=new Map((progress||[]).map(x=>[x.module_index,x.notes]));
-  if(!modules?.length){$('modules').append(node('p','Les leçons de cette formation ne sont pas encore disponibles.'));message('');return;}
+  if(!modules?.length){$('modules').append(node('p','Les leçons de cette formation ne sont pas encore disponibles.'));message('');await loadDeliverables({supabase,user,course,target:$('prompts'),message});return;}
   for(const mod of modules){
     const card=node('article',undefined,'module-card'),title=node('h3',mod.title),label=node('span',done.has(mod.module_index)?'Terminé':'À découvrir','pill');
     const detail=node('div');detail.hidden=true;
@@ -76,6 +77,7 @@ async function openCourse(course){
     card.append(label,title,show,detail);$('modules').append(card);
   }
   message('');
+  await loadDeliverables({supabase,user,course,target:$('prompts'),message});
 }
 $('loginForm').addEventListener('submit',async(event)=>{
   event.preventDefault();$('loginBtn').disabled=true;message('Vérification de vos identifiants…');
