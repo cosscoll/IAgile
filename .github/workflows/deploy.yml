@@ -102,3 +102,6 @@ jobs:
       - name: Publish
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Vérifier le site réellement accessible après publication
+        shell: bash
+        run: node tests/live-site-check.mjs
