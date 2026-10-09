@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.79.0';
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from './config.js';
 import { loadDeliverables } from './deliverables.js';
+import { renderCourseMarkdown } from './markdown.js';
 const $ = id => document.getElementById(id);
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
 const message = text => { $('status').textContent = text || ''; };
@@ -62,7 +63,7 @@ async function openCourse(course){
       const {data,error:readError}=await supabase.from('academy_course_modules').select('body_markdown').eq('course_slug',course.slug).eq('module_index',mod.module_index).eq('published',true).maybeSingle();
       show.disabled=false;
       if(readError||!data){message('Accès refusé ou leçon indisponible.');return;}
-      detail.replaceChildren(node('div',data.body_markdown,'lesson'));
+      detail.replaceChildren(renderCourseMarkdown(data.body_markdown));
       const complete=node('button',done.has(mod.module_index)?'Marquer comme non terminé':'Marquer comme terminé');
       complete.type='button';complete.addEventListener('click',async()=>{
         complete.disabled=true;const completed=!done.has(mod.module_index);
