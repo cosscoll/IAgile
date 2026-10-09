@@ -13,7 +13,7 @@ async function start(){
   if(teacher)await loadCourses();
 }
 async function loadCourses(){
-  $('teacherCourses').replaceChildren();$('teacherDetails').hidden=true;
+  $('teacherCourses').hidden=false;$('teacherCourses').replaceChildren();$('teacherDetails').hidden=true;
   const {data:profile,error:profileError}=await db.from('academy_profiles').select('account_status').eq('user_id',teacher.id).maybeSingle();
   if(profileError||profile?.account_status!=='active'){info('Ce compte ne dispose pas d’un profil formateur actif.');return;}
   const {data:assignments,error}=await db.from('academy_instructor_courses').select('course_slug').eq('instructor_id',teacher.id);
