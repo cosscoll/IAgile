@@ -36,7 +36,7 @@ test('learner notes preserve ownership and completion state',()=>{
 test('sign-out clears protected content from the DOM',()=>{
   assert(js.includes('function clearPrivateContent()'));
   for(const id of ["'courses'","'modules'","'prompts'"]) assert(js.includes(id));
-  assert(js.includes("if(event==='SIGNED_OUT'){user=null;recovering=false;clearPrivateContent()"));
+  assert(/if\(event==='SIGNED_OUT'\)\{[^}]*authGuard\.invalidate\(\);[^}]*clearPrivateContent\(\)/.test(js));
 });
 
 test('progress is measurable and updates after completion changes',()=>{
