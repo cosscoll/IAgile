@@ -50,6 +50,8 @@ Voir `docs/ETAT-LANCEMENT.md`. Tant que le vendeur, l'offre, la conformité, la 
 
 ## Qualité des déploiements — 9 octobre 2026
 
-- La publication GitHub Pages exécute désormais une **CI bloquante avant mise en ligne** : `node tests/site-check.mjs` et `node --check` sur les scripts principaux.
+- Le workflow personnalisé `Deploy IAgile CHROME vitrine` vérifie le code **avant son propre déploiement** via `node tests/site-check.mjs` et `node --check` sur les scripts principaux.
 - Le contrôle inspecte les pages, les ancres, le sitemap, les quatre aperçus des formations et la liste explicite des seuls actifs autorisés à être publiés.
 - Ces vérifications ne remplacent **pas** les tests visuels, mobiles, GPU ni les tests de parcours de conversion effectués dans un navigateur réel.
+
+**Attention :** le dépôt possède aussi un déploiement GitHub Pages automatique natif (`pages build and deployment`), distinct du workflow personnalisé. Tant que la source Pages n'est pas configurée sur **GitHub Actions uniquement**, cette seconde publication peut contourner le contrôle personnalisé. Une modification des paramètres Pages du dépôt est requise pour garantir un gate unique.

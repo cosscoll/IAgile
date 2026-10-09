@@ -26,3 +26,8 @@
 - Outil de paiement et de plateforme apprenant
 
 Ne pas confondre la publication technique GitHub Pages avec une validation de la mise en marché.
+
+## Vérification 09/10/2026 — déploiement Pages
+- Le workflow personnalisé lance les contrôles HTML/liens, sitemap, liste des ressources publiques et la syntaxe des principaux scripts.
+- Un second système automatique « pages build and deployment » reste actif dans le dépôt et peut publier indépendamment du workflow personnalisé. ACTION DE CONFIGURATION : GitHub > Settings > Pages > Build and deployment > Source = GitHub Actions. Ce point doit être vérifié par une personne ayant accès aux paramètres du dépôt.
+- Le pré-lancement reste ouvert; les tests Node ne prouvent pas l'accessibilité réelle du site ou le fonctionnement sur un GPU mobile.

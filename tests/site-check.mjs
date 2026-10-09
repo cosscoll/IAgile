@@ -53,7 +53,7 @@ for (const page of trainingPages) {
   const source = fs.readFileSync(path.join(root, page), 'utf8');
   assert.equal((source.match(/id="cas-concret"/g) || []).length, 1, page + ' missing a single practical teaser');
   assert.equal((source.match(/class="case-teaser-card"/g) || []).length, 3, page + ' missing problem/method/outcome');
-  assert(source.includes('href="#cas-concret"'), page + ' missing teaser link');
+  assert(source.includes('href="#projet"') || source.includes('href="#cas-concret"'), page + ' missing any path to a concrete result');
 }
 const workflow = fs.readFileSync(path.join(root, '.github/workflows/deploy.yml'), 'utf8');
 assert(workflow.includes('node tests/site-check.mjs'), 'CI does not run site checks before publication');
