@@ -67,13 +67,34 @@ async function openCourse(course){
       const complete=node('button',done.has(mod.module_index)?'Marquer comme non terminé':'Marquer comme terminé');
       complete.type='button';complete.addEventListener('click',async()=>{
         complete.disabled=true;const completed=!done.has(mod.module_index);
-        const payload={user_id:user.id,course_slug:course.slug,module_index:mod.module_index,completed,notes:existingNotes.get(mod.module_index)||''};
+        const payload={user_id:user.id,course_slug:course.slug,module_index:mod.module_index,completed,notes:existingNotes.get(mod.module_index)||'',updated_at:new Date().toISOString()};
         const {error:saveError}=await supabase.from('academy_module_progress').upsert(payload,{onConflict:'user_id,course_slug,module_index'});
         complete.disabled=false;if(saveError){message('Progression non enregistrée.');return;}
         if(completed)done.add(mod.module_index);else done.delete(mod.module_index);
         label.textContent=completed?'Terminé':'À découvrir';complete.textContent=completed?'Marquer comme non terminé':'Marquer comme terminé';message('Progression enregistrée.');
       });
-      detail.append(complete);detail.hidden=false;show.textContent='Refermer';message('');
+      const notesLabel=node('label','Mes notes de cours');
+      const notesArea=node('textarea');
+      notesArea.id='module-notes-'+course.slug+'-'+mod.module_index;
+      notesArea.rows=5;notesArea.maxLength=4000;
+      notesArea.value=existingNotes.get(mod.module_index)||'';
+      notesLabel.htmlFor=notesArea.id;
+      const saveNotes=node('button','Enregistrer mes notes');
+      saveNotes.type='button';
+      saveNotes.addEventListener('click',async()=>{
+        saveNotes.disabled=true;message('Enregistrement des notes…');
+        const notes=notesArea.value;
+        const {error:notesError}=await supabase.from('academy_module_progress').upsert({
+          user_id:user.id,course_slug:course.slug,module_index:mod.module_index,
+          completed:done.has(mod.module_index),notes,updated_at:new Date().toISOString()
+        },{onConflict:'user_id,course_slug,module_index'});
+        saveNotes.disabled=false;
+        if(notesError){message('Impossible de sauvegarder les notes.');return;}
+        existingNotes.set(mod.module_index,notes);
+        message('Notes enregistrées.');
+      });
+      detail.append(complete,notesLabel,notesArea,saveNotes);
+      detail.hidden=false;show.textContent='Refermer';message('');
     });
     card.append(label,title,show,detail);$('modules').append(card);
   }
