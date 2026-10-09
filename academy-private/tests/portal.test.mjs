@@ -26,3 +26,15 @@ test('browser config is publishable-only, never a server credential',()=>{
   assert(cfg.includes('SUPABASE_PUBLISHABLE_KEY'));
   assert(!/sb_secret_|service_role|sk-proj-/.test(cfg));
 });
+
+test('learner notes preserve ownership and completion state',()=>{
+  assert(js.includes("id='module-notes-'"));
+  assert(js.includes("existingNotes.set(mod.module_index,notes)"));
+  assert(js.includes("completed:done.has(mod.module_index),notes"));
+  assert(js.includes("updated_at:new Date().toISOString()"));
+});
+test('sign-out clears protected content from the DOM',()=>{
+  assert(js.includes('function clearPrivateContent()'));
+  for(const id of ["'courses'","'modules'","'prompts'"]) assert(js.includes(id));
+  assert(js.includes("if(event==='SIGNED_OUT'){user=null;recovering=false;clearPrivateContent()"));
+});
