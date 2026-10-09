@@ -59,3 +59,11 @@ Ne pas recréer les tables : 9 tables academy existent déjà, toutes avec RLS a
 Quatre formations existent avec `published=false` : `agents`, `automatisation`, `processus`, `sites-3d`. Neuf modules et sept consignes de livrables existent uniquement pour `processus`, tous non publiés. Aucun profil, aucune inscription et aucun actif de cours enregistré.
 
 Les règles d'accès conditionnent les modules et supports à une inscription active et un profil actif, avec un rôle formateur distinct. Des tests RLS en situation réelle restent à effectuer avant mise en production. Prochaine priorité : conserver le schéma existant, remplir progressivement les trois parcours manquants à partir des contenus pédagogiques validés, et connecter une interface privée sans exposer ces contenus sur GitHub Pages.
+
+## Vérifications additionnelles du 9 octobre 2026
+
+- Avis de sécurité Supabase : aucune alerte remontée par le diagnostic automatique.
+- Performance : quatre index signalés comme non utilisés ; aucune suppression à effectuer avant l'arrivée des apprenants.
+- Stockage privé : la politique `academy_private_course_file_select` impose une ressource publiée dans le registre `academy_course_assets`, avec les restrictions RLS associées.
+- Les tests d'accès réels avec des comptes distincts restent indispensables ; les contrôles statiques ne suffisent pas.
+- Projet Vercel `iagile-chatbot` identifié avec des déploiements production READY. La consultation détaillée de ses réglages échoue avec une erreur 403, il n'est donc pas permis d'affirmer que ses variables d'environnement ou son endpoint sont opérationnels.
