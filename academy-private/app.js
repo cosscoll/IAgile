@@ -61,14 +61,22 @@ async function listCourses() {
     const b=node('button','Ouvrir la formation');b.type='button';b.addEventListener('click',()=>openCourse(course));
     card.append(b);$('courses').append(card);
   }
+  const requested=new URL(window.location.href).searchParams.get('formation');
+  const direct=available.find(course=>course.slug===requested);
+  if(direct){await openCourse(direct,{navigate:false});return;}
   message('');
 }
-async function openCourse(course){
+async function openCourse(course,{navigate=true}={}){
   const uid=user?.id;
   const ticket=viewGuard.next();
   const sessionTicket=authGuard.current();
   const isCurrent=()=>viewGuard.valid(ticket)&&authGuard.valid(sessionTicket)&&user?.id===uid;
   if(!uid)return;
+  if(navigate){
+    const url=new URL(window.location.href);
+    url.searchParams.set('formation',course.slug);
+    window.history.pushState({academy:true},'',url);
+  }
   $('courses').hidden=true;$('courseView').hidden=false;$('courseTitle').textContent=course.title;$('courseDescription').textContent=course.summary;
   $('modules').replaceChildren();message('Chargement des modules…');
   const [{data:modules,error},{data:progress,error:progressError}]=await Promise.all([
@@ -161,7 +169,13 @@ $('signout').addEventListener('click',async()=>{
   message(error?'Déconnexion distante impossible, veuillez réessayer.':'Déconnexion effectuée.');
 });
 $('refresh').addEventListener('click',()=>start());
-$('back').addEventListener('click',()=>listCourses());
+$('back').addEventListener('click',()=>{
+  const url=new URL(window.location.href);
+  url.searchParams.delete('formation');
+  window.history.pushState({academy:true},'',url);
+  listCourses();
+});
+window.addEventListener('popstate',()=>{if(user&&!recovering)listCourses();});
 $('reset').addEventListener('click',async()=>{
   const email=$('email').value.trim();if(!email){message("Indiquez d'abord votre adresse e-mail.");$('email').focus();return;}
   const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:new URL('index.html',location.href).href});
