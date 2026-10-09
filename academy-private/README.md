@@ -11,3 +11,18 @@ Vérifications : node --check academy-private/app.js et node --test academy-priv
 Reste à valider : tests multi-utilisateurs, redirections Auth, déploiement sur un domaine distinct, import des leçons existantes depuis Drive, achats vérifiés côté serveur et tests UX complets. Aucune inscription payante n'est ouverte.
 
 Les supports pédagogiques détaillés restent privés dans Drive et Supabase ; ils ne doivent pas être copiés dans le dépôt public.
+
+
+## État des contenus privés — 9 octobre 2026
+
+Les trois programmes maîtres de Google Drive ont été utilisés pour créer 38 **fiches de cadrage inédites en base**, sans publication ni écrasement des neuf modules Processus existants. Les quatre parcours totalisent désormais 47 modules, tous avec `published=false`. Chaque nouveau brouillon reprend le titre et le résumé de son programme officiel, mais **n'est pas une leçon complète**.
+
+Trois projets de fin de formation supplémentaires ont été préparés comme brouillons, un pour chaque parcours autre que Processus. Les consignes de ces projets sont à compléter avec des exercices, exemples distincts, critères d'évaluation et corrections réservées aux formateurs. La base contient maintenant dix consignes de livrables, toutes non publiées.
+
+Migrations Supabase : `academy_curriculum_drafts_drive_v1` et `academy_capstone_drafts_drive_v1`. Les décomptes et les diagnostics sécurité ont été revérifiés après exécution. La publication des cours n'est ni autorisée ni réalisée par ces migrations.
+
+## Améliorations du lecteur
+
+Le lecteur présente les titres, listes et passages mis en évidence du Markdown par des éléments DOM construits sans `innerHTML`. Les notes privées sont enregistrables par module. La déconnexion supprime les contenus pédagogiques visibles ou chargés du DOM. Les tests correspondants sont inclus dans `academy-private/tests`.
+
+La couverture automatisée reste partielle : ne pas confondre tests de rendu, tests anonymes REST et validation avec vrais comptes apprenants/formateurs.
