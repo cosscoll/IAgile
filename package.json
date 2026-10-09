@@ -3,5 +3,7 @@
   "version": "16.0.0",
   "private": true,
   "type": "module",
-  "scripts": {"test": "node tests/site-check.mjs && node --test tests/chat.test.mjs"}
+  "scripts": {
+    "test": "node tests/site-check.mjs && node --test tests/chat.test.mjs && node tests/publication-boundary.test.mjs"
+  }
 }
