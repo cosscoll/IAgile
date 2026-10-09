@@ -38,3 +38,10 @@ test('sign-out clears protected content from the DOM',()=>{
   for(const id of ["'courses'","'modules'","'prompts'"]) assert(js.includes(id));
   assert(js.includes("if(event==='SIGNED_OUT'){user=null;recovering=false;clearPrivateContent()"));
 });
+
+test('progress is measurable and updates after completion changes',()=>{
+  assert(html.includes('id="progressMeter"'));
+  assert(html.includes('id="progressText"'));
+  assert(js.includes("const refreshProgress=()=>"));
+  assert(js.includes("refreshProgress();message('Progression enregistrée.')"));
+});
