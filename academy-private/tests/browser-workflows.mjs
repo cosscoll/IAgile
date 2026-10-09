@@ -42,6 +42,16 @@ try {
  await page.locator('.asset-link a').waitFor();
  assert.match(await page.locator('.asset-link a').getAttribute('href'),/expires=60$/);
  console.log('Learner journey: enrollment, lesson, progress, notes, submission and private resource OK');
+ await page.goto(base+'?formation=automatisation',{waitUntil:'domcontentloaded'});
+ await page.locator('.course-card').first().waitFor();
+ assert.equal(await page.locator('#courseView').isVisible(),false,'Unauthorized course link must never open');
+ await page.goto(base+'?formation=agents',{waitUntil:'domcontentloaded'});
+ await page.locator('#courseView').waitFor({state:'visible'});
+ assert.match(await page.locator('#courseTitle').innerText(),/Créer des agents/);
+ await page.getByRole('button',{name:/Retour aux formations/}).click();
+ await page.locator('#courses').waitFor({state:'visible'});
+ assert(!page.url().includes('formation='),'Back button must clear direct course link');
+ console.log('Direct course routes: allowed and rejected links OK');
 
  await page.goto(base+'instructor.html',{waitUntil:'domcontentloaded'});
  await page.locator('#teacherDashboard').waitFor({state:'visible',timeout:20000});
