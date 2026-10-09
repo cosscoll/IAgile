@@ -1,3 +1,4 @@
+import { renderCourseMarkdown } from './markdown.js';
 // Learner-only deliverables. Supabase RLS remains the authorization boundary.
 export async function loadDeliverables({supabase,user,course,target,message}){
   target.replaceChildren();
@@ -11,7 +12,7 @@ export async function loadDeliverables({supabase,user,course,target,message}){
   for(const prompt of prompts){
     const card=document.createElement('article');card.className='module-card';
     const title=document.createElement('h4');title.textContent=prompt.title;
-    const instructions=document.createElement('p');instructions.className='lesson';instructions.textContent=prompt.instructions_markdown;
+    const instructions=renderCourseMarkdown(prompt.instructions_markdown);
     const label=document.createElement('label');label.textContent='Votre réponse';
     const area=document.createElement('textarea');area.rows=8;area.maxLength=10000;
     area.id='deliverable-'+course.slug+'-'+prompt.deliverable_index;
