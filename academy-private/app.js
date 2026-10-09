@@ -9,6 +9,12 @@ const node = (tag,text,cls) => { const e=document.createElement(tag); if(text!==
 let user = null;
 let recovering = false;
 function showSignedIn(value) { $('auth').hidden=value; $('dashboard').hidden=!value; $('signout').hidden=!value; $('identity').textContent=value?(user?.email||'Compte connecté'):''; }
+function clearPrivateContent(){
+  for(const id of ['courses','modules','prompts'])$(id).replaceChildren();
+  $('courseView').hidden=true;
+  $('courseTitle').textContent='';$('courseDescription').textContent='';
+}
+
 async function start() {
   if(recovering)return;
   $('configuration').hidden=true;
@@ -108,7 +114,7 @@ $('loginForm').addEventListener('submit',async(event)=>{
   if(error){message('Connexion impossible. Vérifiez les identifiants ou la confirmation de votre e-mail.');return;}
   await start();
 });
-$('signout').addEventListener('click',async()=>{await supabase.auth.signOut();user=null;showSignedIn(false);$('courses').replaceChildren();message('Déconnexion effectuée.');});
+$('signout').addEventListener('click',async()=>{await supabase.auth.signOut();user=null;clearPrivateContent();showSignedIn(false);message('Déconnexion effectuée.');});
 $('refresh').addEventListener('click',()=>start());
 $('back').addEventListener('click',()=>listCourses());
 $('reset').addEventListener('click',async()=>{
@@ -121,7 +127,7 @@ supabase.auth.onAuthStateChange((event)=>{
     recovering=true;$('auth').hidden=true;$('dashboard').hidden=true;$('recovery').hidden=false;
     message('Définissez un mot de passe d’au moins dix caractères.');
   }
-  if(event==='SIGNED_OUT'){user=null;recovering=false;$('recovery').hidden=true;showSignedIn(false);}
+  if(event==='SIGNED_OUT'){user=null;recovering=false;clearPrivateContent();$('recovery').hidden=true;showSignedIn(false);}
 });
 $('recoveryForm').addEventListener('submit',async(event)=>{
   event.preventDefault();
