@@ -5,12 +5,12 @@ Le site public conserve le chatbot guidé tant que `chat-config.js` comporte `en
 
 ## Architecture
 - GitHub Pages : `chatbot.js`, `chat-config.js`, `chatbot-ai.js`, `chatbot.css` chargés sur toutes les pages publiques (accueil, formations, parcours, FAQ, à propos, ouverture et page 404).
-- Vercel : fonction Node `api/chat.js` hébergée côté serveur. La clé OpenAI n'apparaît jamais dans le navigateur.
+- Vercel : fonction Node `backend-iagile/api/chat.js` hébergée côté serveur. Le dossier isolé `backend-iagile/` est le **Root Directory** du projet Vercel, pour ne pas publier les autres fichiers du dépôt GitHub. La clé OpenAI n'apparaît jamais dans le navigateur.
 - OpenAI : Responses API, `store:false`. Le navigateur fournit les derniers messages au serveur, sans historique persistant dans une base. Le fournisseur API peut appliquer ses propres durées de conservation.
 - La base de réponses contient **uniquement** les quatre aperçus commerciaux publics. Aucun cours complet ni document pédagogique privé n'est intégré.
 
 ## Activation
-1. Dans Vercel, connecter le dépôt `cosscoll/IAgile` et déployer la racine contenant `api/chat.js`.
+1. Dans Vercel, cliquer sur **Import Project**, sélectionner `cosscoll/IAgile`, nommer le projet `iagile-chatbot`, puis dans **Root Directory**, sélectionner **`backend-iagile`** (important : ne pas choisir la racine du dépôt). Laisser Framework Preset = **Other**, puis déployer.
 2. Définir **dans Vercel** la variable d'environnement secrète `OPENAI_API_KEY`. Facultatif : `OPENAI_MODEL` (par défaut `gpt-4.1-mini`), `CHAT_ALLOWED_ORIGIN=https://cosscoll.github.io`.
 3. Vérifier `https://<nom-de-projet>.vercel.app/api/chat` par GET. Il doit retourner `{"ready":true,"generative":true}`. Vérifier ensuite une requête POST avec un test réel.
 4. Définir l'URL publique HTTPS du backend dans `chat-config.js` : `endpoint: 'https://<nom-de-projet>.vercel.app/api/chat'`. Ne **jamais** mettre la clé API dans ce fichier.
