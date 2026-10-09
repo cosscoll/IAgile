@@ -4,6 +4,13 @@
 (()=>{
 'use strict';
 if(document.getElementById('iaChatShell'))return;
+/* Activation progressive : conserver l'assistant guidé jusqu'à la mise en service du backend. */
+if(typeof window.IAgileChatConfig?.endpoint==='string' && window.IAgileChatConfig.endpoint.trim()){
+ const script=document.createElement('script');
+ script.src=(location.pathname.includes('/formations/')?'../':'')+'chatbot-ai.js';
+ script.async=true;document.head.appendChild(script);
+ return;
+}
 const isCoursePage=location.pathname.includes('/formations/');
 const prefix=isCoursePage?'../':'';
 const courses=[
