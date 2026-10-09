@@ -8,7 +8,15 @@ if(document.getElementById('iaChatShell'))return;
 if(typeof window.IAgileChatConfig?.endpoint==='string' && window.IAgileChatConfig.endpoint.trim()){
  const script=document.createElement('script');
  script.src=(location.pathname.includes('/formations/')?'../':'')+'chatbot-ai.js';
- script.async=true;document.head.appendChild(script);
+ script.async=true;
+ script.onerror=()=>{
+   /* If the AI client fails to load, restore the clearly labelled local assistant. */
+   window.IAgileChatConfig={endpoint:''};
+   const guided=document.createElement('script');
+   guided.src=(location.pathname.includes('/formations/')?'../':'')+'chatbot.js';
+   guided.async=true;document.head.appendChild(guided);
+ };
+ document.head.appendChild(script);
  return;
 }
 const isCoursePage=location.pathname.includes('/formations/');

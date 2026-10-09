@@ -3,7 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const pages = ['index.html', 'parcours.html', 'a-propos.html', 'faq.html', '404.html','formations/sites-web-3d.html','formations/agents-personnalises.html','formations/automatiser-tache.html','formations/ia-au-quotidien.html'];
+const pages = ['index.html', 'parcours.html', 'a-propos.html', 'faq.html', '404.html', 'ouverture.html','formations/sites-web-3d.html','formations/agents-personnalises.html','formations/automatiser-tache.html','formations/ia-au-quotidien.html'];
 let links=0;let checked=0;
 for (const page of pages) {
   const source = fs.readFileSync(path.join(root,page), 'utf8');
@@ -13,6 +13,14 @@ for (const page of pages) {
   assert.match(source, /<main\b/i, page+' missing main');
   assert.match(source, /<h1\b/i, page+' missing h1');
   assert.match(source, /rel="canonical"/i, page+' missing canonical');
+  // The chatbot must be present and share the same public config across all pages.
+  const base = page.startsWith('formations/') ? '../' : (page==='404.html'?'/IAgile/':'');
+  const configTag = 'src="'+base+'chat-config.js"';
+  const chatTag = 'src="'+base+'chatbot.js"';
+  assert(source.includes(configTag), page+' missing chatbot config');
+  assert(source.includes(chatTag), page+' missing chatbot widget');
+  assert(source.indexOf(configTag)<source.indexOf(chatTag), page+' must load config before widget');
+  assert(source.includes('chatbot.css'), page+' missing chatbot styles');
   let hits=[...source.matchAll(/\b(?:href|src)="([^"\r\n]+)"/g)].map(m=>m[1]);
   for (let h of hits) {
     if (/^(?:https?:|mailto:|tel:|data:|javascript:)/.test(h)) continue;
@@ -24,7 +32,7 @@ for (const page of pages) {
       assert(source.includes(`id="${fragment}"`) || source.includes(`name="${fragment}"`), `${page}: missing local anchor #${fragment}`);
       links++; continue;
     }
-    let filename = path.resolve(path.dirname(path.join(root,page)),rel||page);
+    let filename = rel.startsWith('/IAgile/') ? path.resolve(root,rel.slice('/IAgile/'.length)) : path.resolve(path.dirname(path.join(root,page)),rel||page);
     assert(filename.startsWith(root+path.sep) || filename===root,`${page}: href escapes root ${h}`);
     assert(fs.existsSync(filename), `${page}: missing file ${h}`);
     if(fragment && /\.html?$/.test(rel)) {
@@ -36,7 +44,7 @@ for (const page of pages) {
   checked++;
 }
 const sitemap=fs.readFileSync(path.join(root,'sitemap.xml'),'utf8');
-for (const p of pages.filter(p=>p!=='404.html')) {
+for (const p of pages.filter(p=>p!=='404.html' && p!=='ouverture.html')) {
   const url='https://cosscoll.github.io/IAgile/'+(p==='index.html'?'':p);
   assert(sitemap.includes(`<loc>${url}</loc>`), `sitemap missing ${p}`);
 }
