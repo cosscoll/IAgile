@@ -20,6 +20,7 @@ jobs:
           node --check chatbot.js
           node --check chatbot-ai.js
           node --check api/chat.js
+          node --check tests/live-site-check.mjs
       - name: Tester la sécurité du backend isolé
         working-directory: backend-iagile
         run: npm test
