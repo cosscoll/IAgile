@@ -45,3 +45,9 @@ test('progress is measurable and updates after completion changes',()=>{
   assert(js.includes("const refreshProgress=()=>"));
   assert(js.includes("refreshProgress();message('Progression enregistrée.')"));
 });
+
+test('learner session refresh and course navigation purge stale private nodes',()=>{
+ assert(js.includes("if(error || !data?.user){ user=null;viewGuard.invalidate();clearPrivateContent();"));
+ assert(js.includes("  clearPrivateContent();\n  $('courses').hidden=false;"));
+ assert(js.includes("for(const id of ['modules','prompts','courseAssets'])$(id).replaceChildren()"));
+});
