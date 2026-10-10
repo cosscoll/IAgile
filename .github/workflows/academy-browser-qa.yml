@@ -1,0 +1,31 @@
+name: IAgile Academy - QA navigateur
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "academy-private/**"
+      - ".github/workflows/academy-browser-qa.yml"
+concurrency:
+  group: academy-browser-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Installer le navigateur de test
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Tester réellement l'interface Academy
+        run: |
+          python3 -m http.server 8123 >/tmp/academy-server.log 2>&1 &
+          sleep 2
+          node academy-private/tests/browser-smoke.mjs
+          node academy-private/tests/browser-workflows.mjs
