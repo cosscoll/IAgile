@@ -1,0 +1,7 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>IAgile Academy — Formateurs</title><link rel="stylesheet" href="./styles.css"></head><body>
+<a href="#main" class="skip">Aller au contenu</a>
+<header><a class="brand" href="./index.html">IAgile Academy</a><div class="session"><span id="identity"></span><button id="logout" type="button" hidden>Déconnexion</button></div></header>
+<main id="main"><section class="intro"><h1>Espace formateur</h1><p>Progression et livrables des apprenants des formations qui vous sont attribuées.</p></section>
+<section id="teacherAuth" class="panel" hidden><h2>Connexion</h2><form id="teacherLogin"><label for="email">E-mail</label><input id="email" type="email" required><label for="password">Mot de passe</label><input id="password" type="password" required><button type="submit">Connexion</button></form></section>
+<section id="teacherDashboard" hidden><h2>Mes formations</h2><div id="teacherCourses" class="courses"></div><section id="teacherDetails" hidden><button id="teacherBack" type="button">Retour</button><h2 id="teacherCourseTitle"></h2><div id="learners" class="modules"></div><div id="learnerDetails"></div></section></section><p id="teacherStatus" role="status" aria-live="polite"></p></main>
+<footer>IAgile Academy — Accès réservé aux formateurs autorisés.</footer><script type="module" src="./instructor.js"></script></body></html>

@@ -26,3 +26,11 @@ jobs:
       - name: Tester la sécurité du backend isolé
         working-directory: backend-iagile
         run: npm test
+      - name: Tester les interfaces privées Academy et les outils de ressources
+        run: |
+          node --check academy-private/app.js
+          node --check academy-private/instructor.js
+          node --check academy-private/deliverables.js
+          node --check academy-private/assets.js
+          node --test academy-private/tests/*.test.mjs
+          python3 -m unittest discover -s academy-private/scripts -p 'test_*.py'
