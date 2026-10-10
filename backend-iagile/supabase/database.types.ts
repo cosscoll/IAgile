@@ -1,5 +1,4 @@
-// Generated from IAgile Academy Supabase project after instructor feedback migration (2026-10-10).
-// Keep this synchronized with project schema.
+// Generated from IAgile Academy Supabase, feedback revision lock (2026-10-10).
 export type Json =
   | string
   | number
@@ -138,6 +137,7 @@ export type Database = {
       }
       academy_deliverable_feedback: {
         Row: {
+          answer_updated_at: string
           course_slug: string
           deliverable_index: number
           feedback_text: string
@@ -147,6 +147,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          answer_updated_at?: string
           course_slug: string
           deliverable_index: number
           feedback_text: string
@@ -156,6 +157,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          answer_updated_at?: string
           course_slug?: string
           deliverable_index?: number
           feedback_text?: string
