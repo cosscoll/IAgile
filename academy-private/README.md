@@ -35,3 +35,10 @@ Les sept consignes de travaux du parcours `processus` ont été enrichies **dire
 La vue formateur affiche maintenant la consigne et les critères du travail à côté de la réponse enregistrée, via le rendu Markdown sûr et en lecture seule. Cette fonctionnalité est **développée et testée sur la branche**, sans déploiement Academy réel.
 
 Avant de publier les consignes, charger les documents de cas fictif correspondants dans un espace privé, valider les corrections formateur et exécuter le test multi-comptes sur le backend réel. Les tests Chromium actuels utilisent des données fictives.
+
+
+## Retours pédagogiques — 10 octobre 2026
+
+La table privée `academy_deliverable_feedback` existe maintenant dans le projet Supabase IAgile Academy. Elle permet au formateur **affecté** à la formation d'enregistrer un avis `validated` ou `needs_revision` et un commentaire entre 20 et 5000 caractères pour un livrable existant. L'apprenant ne peut que lire le retour qui lui est destiné, si son inscription et son compte sont actifs. La table est soumise à RLS et ne donne aucun accès au rôle anonyme. Le schéma TypeScript a été régénéré, et la migration appliquée est copiée dans `migrations/20261010_instructor_feedback.sql`.
+
+La vue formateur permet d'enregistrer le retour et la vue apprenant l'affiche. La validation automatique et la simulation Chromium ne remplacent pas la recette sur de vrais comptes Supabase, et la PR ne doit pas être fusionnée avant les contrôles de sécurité et de publication.
