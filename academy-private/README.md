@@ -26,3 +26,12 @@ Migrations Supabase : `academy_curriculum_drafts_drive_v1` et `academy_capstone_
 Le lecteur présente les titres, listes et passages mis en évidence du Markdown par des éléments DOM construits sans `innerHTML`. Les notes privées sont enregistrables par module. La déconnexion supprime les contenus pédagogiques visibles ou chargés du DOM. Les tests correspondants sont inclus dans `academy-private/tests`.
 
 La couverture automatisée reste partielle : ne pas confondre tests de rendu, tests anonymes REST et validation avec vrais comptes apprenants/formateurs.
+
+
+## Évaluation du pilote Processus (10 octobre 2026)
+
+Les sept consignes de travaux du parcours `processus` ont été enrichies **directement dans Supabase** avec livrable attendu, critères d'évaluation et autocontrôle. Les consignes initiales restent présentes. Les sept travaux restent `published=false` et aucune ressource premium n'a été placée dans ce dépôt public.
+
+La vue formateur affiche maintenant la consigne et les critères du travail à côté de la réponse enregistrée, via le rendu Markdown sûr et en lecture seule. Cette fonctionnalité est **développée et testée sur la branche**, sans déploiement Academy réel.
+
+Avant de publier les consignes, charger les documents de cas fictif correspondants dans un espace privé, valider les corrections formateur et exécuter le test multi-comptes sur le backend réel. Les tests Chromium actuels utilisent des données fictives.
