@@ -1,6 +1,7 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.79.0';
 import {SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY} from './config.js';
 import {createRequestGuard} from './request-guard.js';
+import {renderCourseMarkdown} from './markdown.js';
 const db=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const $=id=>document.getElementById(id);
 const info=txt=>{$('teacherStatus').textContent=txt||'';};
@@ -75,19 +76,28 @@ async function openLearner(course,uid,name){
   const isCurrent=()=>authGuard.valid(sessionTicket)&&viewGuard.valid(viewTicket)&&teacher?.id===instructorId;
   if(!instructorId)return;
   $('learnerDetails').replaceChildren();info('Chargement du suivi…');
-  const [{data:progress,error:e1},{data:answers,error:e2}]=await Promise.all([
+  const [{data:progress,error:e1},{data:answers,error:e2},{data:prompts,error:e3}]=await Promise.all([
     db.from('academy_module_progress').select('module_index,completed,updated_at').eq('user_id',uid).eq('course_slug',course.slug),
-    db.from('academy_deliverable_answers').select('deliverable_index,content,updated_at').eq('user_id',uid).eq('course_slug',course.slug)
+    db.from('academy_deliverable_answers').select('deliverable_index,content,updated_at').eq('user_id',uid).eq('course_slug',course.slug),
+    db.from('academy_deliverable_prompts').select('deliverable_index,title,instructions_markdown').eq('course_slug',course.slug).eq('published',true)
   ]);
   if(!isCurrent())return;
-  if(e1||e2){info('Lecture du suivi non autorisée ou indisponible.');return;}
+  if(e1||e2||e3){info('Lecture du suivi ou des critères non autorisée ou indisponible.');return;}
   const wrap=el('section');wrap.className='panel';
   wrap.append(el('h3',name||'Suivi apprenant'));
   wrap.append(el('p',(progress||[]).filter(x=>x.completed).length+' module(s) terminés.'));
   const title=el('h4','Travaux transmis');wrap.append(title);
   if(!answers?.length)wrap.append(el('p','Aucun livrable enregistré.'));
+  const promptByIndex=new Map((prompts||[]).map(p=>[p.deliverable_index,p]));
   for(const answer of answers||[]){
-    wrap.append(el('h5','Livrable '+answer.deliverable_index));
+    const prompt=promptByIndex.get(answer.deliverable_index);
+    wrap.append(el('h5',prompt?.title||'Livrable '+answer.deliverable_index));
+    if(prompt){
+      const details=el('details');
+      details.append(el('summary','Voir les consignes et critères d’évaluation'));
+      details.append(renderCourseMarkdown(prompt.instructions_markdown));
+      wrap.append(details);
+    }
     const text=el('pre',answer.content);text.className='lesson';wrap.append(text);
   }
   $('learnerDetails').append(wrap);info('');
