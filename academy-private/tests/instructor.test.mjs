@@ -26,3 +26,8 @@ test('formateur: correction liée à la version exacte du travail',()=>{
  assert(js.includes('answer_updated_at:answer.updated_at'));
  assert(js.includes("instructor_id:instructorId"));
 });
+
+test('instructor session refresh purges previously loaded student data',()=>{
+ assert(js.includes('if(!teacher)clearStudentData()'));
+ assert(js.includes("  clearStudentData();\n  $('teacherCourses').hidden=false;"));
+});
