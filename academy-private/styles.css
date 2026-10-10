@@ -12,3 +12,11 @@ textarea{font:inherit;width:100%;resize:vertical;min-height:9rem;margin:.7rem 0 
 .progress-widget{margin:1.5rem 0 1.8rem;max-width:470px}
 .progress-widget p{font-size:.9rem;color:#b8c9ea;margin:0 0 .7rem}
 .progress-widget progress{width:100%;height:12px;accent-color:#92b4ff}
+
+/* Formative evaluation: accessible in both learner and instructor views. */
+.assignment-feedback{margin-top:1.1rem;padding:1rem;border:1px solid #5a7394;border-radius:10px;background:#14243d;color:#f0f5ff;line-height:1.5}
+.assignment-feedback strong{display:block;margin-bottom:.5rem}
+.assignment-feedback p{color:#e0e8f6;margin:.2rem 0}
+.module-card select{display:block;width:100%;padding:.8rem;border:1px solid #647895;border-radius:8px;background:#121b2d;color:#fff;margin:.5rem 0 1rem}
+.module-card label{display:block;margin:1rem 0 .4rem;font-weight:650}
+.module-card select:focus-visible{outline:3px solid #98b8ff;outline-offset:3px}
