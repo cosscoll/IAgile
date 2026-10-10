@@ -2,6 +2,12 @@
 # Prefer the vetted GitHub Actions artifact; see issue #7.
 # This exclusion list is generated from all files outside the approved public allowlist.
 exclude:
+  - ".github/"
+  - "academy-private/"
+  - "api/"
+  - "backend-iagile/"
+  - "docs/"
+  - "tests/"
   - ".github/workflows/chatbot-qa.yml"
   - ".github/workflows/deploy.yml"
   - "README.md"
