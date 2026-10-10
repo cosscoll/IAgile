@@ -27,6 +27,7 @@ exclude:
   - "package.json"
   - "tests/chat.test.mjs"
   - "tests/current-live-exposure.test.mjs"
+  - "tests/current-published-version.test.mjs"
   - "tests/jekyll-boundary.test.mjs"
   - "tests/live-site-check.mjs"
   - "tests/publication-boundary.test.mjs"
