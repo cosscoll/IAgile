@@ -58,6 +58,8 @@ try {
  await page.getByRole('button',{name:'Voir les apprenants'}).click();
  await page.getByRole('button',{name:'Consulter le suivi'}).click();
  await page.getByText('Projet de démonstration').waitFor();
+ await page.locator('#learnerDetails details summary').click();
+ await page.getByText('Présenter votre démarche').waitFor();
  assert.match(await page.locator('#learnerDetails').innerText(),/1 module\(s\) terminés/);
  assert.deepEqual(errors,[],'Unexpected browser exceptions');
  console.log('Instructor journey: assigned students, read-only progress and work review OK');
