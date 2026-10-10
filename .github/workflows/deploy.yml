@@ -30,6 +30,7 @@ jobs:
           node tests/site-check.mjs
           node --test tests/chat.test.mjs
           node tests/publication-boundary.test.mjs
+          node tests/jekyll-boundary.test.mjs
           node --check script.js
           node --check chatbot.js
           node --check chatbot-ai.js
