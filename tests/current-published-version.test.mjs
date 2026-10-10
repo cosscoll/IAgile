@@ -1,4 +1,5 @@
 // Independent post-deployment audit: compare the current main commit to public Pages.
+// Re-run after native Pages becomes the single deployment publisher.
 // Executed on a PR branch after both deployment workflows completed.
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
