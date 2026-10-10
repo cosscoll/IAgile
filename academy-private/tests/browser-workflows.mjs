@@ -66,6 +66,7 @@ try {
  const feedbackState=await page.evaluate(()=>window.__academyTestState.academy_deliverable_feedback);
  assert.equal(feedbackState[0].status,'needs_revision');
  assert.equal(feedbackState[0].instructor_id,'FORMATEUR');
+ assert.equal(feedbackState[0].answer_updated_at,'2026-10-10T16:50:00.000Z');
  assert.match(await page.locator('#learnerDetails').innerText(),/1 module\(s\) terminés/);
  assert.deepEqual(errors,[],'Unexpected browser exceptions');
  console.log('Instructor journey: assigned students, read-only progress and work review OK');
