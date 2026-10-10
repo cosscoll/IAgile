@@ -79,5 +79,12 @@ try {
  assert.match(await page.locator('#learnerDetails').innerText(),/1 module\(s\) terminés/);
  assert.deepEqual(errors,[],'Unexpected browser exceptions');
  console.log('Instructor journey: assigned students, read-only progress and work review OK');
+ await page.locator('#logout').click();
+ await page.locator('#teacherAuth').waitFor({state:'visible'});
+ for(const id of ['teacherCourses','learners','learnerDetails']){
+   assert.equal(await page.locator('#'+id).evaluate(e=>e.children.length),0,
+     'Learner information persisted in instructor DOM: '+id);
+ }
+ console.log('Instructor logout purges personally identifiable learner data');
  await context.close();
 }finally{await browser.close();}
