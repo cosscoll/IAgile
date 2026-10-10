@@ -129,7 +129,8 @@ async function openLearner(course,uid,name){
         if(feedbackText.length<20){info('Le retour pédagogique doit contenir au moins 20 caractères.');comment.focus();return;}
         button.disabled=true;info('Enregistrement de l’évaluation…');
         const payload={user_id:uid,course_slug:course.slug,deliverable_index:answer.deliverable_index,
-          instructor_id:instructorId,status:status.value,feedback_text:feedbackText,reviewed_at:new Date().toISOString()};
+          instructor_id:instructorId,status:status.value,feedback_text:feedbackText,
+          answer_updated_at:answer.updated_at,reviewed_at:new Date().toISOString()};
         const {error:saveError}=await db.from('academy_deliverable_feedback').upsert(payload,
           {onConflict:'user_id,course_slug,deliverable_index'});
         if(!isCurrent())return;
