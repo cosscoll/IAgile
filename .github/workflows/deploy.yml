@@ -30,12 +30,14 @@ jobs:
           node tests/site-check.mjs
           node --test tests/chat.test.mjs
           node tests/publication-boundary.test.mjs
+          node tests/jekyll-boundary.test.mjs
           node --check script.js
           node --check chatbot.js
           node --check chatbot-ai.js
           node --check api/chat.js
           node --check formation.js
           node --check parcours.js
+          node --check tests/live-site-check.mjs
       - name: Stage approved public assets only
         shell: bash
         run: |
@@ -92,6 +94,8 @@ jobs:
           test ! -e public-site/learning-engine.js
           test ! -e public-site/learning-engine.css
           test ! -e public-site/.git
+          # Release marker must only be present in the published artifact, not the public repository.
+          printf '\n<!-- iagile-release-sha:%s -->\n' "$GITHUB_SHA" >> public-site/index.html
           node tests/publication-boundary.test.mjs public-site
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
