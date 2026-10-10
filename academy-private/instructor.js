@@ -76,19 +76,21 @@ async function openLearner(course,uid,name){
   const isCurrent=()=>authGuard.valid(sessionTicket)&&viewGuard.valid(viewTicket)&&teacher?.id===instructorId;
   if(!instructorId)return;
   $('learnerDetails').replaceChildren();info('Chargement du suivi…');
-  const [{data:progress,error:e1},{data:answers,error:e2},{data:prompts,error:e3}]=await Promise.all([
+  const [{data:progress,error:e1},{data:answers,error:e2},{data:prompts,error:e3},{data:feedback,error:e4}]=await Promise.all([
     db.from('academy_module_progress').select('module_index,completed,updated_at').eq('user_id',uid).eq('course_slug',course.slug),
     db.from('academy_deliverable_answers').select('deliverable_index,content,updated_at').eq('user_id',uid).eq('course_slug',course.slug),
-    db.from('academy_deliverable_prompts').select('deliverable_index,title,instructions_markdown').eq('course_slug',course.slug).eq('published',true)
+    db.from('academy_deliverable_prompts').select('deliverable_index,title,instructions_markdown').eq('course_slug',course.slug).eq('published',true),
+    db.from('academy_deliverable_feedback').select('deliverable_index,instructor_id,status,feedback_text').eq('user_id',uid).eq('course_slug',course.slug)
   ]);
   if(!isCurrent())return;
-  if(e1||e2||e3){info('Lecture du suivi ou des critères non autorisée ou indisponible.');return;}
+  if(e1||e2||e3||e4){info('Lecture du suivi ou des retours non autorisée ou indisponible.');return;}
   const wrap=el('section');wrap.className='panel';
   wrap.append(el('h3',name||'Suivi apprenant'));
   wrap.append(el('p',(progress||[]).filter(x=>x.completed).length+' module(s) terminés.'));
   const title=el('h4','Travaux transmis');wrap.append(title);
   if(!answers?.length)wrap.append(el('p','Aucun livrable enregistré.'));
   const promptByIndex=new Map((prompts||[]).map(p=>[p.deliverable_index,p]));
+  const feedbackByIndex=new Map((feedback||[]).map(f=>[f.deliverable_index,f]));
   for(const answer of answers||[]){
     const prompt=promptByIndex.get(answer.deliverable_index);
     wrap.append(el('h5',prompt?.title||'Livrable '+answer.deliverable_index));
@@ -99,6 +101,46 @@ async function openLearner(course,uid,name){
       wrap.append(details);
     }
     const text=el('pre',answer.content);text.className='lesson';wrap.append(text);
+    const review=feedbackByIndex.get(answer.deliverable_index);
+    const reviewArea=el('section');reviewArea.className='module-card';
+    const reviewTitle=el('h5','Évaluation du travail');reviewArea.append(reviewTitle);
+    if(review){
+      reviewArea.append(el('p',review.status==='validated'?'Statut : validé':'Statut : modifications demandées'));
+      reviewArea.append(el('p',review.feedback_text));
+    }else{
+      reviewArea.append(el('p','Aucun retour formateur enregistré.'));
+    }
+    if(!review||review.instructor_id===instructorId){
+      const suffix=course.slug+'-'+uid+'-'+answer.deliverable_index;
+      const statusLabel=el('label','Décision pédagogique');
+      const status=el('select');status.id='review-status-'+suffix;statusLabel.htmlFor=status.id;
+      for(const [value,title] of [['needs_revision','À retravailler'],['validated','Validé']]){
+        const option=el('option',title);option.value=value;status.append(option);
+      }
+      status.value=review?.status||'needs_revision';
+      const commentLabel=el('label','Retour pédagogique (20 caractères minimum)');
+      const comment=el('textarea');comment.id='review-comment-'+suffix;commentLabel.htmlFor=comment.id;
+      comment.rows=5;comment.maxLength=5000;comment.minLength=20;
+      comment.value=review?.feedback_text||'';
+      const button=el('button','Enregistrer le retour');button.type='button';
+      button.addEventListener('click',async()=>{
+        if(!isCurrent())return;
+        const feedbackText=comment.value.trim();
+        if(feedbackText.length<20){info('Le retour pédagogique doit contenir au moins 20 caractères.');comment.focus();return;}
+        button.disabled=true;info('Enregistrement de l’évaluation…');
+        const payload={user_id:uid,course_slug:course.slug,deliverable_index:answer.deliverable_index,
+          instructor_id:instructorId,status:status.value,feedback_text:feedbackText,reviewed_at:new Date().toISOString()};
+        const {error:saveError}=await db.from('academy_deliverable_feedback').upsert(payload,
+          {onConflict:'user_id,course_slug,deliverable_index'});
+        if(!isCurrent())return;
+        button.disabled=false;
+        if(saveError){info('Évaluation non enregistrée. Vérifiez les autorisations ou réessayez.');return;}
+        feedbackByIndex.set(answer.deliverable_index,payload);
+        info('Retour pédagogique enregistré.');
+      });
+      reviewArea.append(statusLabel,status,commentLabel,comment,button);
+    }
+    wrap.append(reviewArea);
   }
   $('learnerDetails').append(wrap);info('');
 }
