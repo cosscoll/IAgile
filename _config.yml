@@ -26,6 +26,7 @@ exclude:
   - "orbit.css"
   - "package.json"
   - "tests/chat.test.mjs"
+  - "tests/jekyll-boundary.test.mjs"
   - "tests/live-site-check.mjs"
   - "tests/publication-boundary.test.mjs"
   - "tests/site-check.mjs"
