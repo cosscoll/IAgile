@@ -20,6 +20,14 @@ const paths=[
   'README.html'
 ];
 const nonce=encodeURIComponent(process.env.GITHUB_SHA||'security-probe');
+const home=await fetch(base+'?boundary='+nonce,{
+  signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}
+});
+assert.equal(home.status,200,'Homepage must be publicly reachable as HTTP 200');
+const homeContent=await home.text();
+assert.match(homeContent,/<title>[^<]*IAgile/i,'Unexpected public homepage title');
+assert.match(homeContent,/<html\b/i);
+console.log('PASS: public homepage accessible — HTTP 200');
 const issues=[];
 for(const path of paths){
   let checked=false;
