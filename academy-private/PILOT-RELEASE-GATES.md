@@ -50,3 +50,15 @@ Le connecteur Supabase actuellement disponible expose SQL/RLS/Edge Functions, **
 ## Règles de sécurité
 
 Aucun contenu pédagogique payant ni fichier test contenant des données réelles sur GitHub ou GitHub Pages. Les fichiers du pack sont intégralement fictifs mais réservés aux apprenants, et ne constituent ni validation humaine ni preuve d'une plateforme prête.
+
+## Barrières de sécurité supplémentaires — testées le 10 octobre 2026
+
+- **Règle côté base `academy_course_release_guard`** : l'ouverture d'une formation est interdite s'il manque un module publié, une consigne publiée ou un fichier référencé et effectivement disponible dans le bucket privé. Une tentative de publication du parcours Processus incomplet a été refusée. Test SQL transactionnel, aucune donnée conservée.
+- **Contrôle de taille des données** : une réponse doit contenir de 1 à 10 000 caractères utiles, une note ne peut dépasser 4 000 caractères. Le timestamp initial d'une réponse est produit par le serveur. Test de refus des valeurs vides ou trop longues effectué en SQL.
+- **Tableau de bord privé de lancement** : `academy_private.course_launch_readiness`, non autorisé à `anon` ou `authenticated`, agrège modules, travaux, ressources attendues et statut des fichiers. Les quatre formations ont `content_release_ready=false` au dernier contrôle.
+- **Cloisonnement du navigateur** : lors d'une déconnexion ou d'un changement de session/cours, les leçons, documents et travaux déjà chargés sont retirés du DOM avant le chargement suivant. Les tests Chromium portent désormais sur la sortie apprenant et formateur.
+- **Concordance de l'archive pédagogique** : les 12 fichiers du ZIP local ont été contrôlés contre leurs tailles et empreintes SHA-256 ; les 12 métadonnées correspondent à ces empreintes et tailles. L'archive ne figure pas dans le dépôt public.
+
+### Interdiction de conclure à un lancement prêt
+
+Une sécurité RLS correcte et des tests Chromium avec compte simulé **ne remplacent pas** l'envoi des fichiers dans Storage, les droits testés via Supabase Auth réel et une revue pédagogique humaine. Ne jamais passer les cours en `published=true` ni ouvrir les ventes tant que ces conditions ne sont pas documentées.
