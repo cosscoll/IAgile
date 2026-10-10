@@ -17,6 +17,7 @@ export function createClient() {
     academy_module_progress:instructor?[{user_id:'APPRENANT',course_slug:'agents',module_index:0,completed:true,notes:'Note de test'}]:[],
     academy_deliverable_prompts:[{course_slug:'agents',deliverable_index:0,title:'Projet final',instructions_markdown:'## Sujet\nPrésenter votre démarche',published:true}],
     academy_deliverable_answers:instructor?[{user_id:'APPRENANT',course_slug:'agents',deliverable_index:0,content:'Projet de démonstration'}]:[],
+    academy_deliverable_feedback:[],
     academy_course_assets:[{course_slug:'agents',asset_key:'test',title:'Support de test',storage_path:'agents/test.pdf',published:true}]
   };
   const from=table=>{
@@ -30,7 +31,7 @@ export function createClient() {
       order(){return this;},
       maybeSingle(){return Promise.resolve({data:filter()[0]||null,error:null});},
       then(yes,no){return Promise.resolve({data:filter(),error:null}).then(yes,no);},
-      async upsert(payload){const key=table==='academy_deliverable_answers'?'deliverable_index':'module_index';
+      async upsert(payload){const key=['academy_deliverable_answers','academy_deliverable_feedback'].includes(table)?'deliverable_index':'module_index';
         const old=rows.find(x=>x.user_id===payload.user_id&&x.course_slug===payload.course_slug&&x[key]===payload[key]);
         if(old)Object.assign(old,payload);else rows.push(payload);return {error:null};
       }
