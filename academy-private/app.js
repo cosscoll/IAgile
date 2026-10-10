@@ -26,7 +26,7 @@ async function start() {
   $('configuration').hidden=true;
   const {data,error}=await supabase.auth.getUser();
   if(!authGuard.valid(authTicket))return;
-  if(error || !data?.user){ user=null; showSignedIn(false); return; }
+  if(error || !data?.user){ user=null;viewGuard.invalidate();clearPrivateContent();showSignedIn(false);return; }
   user=data.user; showSignedIn(true); await listCourses();
 }
 async function listCourses() {
@@ -35,8 +35,8 @@ async function listCourses() {
   const sessionTicket=authGuard.current();
   const isCurrent=()=>viewGuard.valid(ticket)&&authGuard.valid(sessionTicket)&&user?.id===uid;
   if(!uid)return;
-  $('courseView').hidden=true; $('courses').hidden=false;
-  $('courses').replaceChildren();
+  clearPrivateContent();
+  $('courses').hidden=false;
   message('Chargement de vos formations…');
   const {data:profile,error:profileError}=await supabase.from('academy_profiles').select('account_status').eq('user_id',user.id).maybeSingle();
   if(!isCurrent())return;
@@ -78,7 +78,8 @@ async function openCourse(course,{navigate=true}={}){
     window.history.pushState({academy:true},'',url);
   }
   $('courses').hidden=true;$('courseView').hidden=false;$('courseTitle').textContent=course.title;$('courseDescription').textContent=course.summary;
-  $('modules').replaceChildren();message('Chargement des modules…');
+  for(const id of ['modules','prompts','courseAssets'])$(id).replaceChildren();
+  message('Chargement des modules…');
   const [{data:modules,error},{data:progress,error:progressError}]=await Promise.all([
     supabase.from('academy_course_modules').select('course_slug,module_index,title,published').eq('course_slug',course.slug).eq('published',true).order('module_index'),
     supabase.from('academy_module_progress').select('module_index,completed,notes').eq('course_slug',course.slug).eq('user_id',user.id)
