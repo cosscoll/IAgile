@@ -60,6 +60,12 @@ try {
  await page.getByText('Projet de démonstration').waitFor();
  await page.locator('#learnerDetails details summary').click();
  await page.getByText('Présenter votre démarche').waitFor();
+ await page.getByLabel('Retour pédagogique (20 caractères minimum)').fill('La démarche doit préciser les risques et les critères.');
+ await page.getByRole('button',{name:'Enregistrer le retour'}).click();
+ await page.getByText('Retour pédagogique enregistré.').waitFor();
+ const feedbackState=await page.evaluate(()=>window.__academyTestState.academy_deliverable_feedback);
+ assert.equal(feedbackState[0].status,'needs_revision');
+ assert.equal(feedbackState[0].instructor_id,'FORMATEUR');
  assert.match(await page.locator('#learnerDetails').innerText(),/1 module\(s\) terminés/);
  assert.deepEqual(errors,[],'Unexpected browser exceptions');
  console.log('Instructor journey: assigned students, read-only progress and work review OK');
