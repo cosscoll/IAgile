@@ -9,6 +9,7 @@ const protectedTables = [
   'academy_course_assets',
   'academy_deliverable_prompts',
   'academy_deliverable_answers',
+  'academy_deliverable_feedback',
   'academy_enrollments',
   'academy_module_progress',
   'academy_profiles'
