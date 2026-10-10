@@ -43,10 +43,10 @@ console.log('PASS — Jekyll exclusion covers every non-vitrine file ('+excluded
 
 const requiredDirs=['.github/','academy-private/','api/','backend-iagile/','docs/','tests/'];
 for(const dir of requiredDirs)assert(excluded.has(dir),'Sensitive directory not excluded: '+dir);
-assert(!/actions\\/(?:deploy-pages|upload-pages-artifact)@/.test(workflow),'Custom Pages deployment still enabled');
-assert(!/^\\s+pages:\\s*write\\s*$/m.test(workflow),'QA workflow must not have Pages publication permission');
+assert(!/actions\/(?:deploy-pages|upload-pages-artifact)@/.test(workflow),'Custom Pages deployment still enabled');
+assert(!/^\s+pages:\s*write\s*$/m.test(workflow),'QA workflow must not have Pages publication permission');
 const home=fs.readFileSync(path.join(root,'index.html'),'utf8');
-assert(home.startsWith('---\\nlayout: null\\n---\\n'),'Jekyll metadata frontmatter is required');
+assert(home.startsWith('---\nlayout: null\n---\n'),'Jekyll metadata frontmatter is required');
 assert(home.includes('<!-- iagile-release-sha:{{ site.github.build_revision }} -->'),
  'Native Jekyll revision marker missing');
 console.log('PASS — only native Jekyll publishes; restricted directories excluded and revision stamped');
