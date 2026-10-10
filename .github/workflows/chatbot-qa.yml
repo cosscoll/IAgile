@@ -23,6 +23,8 @@ jobs:
           node --check tests/live-site-check.mjs
       - name: Auditer les fichiers internes du site public actuel
         run: node tests/current-live-exposure.test.mjs
+      - name: Vérifier la version publique après les pipelines de déploiement
+        run: node tests/current-published-version.test.mjs
       - name: Tester la sécurité du backend isolé
         working-directory: backend-iagile
         run: npm test
