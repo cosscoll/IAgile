@@ -1,6 +1,7 @@
 // Test-only Supabase implementation; never used on a deployed Academy site.
 export function createClient() {
   const instructor = location.pathname.endsWith('/instructor.html');
+  let isSignedIn = true;
   const person = {id:instructor?'FORMATEUR':'APPRENANT',email:instructor?'prof@example.test':'eleve@example.test'};
   const state = window.__academyTestState = {
     academy_profiles:[
@@ -40,9 +41,9 @@ export function createClient() {
   };
   return {
     auth:{
-      async getUser(){return {data:{user:person},error:null};},
-      async signInWithPassword(){return {error:null};},
-      async signOut(){return {error:null};},
+      async getUser(){return {data:{user:isSignedIn?person:null},error:null};},
+      async signInWithPassword(){isSignedIn=true;return {error:null};},
+      async signOut(){isSignedIn=false;return {error:null};},
       async resetPasswordForEmail(){return {error:null};},
       async updateUser(){return {error:null};},
       onAuthStateChange(){return {data:{subscription:{unsubscribe(){}}}};}
