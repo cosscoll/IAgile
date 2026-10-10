@@ -32,3 +32,4 @@ jobs:
           node --check academy-private/instructor.js
           node --check academy-private/deliverables.js
           node --test academy-private/tests/*.test.mjs
+          python3 -m unittest discover -s academy-private/scripts -p 'test_*.py'
