@@ -52,7 +52,7 @@ try {
  await page.locator('#courses').waitFor({state:'visible'});
  assert(!page.url().includes('formation='),'Back button must clear direct course link');
  console.log('Direct course routes: allowed and rejected links OK');
- await page.getByRole('button',{name:'Déconnexion'}).click();
+ await page.locator('#signout').click();
  await page.locator('#auth').waitFor({state:'visible'});
  assert.equal(await page.locator('#dashboard').isVisible(),false);
  for(const id of ['modules','prompts','courseAssets']){
