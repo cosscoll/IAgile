@@ -31,6 +31,15 @@ export async function loadDeliverables({supabase,user,course,target,message,isCu
       const {error:saveError}=await supabase.from('academy_deliverable_answers').upsert(payload,{onConflict:'user_id,course_slug,deliverable_index'});
       if(!isCurrent())return;
       button.disabled=false;
+      if(!saveError){
+        const previous=existing.get(prompt.deliverable_index);
+        if(previous!==payload.content){
+          existing.set(prompt.deliverable_index,payload.content);
+          feedbackByIndex.delete(prompt.deliverable_index);
+          status.textContent='En attente de correction';
+          feedback.replaceChildren(status);
+        }
+      }
       message(saveError?'La réponse n’a pas été enregistrée. Veuillez réessayer.':'Votre réponse est enregistrée.');
     });
     const review=feedbackByIndex.get(prompt.deliverable_index);
