@@ -21,3 +21,8 @@ test('formateur: grille de livrable visible sans modification ni HTML non fiable
 });
 
 test('formateur: validation et commentaire pédagogique',()=>{assert(js.includes("'needs_revision'"));assert(js.includes("'validated'"));assert(js.includes('feedbackText.length<20'));});
+
+test('formateur: correction liée à la version exacte du travail',()=>{
+ assert(js.includes('answer_updated_at:answer.updated_at'));
+ assert(js.includes("instructor_id:instructorId"));
+});
