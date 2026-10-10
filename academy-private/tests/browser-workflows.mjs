@@ -52,6 +52,15 @@ try {
  await page.locator('#courses').waitFor({state:'visible'});
  assert(!page.url().includes('formation='),'Back button must clear direct course link');
  console.log('Direct course routes: allowed and rejected links OK');
+ await page.getByRole('button',{name:'Déconnexion'}).click();
+ await page.locator('#auth').waitFor({state:'visible'});
+ assert.equal(await page.locator('#dashboard').isVisible(),false);
+ for(const id of ['modules','prompts','courseAssets']){
+   assert.equal(await page.locator('#'+id).evaluate(e=>e.children.length),0,
+     'Private content remains in DOM after sign-out: '+id);
+ }
+ assert.equal(await page.locator('#courseView').isVisible(),false);
+ console.log('Logout purges loaded private learner course data');
 
  await page.goto(base+'instructor.html',{waitUntil:'domcontentloaded'});
  await page.locator('#teacherDashboard').waitFor({state:'visible',timeout:20000});
