@@ -18,6 +18,7 @@ async function start(){
   const {data,error}=await db.auth.getUser();
   if(!authGuard.valid(authTicket))return;
   teacher=error?null:data?.user;
+  if(!teacher)clearStudentData();
   $('teacherAuth').hidden=!!teacher;$('teacherDashboard').hidden=!teacher;
   $('logout').hidden=!teacher;$('identity').textContent=teacher?.email||'';
   if(teacher)await loadCourses();
@@ -27,7 +28,8 @@ async function loadCourses(){
   const sessionTicket=authGuard.current(),viewTicket=viewGuard.next();
   const isCurrent=()=>authGuard.valid(sessionTicket)&&viewGuard.valid(viewTicket)&&teacher?.id===uid;
   if(!uid)return;
-  $('teacherCourses').hidden=false;$('teacherCourses').replaceChildren();$('teacherDetails').hidden=true;
+  clearStudentData();
+  $('teacherCourses').hidden=false;
   const {data:profile,error:profileError}=await db.from('academy_profiles').select('account_status').eq('user_id',teacher.id).maybeSingle();
   if(!isCurrent())return;
   if(profileError||profile?.account_status!=='active'){info('Ce compte ne dispose pas d’un profil formateur actif.');return;}
