@@ -1,21 +1,18 @@
-name: Deploy IAgile CHROME vitrine
+name: IAgile — QA only (native GitHub Pages publishes)
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
-  pages: write
-  id-token: write
 concurrency:
-  group: iagile-pages
+  group: iagile-qa-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 jobs:
-  deploy:
+  qa:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,7 +35,7 @@ jobs:
           node --check formation.js
           node --check parcours.js
           node --check tests/live-site-check.mjs
-      - name: Stage approved public assets only
+      - name: Vérifier la liste autorisée des actifs de la vitrine (sans déploiement)
         shell: bash
         run: |
           set -euo pipefail
@@ -94,18 +91,4 @@ jobs:
           test ! -e public-site/learning-engine.js
           test ! -e public-site/learning-engine.css
           test ! -e public-site/.git
-          # Release marker must only be present in the published artifact, not the public repository.
-          printf '\n<!-- iagile-release-sha:%s -->\n' "$GITHUB_SHA" >> public-site/index.html
           node tests/publication-boundary.test.mjs public-site
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-      - name: Upload approved static website
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: public-site
-      - name: Publish
-        id: deployment
-        uses: actions/deploy-pages@v4
-      - name: Vérifier le site réellement accessible après publication
-        shell: bash
-        run: node tests/live-site-check.mjs
