@@ -65,3 +65,21 @@ test('feedback is displayed to the learner without altering submitted content',a
  assert(target.children[0].textContent.includes('Précisez les étapes'));
  assert(target.children[0].children.find(x=>x.tagName==='TEXTAREA').value==='Réponse rédigée');
 });
+
+test('editing reviewed work removes the obsolete visible grade after successful save',async()=>{
+ const f=fixture(),target=new FakeElement();
+ const load=loadDeliverables({supabase:f.db,user:{id:'A'},course:{slug:'agents'},target,message:()=>{}});
+ f.pendingPrompts.resolve({data:[prompt],error:null});
+ f.pendingAnswers.resolve({data:[{deliverable_index:0,content:'Ancienne version'}],error:null});
+ f.pendingFeedback.resolve({data:[{deliverable_index:0,status:'validated',feedback_text:'Première version validée par le formateur.'}],error:null});
+ await load;
+ const card=target.children[0];
+ assert(card.textContent.includes('Travail validé'));
+ const area=card.children.find(x=>x.tagName==='TEXTAREA');
+ const save=card.children.find(x=>x.tagName==='BUTTON');
+ area.value='Une nouvelle version substantiellement différente';
+ await save.handlers.click();
+ assert.equal(f.getPayload().content,area.value);
+ assert(card.textContent.includes('En attente de correction'));
+ assert(!card.textContent.includes('Première version validée'));
+});
