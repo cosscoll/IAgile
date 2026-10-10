@@ -12,3 +12,10 @@ test('formateur: sortie nettoie les donnees privees',()=>{
   assert(js.includes("['teacherCourses','learners','learnerDetails']"));
   assert(/if\(event==='SIGNED_OUT'\)\{[^}]*authGuard\.invalidate\(\);[^}]*clearStudentData\(\)/.test(js));
 });
+
+test('formateur: grille de livrable visible sans modification ni HTML non fiable',()=>{
+  assert(js.includes("from('academy_deliverable_prompts')"));
+  assert(js.includes(".eq('published',true)"));
+  assert(js.includes("renderCourseMarkdown(prompt.instructions_markdown)"));
+  assert(js.includes("'Voir les consignes et critères d’évaluation'"));
+});
