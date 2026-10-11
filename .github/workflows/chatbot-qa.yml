@@ -23,6 +23,9 @@ jobs:
           node --check tests/live-site-check.mjs
       - name: Auditer les fichiers internes du site public actuel
         run: node tests/current-live-exposure.test.mjs
+      - name: Contrôler les ressources réellement visibles et les exclusions après publication
+        if: github.event_name == 'pull_request'
+        run: node tests/live-public-resources.test.mjs
       - name: Tester la sécurité du backend isolé
         working-directory: backend-iagile
         run: npm test

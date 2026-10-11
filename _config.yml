@@ -1,6 +1,6 @@
-# Defense-in-depth for the legacy GitHub Pages Jekyll branch build.
-# Prefer the vetted GitHub Actions artifact; see issue #7.
-# This exclusion list is generated from all files outside the approved public allowlist.
+# Source-of-truth exclusions for native GitHub Pages (Jekyll).
+# GitHub Pages publishes main; the custom workflow only runs QA.
+# Keep internal source and paid-course assets out of the public build.
 exclude:
   - ".github/"
   - "academy-private/"
@@ -36,6 +36,7 @@ exclude:
   - "tests/current-live-exposure.test.mjs"
   - "tests/jekyll-boundary.test.mjs"
   - "tests/live-site-check.mjs"
+  - "tests/live-public-resources.test.mjs"
   - "tests/publication-boundary.test.mjs"
   - "tests/site-check.mjs"
   - "webgl.js"
