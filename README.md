@@ -64,3 +64,8 @@ Voir `docs/ETAT-LANCEMENT.md`. Tant que le vendeur, l'offre, la conformité, la 
 - La QA native continue ; le workflow `.github/workflows/pages-controlled.yml` est préparé pour la migration, **déclenchable manuellement uniquement après sélection de Source = GitHub Actions dans GitHub Pages**. Ne pas confondre préparation et activation. Procédure : `docs/DEPLOIEMENT-CONTROLE.md`.
 - L'Academy Supabase existe déjà, avec 10 tables protégées et 47 enregistrements de modules non publiés. La majorité des modules techniques sont encore des ébauches ; aucune mise en vente ni déploiement apprenant autorisé à ce stade. Suivi : `docs/ACADEMY-PLAN.md` et `docs/ACADEMY-CURRICULUM-ROADMAP.md`.
 - Les contrôles de code et de stockage ne démontrent pas à eux seuls le rendu public effectif. Vérifier la production et la version SHA avant toute annonce de mise en ligne.
+
+
+## Prototype technique Academy — 11 octobre 2026
+
+Le répertoire `academy-app/` contient désormais une interface de travail **non publiée** : un tableau de bord et quatre routes de formation. Il utilise Supabase Auth pour la connexion par e-mail, puis consulte le profil, les inscriptions et les cours via les règles RLS. Aucune leçon payante n'est intégrée au dépôt. `tests/academy-shell.test.mjs` vérifie les garde-fous statiques et l'exclusion de l'application du site vitrine. Les tests réels multi-comptes, les URL de retour Auth, l'hébergement dédié et les contenus complets restent à réaliser. Voir `academy-app/README.md`.
