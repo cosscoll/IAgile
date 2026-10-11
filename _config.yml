@@ -10,6 +10,7 @@ exclude:
   - "tests/"
   - ".github/workflows/chatbot-qa.yml"
   - ".github/workflows/deploy.yml"
+  - "ressources/README.md"
   - "README.md"
   - "_config.yml"
   - "api/chat.js"
