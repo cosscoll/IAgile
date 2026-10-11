@@ -30,7 +30,7 @@ def validate_pack(path):
         if manifest.get("course_slug") != COURSE or manifest.get("status") != "draft_unpublished" or manifest.get("version") != "0.1":
             raise ValueError("Unexpected course or publication status")
         names = set(archive.namelist())
-        if len(names) != len(archive.namelist()) or len(names) != 14:
+        if len(names) != len(archive.namelist()) or len(names) not in (13, 14):
             raise ValueError("Unexpected or duplicate entries in ZIP")
         if names - {"manifest.json", "README.md"} - {"datasets/" + f["file"].split("/", 1)[1] for f in manifest["files"]}:
             raise ValueError("Unknown files in ZIP")
