@@ -27,7 +27,11 @@
 
 Ne pas confondre la publication technique GitHub Pages avec une validation de la mise en marché.
 
-## Vérification 09/10/2026 — déploiement Pages
-- Le workflow personnalisé lance les contrôles HTML/liens, sitemap, liste des ressources publiques et la syntaxe des principaux scripts.
-- Un second système automatique « pages build and deployment » reste actif dans le dépôt et peut publier indépendamment du workflow personnalisé. ACTION DE CONFIGURATION : GitHub > Settings > Pages > Build and deployment > Source = GitHub Actions. Ce point doit être vérifié par une personne ayant accès aux paramètres du dépôt.
-- Le pré-lancement reste ouvert; les tests Node ne prouvent pas l'accessibilité réelle du site ou le fonctionnement sur un GPU mobile.
+## Mise au point du 11/10/2026 — mode de publication et risques
+- Configuration du dépôt : `.github/workflows/deploy.yml` est un contrôle de qualité uniquement ; `_config.yml` contient les exclusions Jekyll ; `tests/jekyll-boundary.test.mjs` vérifie leur cohérence.
+- GitHub Pages utilise actuellement le mécanisme natif de publication de la branche `main`. La QA personnalisée **n'est pas un verrou de déploiement** : une modification poussée sur `main` peut être publiée même si les tests personnalisés échouent.
+- Ne **pas** changer uniquement Settings > Pages > Source vers GitHub Actions : le dépôt ne contient pas actuellement de workflow de publication Actions correspondant. Cette modification isolée risquerait de bloquer les mises à jour.
+- Sécurisation recommandée : préparer un nouveau workflow de publication par artefact autorisé, valider les tests avant upload et déploiement, puis basculer ensemble les paramètres Pages vers GitHub Actions et vérifier la version réellement visible sur le site.
+- D'ici là, contrôler chaque ajout de fichier dans `_config.yml`, exécuter la QA, vérifier les ressources internes par des requêtes HTTP et contrôler le marqueur de révision sur la page d'accueil.
+- **À vérifier encore :** accès public effectif, ressources sensibles non servies, rendu mobile/WebGL et parcours clavier sur un vrai navigateur. Un test Node local ne les prouve pas.
+- Le pré-lancement reste ouvert et aucune vente ne doit être engagée sur la seule base de la présence du site en ligne.
