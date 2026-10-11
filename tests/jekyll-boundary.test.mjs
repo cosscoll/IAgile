@@ -41,7 +41,7 @@ for(const file of approved){
 }
 console.log('PASS — Jekyll exclusion covers every non-vitrine file ('+excluded.size+' exclusions; '+approved.size+' approved)');
 
-const requiredDirs=['.github/','academy-private/','api/','backend-iagile/','docs/','tests/'];
+const requiredDirs=['.github/','academy-private/','academy-app/','api/','backend-iagile/','docs/','tests/'];
 for(const dir of requiredDirs)assert(excluded.has(dir),'Sensitive directory not excluded: '+dir);
 assert(!/actions\/(?:deploy-pages|upload-pages-artifact)@/.test(workflow),'Custom Pages deployment still enabled');
 assert(!/^\s+pages:\s*write\s*$/m.test(workflow),'QA workflow must not have Pages publication permission');
