@@ -8,7 +8,7 @@ let links=0;let checked=0;
 for (const page of pages) {
   const source = fs.readFileSync(path.join(root,page), 'utf8');
   assert.match(source, /<title>[^<]+<\/title>/i, page+' missing title');
-  assert(!/<\\/(?:meta|link|img|input|br|hr|source)\\s*>/i.test(source),page+' contains forbidden closing tags for void elements');
+  assert(!/<\/(?:meta|link|img|input|br|hr|source)\s*>/i.test(source),page+' contains forbidden closing tags for void elements');
   assert.match(source, /<meta[^>]+name="description"/i, page+' missing description');
   assert.match(source, /<html[^>]+lang="fr"/i, page+' missing fr lang');
   assert.match(source, /<main\b/i, page+' missing main');
