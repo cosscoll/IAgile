@@ -82,3 +82,14 @@ Projet IAgile Academy interrogé directement par son ID existant malgré une lis
 - Conseils performance : 2 index actuellement inutilisés, sans justification de suppression avant un trafic réel. Référence : https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index
 
 **Décision technique : ne rien rendre public pour le moment.** L'action prioritaire n'est plus de créer des tables ni des titres supplémentaires, mais de finir les modules, déposer les vrais fichiers dans le stockage privé, construire l'interface apprenant et mener des tests d'autorisation multi-comptes.
+
+
+## Prototype d'interface apprenant — 11 octobre 2026
+
+Ajouté au dépôt dans academy-app/ : tableau de bord central, quatre routes de formation (sites-3d, agents, automatisation, processus), design responsive, connexion par e-mail via Supabase Auth et SDK versionné, contrôle du profil actif, de l'inscription active et de published avant interrogation des modules via RLS. Les contenus récupérés ne sont jamais interprétés comme du HTML. shouldCreateUser=false évite de créer automatiquement un nouveau compte depuis le formulaire.
+
+L'application est exclue des deux voies de publication de la vitrine (Jekyll et artefact contrôlé). Le dépôt reste public : seul du code client non secret, et une clé publishable, s'y trouvent. Aucun fichier de cours, corrigé ou clé serveur n'est présent dans ce prototype.
+
+**Statut : source développée, non hébergée, non testée de bout en bout.** Il faut configurer un domaine HTTPS de staging et les redirect URLs de Supabase Auth, créer des comptes pilotes avec profils et droits distincts, vérifier l'isolation RLS, les accès aux supports et l'ergonomie mobile avant de prétendre à un espace apprenant fonctionnel. Les quatre routes représentent à ce stade quatre points d'entrée d'une même application, pas quatre sites hébergés indépendamment. Documentation : academy-app/README.md.
+
+Contrôle complémentaire Storage : les politiques SELECT sont limitées au bucket privé et aux ressources publiées associées à une inscription active ; une politique distincte encadre les brouillons formateurs. Les fonctions academy_private utilisent un search_path fixé, ne sont pas exécutables par anon, et seules deux fonctions de lecture de rôle sont exécutables par authenticated. Aucune alerte automatique de sécurité actuellement remontée. Cela ne remplace pas un test d'intrusion ni un parcours multi-comptes.
