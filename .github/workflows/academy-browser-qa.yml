@@ -29,3 +29,4 @@ jobs:
           sleep 2
           node academy-private/tests/browser-smoke.mjs
           node academy-private/tests/browser-workflows.mjs
+          node academy-private/tests/browser-importer.mjs
