@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const app=path.join(root,'academy-app');
+const config=fs.readFileSync(path.join(app,'config.js'),'utf8');
+const logic=fs.readFileSync(path.join(app,'app.js'),'utf8');
+const nativeConfig=fs.readFileSync(path.join(root,'_config.yml'),'utf8');
+const workflows=fs.readFileSync(path.join(root,'.github/workflows/deploy.yml'),'utf8');
+const slugs=['sites-3d','agents','automatisation','processus'];
+
+assert(nativeConfig.includes('  - "academy-app/"'),'Jekyll may serve untested learner shell');
+assert(!workflows.includes('"academy-app/'),'Learner source should not be staged as a public asset');
+assert(/sb_publishable_/.test(config),'Use a supported publishable key');
+assert(!/sb_secret_|service_role|OPENAI_API_KEY/.test(config),'A secret key is forbidden in the browser');
+assert(logic.includes(".from('academy_profiles')"),'Missing active profile check');
+assert(logic.includes(".from('academy_enrollments')"),'Missing server-side enrollment lookup');
+assert(logic.includes(".from('academy_course_modules')"),'Missing RLS-backed lesson lookup');
+assert(logic.includes(".eq('published',true)"),'Lessons must be explicitly published');
+assert(logic.includes("record?.published"),'Course must be published');
+assert(logic.includes('body.textContent'),'Learner-generated or Markdown body must not be inserted as HTML');
+assert(!logic.includes('innerHTML'),'Unsanitized HTML insertion forbidden');
+assert(logic.includes('shouldCreateUser: false'),'Do not open uninvited account creation');
+assert(!/\.from\('academy_enrollments'\)[\s\S]{0,150}\.(?:insert|update|upsert|delete)\(/.test(logic),'Browser enrollment writes forbidden');
+
+for(const [slug,file] of [['',path.join(app,'index.html')],...slugs.map(s=>[s,path.join(app,'cours',s,'index.html')])]){
+ const source=fs.readFileSync(file,'utf8');
+ assert.match(source,/<html lang="fr">/);
+ assert.match(source,/name="robots" content="noindex,nofollow"/);
+ assert(source.includes('data-course="'+slug+'"'),'Wrong route identifier for '+(slug||'dashboard'));
+ assert(source.includes('id="login-form"')&&source.includes('id="logout"'),'Missing account controls');
+ assert(source.includes('id="auth-section"')&&source.includes('id="learner-section" hidden'),'Private state must start hidden');
+ assert(source.includes('app.js')&&source.includes('config.js')&&source.includes('app.css'),'Shared guarded app missing');
+ assert(!/<script[^>]*>[\s\S]*?(?:body_markdown|course_slug)[\s\S]*?<\/script>/i.test(source),'Premium data embedded in HTML');
+}
+console.log('PASS — private Academy shell: 5 entrypoints, no embedded lessons, guarded Supabase access');
