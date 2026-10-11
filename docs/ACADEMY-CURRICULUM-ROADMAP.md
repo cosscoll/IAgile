@@ -10,7 +10,7 @@ Programmes de référence :
 - Automatisation : https://docs.google.com/document/d/1OKCmqifHvknfq4fKiqAbUbM7cI7llwlNq7ynpoqyi1o/edit
 - Plan directeur : https://docs.google.com/document/d/1q0QmR8OsVqsENxJz5WsP1TAFrSOIinh9YgRtO1D-GGI/edit
 
-Distinction : **contenu produit dans Drive** ne signifie pas **contenu intégré à Supabase**. L'Academy a aujourd'hui neuf modules de processus enregistrés, non publiés ; les trois autres parcours ont leurs fiches mais pas leurs leçons en base. Les supports existants n'ont pas été copiés dans ce dépôt public.
+Distinction : **contenu produit dans Drive** ne signifie pas **contenu intégré à Supabase**. Au 11/10/2026, l'Academy contient les 47 emplacements de modules répartis entre les quatre formations, tous non publiés. La majorité des trois parcours techniques sont encore des ébauches courtes et non des leçons prêtes à suivre. Les supports existants n'ont pas été copiés dans ce dépôt public.
 
 ### Priorités corrigées
 1. QA réelle du laboratoire n8n, du SDK agents et du starter 3D, plutôt que recréer le programme.
@@ -23,7 +23,7 @@ Distinction : **contenu produit dans Drive** ne signifie pas **contenu intégré
 
 # IAgile Academy — feuille de route pédagogique
 
-État au 9 octobre 2026 : les quatre parcours sont enregistrés dans Supabase et masqués. Le parcours processus contient neuf modules préparés. Les trois autres parcours demandent une intégration pédagogique. Aucun nouveau contenu n'est publié.
+État vérifié au 11 octobre 2026 : quatre parcours enregistrés et masqués, 47 modules en base (9 processus, 11 automatisation, 12 agents, 15 sites 3D), tous non publiés. L'intégration de contenus pédagogiques approfondis reste à achever pour les trois parcours techniques. Aucun contenu premium n'est publié.
 
 ## Sites web 3D — 15 modules prévus
 1. Brief et expérience cible
@@ -82,3 +82,26 @@ Les titres ci-dessus sont une architecture de travail, non des leçons finalisé
 ## Contrôle qualité avant ouverture
 
 Vérifier une connexion apprenant, l'accès à une seule formation, le refus des trois autres, la progression, les travaux remis, les contrôles formateur, les téléchargements privés, les erreurs réseau et le mobile. La vitrine ne doit jamais contenir les ressources réservées.
+
+
+## Audit quantitatif vérifié sur Supabase — 11 octobre 2026
+
+| Formation | Modules en base | Modules courts (< 500 caractères) | Publiés |
+| --- | ---: | ---: | ---: |
+| Agents | 12 | 11 | 0 |
+| Automatisation | 11 | 10 | 0 |
+| Processus du quotidien | 9 | 0 | 0 |
+| Sites 3D | 15 | 14 | 0 |
+| **Total** | **47** | **35** | **0** |
+
+Une longueur inférieure à 500 caractères est un indicateur de manque de substance, **pas** une mesure complète de qualité. Les documents Google Drive contiennent programmes, travaux intégrés et labs, mais leur présence ne garantit pas que chaque module de l'espace apprenant soit finalisé ni évalué.
+
+Autres données vérifiées : 14 consignes de livrables (2 agents, 2 automatisation, 8 processus, 2 sites 3D), 12 références de ressources toutes dans processus, **zéro objet de cours dans le bucket privé**, zéro inscription, zéro profil apprenant. Les 10 tables comportent RLS activée et les vérifications Supabase ne remontent aucune alerte sécurité, sans remplacer des tests de comptes distincts.
+
+### Conséquence pour la production
+
+1. Ne pas activer les colonnes « published » ni vendre une formation sur la seule base des 47 enregistrements.
+2. Reprendre les ressources déjà produites dans Drive, compléter chaque module au format pédagogique défini dans le plan directeur, puis valider exercices, corrigés, livrables et connaissances actuelles.
+3. Importer les fichiers dans le bucket privé avec contrôles côté serveur et références cohérentes ; la simple présence de 12 lignes de registre ne signifie pas que les supports existent dans Storage.
+4. Installer l'interface authentifiée et tester l'isolation entre deux apprenants avant tout contenu premium.
+5. Conserver le dépôt public GitHub exclusivement pour les aperçus et le code non confidentiel, jamais pour les supports réservés.
