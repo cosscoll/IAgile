@@ -72,7 +72,7 @@ async function validateZip(file,remoteMetadata){
       entriesSeen++;
       if(entriesSeen>15)throw Error('Archive : trop de fichiers.');
       const allowed=entry.name==='manifest.json'||entry.name==='README.md'||
-        /^datasets\\/[A-Z0-9-]+\\.(md|csv)$/.test(entry.name);
+        (entry.name.startsWith('datasets/') && /^[A-Z0-9-]+[.](md|csv)$/.test(entry.name.slice(9)));
       if(!allowed)throw Error('Fichier inattendu ou chemin dangereux dans l’archive.');
       if(!Number.isSafeInteger(entry.originalSize)||
          entry.originalSize>MAX_FILE_BYTES||
