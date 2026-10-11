@@ -44,7 +44,7 @@ Voir `docs/ETAT-LANCEMENT.md`. Tant que le vendeur, l'offre, la conformité, la 
 
 - V20 et V19 responsive intégrées à la V21 : parcours commercial, démonstrations courtes, liens directs vers les formations et transparence sur l'ouverture.
 - Préservation des cas de pratique ajoutés à la branche principale le 9 octobre, sans fournir les méthodes complètes.
-- Publication GitHub Pages limitée à 36 fichiers de vitrine explicitement autorisés, non aux dossiers internes du dépôt.
+- La publication native GitHub Pages utilise Jekyll et les exclusions définies dans `_config.yml`. La liste d’autorisation du workflow CI sert au contrôle d’un répertoire de test `public-site/` et **n’est pas** le mécanisme de publication actif.
 - Les données juridiques, le contact réel et la validation de marque restent à finaliser avant commercialisation.
 - Le dépôt reste public, y compris l'historique des anciennes ressources pédagogiques.
 
@@ -54,4 +54,4 @@ Voir `docs/ETAT-LANCEMENT.md`. Tant que le vendeur, l'offre, la conformité, la 
 - Le contrôle inspecte les pages, les ancres, le sitemap, les quatre aperçus des formations et la liste explicite des seuls actifs autorisés à être publiés.
 - Ces vérifications ne remplacent **pas** les tests visuels, mobiles, GPU ni les tests de parcours de conversion effectués dans un navigateur réel.
 
-**Attention :** le dépôt possède aussi un déploiement GitHub Pages automatique natif (`pages build and deployment`), distinct du workflow personnalisé. Tant que la source Pages n'est pas configurée sur **GitHub Actions uniquement**, cette seconde publication peut contourner le contrôle personnalisé. Une modification des paramètres Pages du dépôt est requise pour garantir un gate unique.
+**Publication actuelle :** GitHub Pages déploie nativement depuis la branche `main` avec Jekyll. Le workflow `.github/workflows/deploy.yml` réalise uniquement de la QA ; il **ne bloque pas** la publication native en cas d’échec. `_config.yml` exclut les sources internes et `tests/jekyll-boundary.test.mjs` vérifie la couverture de ces exclusions. Toute création ou modification de fichier nécessite une vérification des exclusions, des tests et du site public. Pour rendre les tests bloquants, il faudra basculer vers un workflow GitHub Actions de déploiement contrôlé et changer **ensemble** les paramètres Pages ; ne pas modifier la source Pages isolément, sous peine d’interrompre le site.
