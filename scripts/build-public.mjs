@@ -10,9 +10,9 @@ const stage = path.join(root, 'public-site');
 const sha = process.env.GITHUB_SHA || process.argv[2];
 assert.match(sha || '', /^[a-f0-9]{40}$/, 'A 40-character Git commit SHA is required');
 const workflow = fs.readFileSync(path.join(root, '.github/workflows/deploy.yml'), 'utf8');
-const match = workflow.match(/files=\\(([\\s\\S]*?)\\)/);
+const match = workflow.match(/files=\(([\s\S]*?)\)/);
 assert(match, 'Explicit public allowlist is missing from CI');
-const files = [...match[1].matchAll(/^\\s*"([^"]+)"\\s*$/gm)].map(hit => hit[1]);
+const files = [...match[1].matchAll(/^\s*"([^"]+)"\s*$/gm)].map(hit => hit[1]);
 assert(files.length >= 30, 'Public artifact allowlist is unexpectedly short');
 assert.equal(new Set(files).size, files.length, 'Duplicate public paths');
 assert(files.includes('index.html') && files.includes('sitemap.xml'), 'Essential pages missing from manifest');
@@ -30,9 +30,9 @@ for (const relative of files) {
     let html = fs.readFileSync(input, 'utf8');
     // Jekyll normally handles the homepage frontmatter and the site revision.
     // A controlled Pages artifact must do this explicitly before publishing.
-    html = html.replace(/^---\\r?\\nlayout: null\\r?\\n---\\r?\\n/, '');
+    html = html.replace(/^---\r?\nlayout: null\r?\n---\r?\n/, '');
     html = html.replaceAll('{{ site.github.build_revision }}', sha);
-    assert(!/\\{\\{\\s*site\\./.test(html), 'Unrendered Jekyll expression in ' + relative);
+    assert(!/\{\{\s*site\./.test(html), 'Unrendered Jekyll expression in ' + relative);
     if (relative === 'index.html') {
       assert(html.includes('<!-- iagile-release-sha:' + sha + ' -->'), 'Homepage release marker missing');
       assert(!html.startsWith('---'), 'Homepage Jekyll frontmatter was not removed');
