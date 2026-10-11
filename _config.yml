@@ -8,6 +8,8 @@ exclude:
   - "backend-iagile/"
   - "docs/"
   - "tests/"
+  - "scripts/"
+  - "public-site/"
   - ".github/workflows/chatbot-qa.yml"
   - ".github/workflows/deploy.yml"
   - "ressources/README.md"
