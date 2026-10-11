@@ -14,7 +14,7 @@ const approved = [...listMatch[1].matchAll(/^\s*"([^"]+)"\s*$/gm)].map(m => m[1]
 assert(approved.length >= 25, 'Public allowlist unexpectedly short');
 assert.equal(new Set(approved).size, approved.length, 'Duplicate public artifact names');
 
-const forbiddenPath = /(?:^|\/)(?:\.github|docs|tests|api|backend-iagile|node_modules|private|formateur|corriges|corrigés|modules|academy|cours-payants)(?:\/|$)/i;
+const forbiddenPath = /(?:^|\/)(?:\.github|docs|tests|api|backend-iagile|node_modules|private|academy-app|formateur|corriges|corrigés|modules|academy|cours-payants)(?:\/|$)/i;
 const forbiddenExt = /(?:\.env(?:\..*)?|\.zip|\.pdf|\.sql|\.py|\.json|\.csv|\.md|\.map|\.pem|\.key)$/i;
 const sensitiveValue = /(?:sk-(?:proj-)?[A-Za-z0-9_-]{20,}|sb_secret_[A-Za-z0-9_-]{10,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)/;
 
@@ -30,7 +30,7 @@ for (const rel of approved) {
   }
 }
 
-assert(!approved.some(p => /^(?:learning-engine|api\/|backend-iagile\/)/.test(p)), 'Non-marketing code in public artifact');
+assert(!approved.some(p => /^(?:learning-engine|academy-app\/|api\/|backend-iagile\/)/.test(p)), 'Non-marketing code in public artifact');
 assert(approved.includes('index.html') && approved.includes('chat-config.js'), 'Missing essential public pages');
 
 function listStage(dir, prefix = '') {
