@@ -20,7 +20,7 @@ Le portail unique IAgile Academy gérera les quatre formations avec une authenti
 
 **Branche de développement Academy :** [PR #12](https://github.com/cosscoll/IAgile/pull/12). Ce code n'est pas fusionné dans `main`, ni déployé comme Academy opérationnelle. Les fichiers privés et corrigés **ne doivent jamais être ajoutés à ce dépôt GitHub public, même sur une branche expérimentale**. Le répertoire `academy-private/` contient l'interface et les scripts de tests, pas les leçons.
 
-Au 11 octobre : 47 modules structurés dont 12 leçons approfondies (9 Processus + 3 premières leçons des autres parcours), 13 consignes de travaux non publiées ; zéro compte Auth et zéro fichier de cours effectivement téléversé dans le bucket privé. Trois modules approfondis sont aussi sauvegardés dans les programmes maîtres du Google Drive privé.
+Au 11 octobre : 47 modules structurés dont 12 leçons approfondies (9 Processus + 3 premières leçons des autres parcours), 14 consignes de travaux non publiées (8 Processus, 2 par autre parcours) ; zéro compte Auth et zéro fichier de cours effectivement téléversé dans le bucket privé. Trois modules approfondis sont aussi sauvegardés dans les programmes maîtres du Google Drive privé.
 
 ## Publication et contrôles
 
