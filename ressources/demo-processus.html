@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Démonstration interactive et reproductible : transformer des notes fictives en un processus documenté, sans faire appel à l'IA.">
+<title>Démonstration d'un processus vérifiable — IAgile</title>
+<link rel="canonical" href="https://cosscoll.github.io/IAgile/ressources/demo-processus.html">
+<link rel="stylesheet" href="ressources.css"></head>
+<body><a class="skip" href="#contenu">Aller au contenu</a>
+<header><a class="brand" href="../index.html">I<span>A</span>gile</a><nav aria-label="Navigation"><a href="index.html">Exercices gratuits</a><a href="../index.html#formations">Formations</a></nav></header>
+<main id="contenu"><div class="wrap">
+<section class="hero"><span class="micro">PROCESSUS DU QUOTIDIEN / PREUVE INTERACTIVE</span>
+<h1>Un texte brut. <span class="blue">Une méthode qui se vérifie.</span></h1>
+<p class="lead">Exécutez vous-même la transformation de notes fictives en une fiche de travail structurée. Comparez les informations conservées, les trous signalés et les éléments à vérifier.</p>
+<p class="muted">Démonstration technique reproductible : règles locales simples, sans IA générative, sans transfert de données et sans gain de temps simulé. Elle illustre la méthode, pas les performances d'une IA.</p></section>
+<section class="content"><h2>1. Les notes de départ</h2><p>Le scénario ci-dessous est inventé pour cet exercice. Modifiez ou supprimez une ligne : vous verrez exactement ce que le programme retrouve et ce qu'il ne sait pas déterminer.</p>
+<form id="demo-workflow" class="panel">
+<div class="field"><label for="demo-notes">Notes de réunion fictives, une ligne par information</label>
+<textarea id="demo-notes" rows="9" maxlength="6000" required>DECISION: Conserver la version courte de la page d'accueil.
+ACTION: Préparer trois accroches | responsable: Lina | échéance: vendredi.
+ACTION: Vérifier les liens du site | responsable: Sami.
+RISQUE: Le formulaire mobile pourrait être difficile à remplir.
+QUESTION: Le prix est-il déjà validé ?</textarea></div>
+<p class="muted">Conventions : une ligne commence par DECISION:, ACTION: ou RISQUE:. Les autres lignes restent visibles comme informations non classées. Une action sans responsable ou échéance est signalée.</p>
+<div class="actions"><button type="submit" class="button">Exécuter la démonstration</button><button type="reset" class="button alt">Réinitialiser</button><button type="button" class="button alt" id="save-demo" hidden>Exporter les deux versions (.txt)</button></div></form></section>
+<section class="content" id="demo-comparison" hidden><h2>2. Résultats effectivement calculés</h2>
+<div class="proof-grid"><article class="panel"><h3>Sans classement</h3><p class="muted">Transcription numérotée, sans information ajoutée.</p><pre id="demo-before" aria-label="Version non structurée"></pre></article>
+<article class="panel"><h3>Avec méthode et contrôles</h3><p class="muted">Rangement, traçabilité et alertes sur les champs manquants.</p><pre id="demo-after" aria-label="Version structurée et contrôlée"></pre></article></div>
+<output id="demo-status" class="result" aria-live="polite" role="status"></output>
+<p class="muted">Aucune décision supplémentaire n'a été inventée. Toute information impossible à classer reste visible ; les sorties doivent être relues humainement.</p></section>
+<section class="content"><h2>3. Répétez avec une vraie tâche, sans données sensibles.</h2>
+<p>La valeur d'un processus n'est pas de produire un résultat spectaculaire : c'est de conserver la source, de détecter les lacunes et de permettre un contrôle. Pour vérifier un gain éventuel, utilisez la Scorecard sur votre propre essai.</p>
+<div class="actions"><a class="button" href="diagnostic-10-questions.html">Choisir une tâche</a><a class="button alt" href="diagnostic-ia.html">Mesurer son gain net</a><a class="button alt" href="../formations/ia-au-quotidien.html">Voir la formation</a></div></section>
+</div></main><footer><div class="wrap">IAgile — Exercice sur des données fictives. <a href="index.html">Toutes les ressources</a>.</div></footer>
+<script defer src="demo-processus.js"></script></body></html>
