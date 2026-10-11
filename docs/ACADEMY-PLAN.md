@@ -50,15 +50,15 @@ Avant tout déploiement apprenant : restaurer l'accès au bon projet Supabase, v
 
 À chaque changement GitHub : vérifier les tests, la publication Pages, puis l'accès effectif aux URL et les modifications visibles. Le contrôle en ligne automatisé a été ajouté au workflow ; il ne remplace pas les vérifications visuelles sur navigateur et appareils réels. Ne jamais annoncer « en ligne » avant confirmation du déploiement correspondant.
 
-## Audit Supabase vérifié — 9 octobre 2026
+## Audit Supabase initial — 9 octobre 2026 (historique)
 
 Projet confirmé : `daabfmdlgcwcykevvrcm` (IAgile Academy), organisation IAgile, région Paris, état actif. L'accès SQL a fonctionné malgré une liste de projets vide fournie par le connecteur.
 
-Ne pas recréer les tables : 9 tables academy existent déjà, toutes avec RLS activée. Les privilèges SELECT des tables métier ne sont pas accordés au rôle anonyme ; les apprenants authentifiés ne peuvent pas écrire directement dans les inscriptions. Le stockage `iagile-course-files` est privé.
+Ne pas recréer les tables : le premier audit avait identifié 9 tables ; le contrôle du 11 octobre en confirme 10, toutes avec RLS activée. Les privilèges SELECT des tables métier ne sont pas accordés au rôle anonyme ; les apprenants authentifiés ne peuvent pas écrire directement dans les inscriptions. Le stockage `iagile-course-files` est privé.
 
-Quatre formations existent avec `published=false` : `agents`, `automatisation`, `processus`, `sites-3d`. Neuf modules et sept consignes de livrables existent uniquement pour `processus`, tous non publiés. Aucun profil, aucune inscription et aucun actif de cours enregistré.
+Quatre formations existent avec published=false : agents, automatisation, processus, sites-3d. L'inventaire initial du 9 octobre de 9 modules processus est remplacé par le contrôle plus récent ci-dessous.
 
-Les règles d'accès conditionnent les modules et supports à une inscription active et un profil actif, avec un rôle formateur distinct. Des tests RLS en situation réelle restent à effectuer avant mise en production. Prochaine priorité : conserver le schéma existant, remplir progressivement les trois parcours manquants à partir des contenus pédagogiques validés, et connecter une interface privée sans exposer ces contenus sur GitHub Pages.
+Les règles d'accès conditionnent les modules et supports à une inscription active et un profil actif, avec un rôle formateur distinct. Des tests RLS en situation réelle restent à effectuer avant mise en production. Prochaine priorité : conserver le schéma existant, enrichir les modules encore succincts depuis les sources validées et connecter une interface privée sans exposer ces contenus sur GitHub Pages.
 
 ## Vérifications additionnelles du 9 octobre 2026
 
@@ -67,3 +67,18 @@ Les règles d'accès conditionnent les modules et supports à une inscription ac
 - Stockage privé : la politique `academy_private_course_file_select` impose une ressource publiée dans le registre `academy_course_assets`, avec les restrictions RLS associées.
 - Les tests d'accès réels avec des comptes distincts restent indispensables ; les contrôles statiques ne suffisent pas.
 - Projet Vercel `iagile-chatbot` identifié avec des déploiements production READY. La consultation détaillée de ses réglages échoue avec une erreur 403, il n'est donc pas permis d'affirmer que ses variables d'environnement ou son endpoint sont opérationnels.
+
+
+## État de livraison revérifié — 11 octobre 2026
+
+Projet IAgile Academy interrogé directement par son ID existant malgré une liste de projets vide renvoyée par le connecteur. État ACTIVE_HEALTHY ; ne pas créer de second projet par erreur.
+
+- **10 tables**, toutes avec RLS activée ; contrôle de sécurité Supabase : aucune alerte automatique au moment du relevé.
+- **47 modules** : 12 agents, 11 automatisation, 9 processus, 15 sites 3D. Tous ont published=false. **35 de ces 47 textes font moins de 500 caractères** (11 agents, 10 automatisation, 14 sites 3D) : à considérer comme des ébauches avant évaluation pédagogique approfondie.
+- **14 consignes de livrables** et **12 enregistrements de ressources**, toutes les lignes premium sont non publiées.
+- **0 fichier dans Storage**, bien que le registre indique 12 références : l'absence de fichiers réellement téléchargeables est un blocage d'exploitation.
+- Bucket iagile-course-files déclaré privé ; aucun droit SELECT, INSERT, UPDATE ou DELETE direct accordé à anon sur les tables academy d'après information_schema ; authenticated n'a pas le droit de créer ses inscriptions.
+- **0 inscription et 0 profil apprenant** ; aucun test de séparation de deux vrais comptes n'a été réalisé.
+- Conseils performance : 2 index actuellement inutilisés, sans justification de suppression avant un trafic réel. Référence : https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index
+
+**Décision technique : ne rien rendre public pour le moment.** L'action prioritaire n'est plus de créer des tables ni des titres supplémentaires, mais de finir les modules, déposer les vrais fichiers dans le stockage privé, construire l'interface apprenant et mener des tests d'autorisation multi-comptes.
