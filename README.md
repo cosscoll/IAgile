@@ -55,3 +55,12 @@ Voir `docs/ETAT-LANCEMENT.md`. Tant que le vendeur, l'offre, la conformité, la 
 - Ces vérifications ne remplacent **pas** les tests visuels, mobiles, GPU ni les tests de parcours de conversion effectués dans un navigateur réel.
 
 **Publication actuelle :** GitHub Pages déploie nativement depuis la branche `main` avec Jekyll. Le workflow `.github/workflows/deploy.yml` réalise uniquement de la QA ; il **ne bloque pas** la publication native en cas d’échec. `_config.yml` exclut les sources internes et `tests/jekyll-boundary.test.mjs` vérifie la couverture de ces exclusions. Toute création ou modification de fichier nécessite une vérification des exclusions, des tests et du site public. Pour rendre les tests bloquants, il faudra basculer vers un workflow GitHub Actions de déploiement contrôlé et changer **ensemble** les paramètres Pages ; ne pas modifier la source Pages isolément, sous peine d’interrompre le site.
+
+
+## Chantier de fiabilisation — 11 octobre 2026
+
+- En-têtes HTML des quatre pages formation nettoyés (fermetures interdites des balises meta/link supprimées).
+- Nouveau constructeur explicite de site publiable : `node scripts/build-public.mjs <SHA_COMMIT>` ; contrôle des fichiers et liens de l'artefact : `node tests/publication-boundary.test.mjs public-site` et `node tests/staged-public.test.mjs <SHA_COMMIT>`.
+- La QA native continue ; le workflow `.github/workflows/pages-controlled.yml` est préparé pour la migration, **déclenchable manuellement uniquement après sélection de Source = GitHub Actions dans GitHub Pages**. Ne pas confondre préparation et activation. Procédure : `docs/DEPLOIEMENT-CONTROLE.md`.
+- L'Academy Supabase existe déjà, avec 10 tables protégées et 47 enregistrements de modules non publiés. La majorité des modules techniques sont encore des ébauches ; aucune mise en vente ni déploiement apprenant autorisé à ce stade. Suivi : `docs/ACADEMY-PLAN.md` et `docs/ACADEMY-CURRICULUM-ROADMAP.md`.
+- Les contrôles de code et de stockage ne démontrent pas à eux seuls le rendu public effectif. Vérifier la production et la version SHA avant toute annonce de mise en ligne.
