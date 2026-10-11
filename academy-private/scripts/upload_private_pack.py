@@ -17,7 +17,7 @@ import zipfile
 
 BUCKET = "iagile-course-files"
 COURSE = "processus"
-MAX_BYTES = 100_000
+MAX_BYTES = 51_200
 PUBLIC_PATH = "https://daabfmdlgcwcykevvrcm.supabase.co"
 
 def sha(data):
@@ -27,9 +27,13 @@ def validate_pack(path):
     verified = []
     with zipfile.ZipFile(path) as archive:
         manifest = json.loads(archive.read("manifest.json"))
-        if manifest.get("course_slug") != COURSE or manifest.get("status") != "draft_unpublished":
+        if manifest.get("course_slug") != COURSE or manifest.get("status") != "draft_unpublished" or manifest.get("version") != "0.1":
             raise ValueError("Unexpected course or publication status")
         names = set(archive.namelist())
+        if len(names) != len(archive.namelist()) or len(names) != 14:
+            raise ValueError("Unexpected or duplicate entries in ZIP")
+        if names - {"manifest.json", "README.md"} - {"datasets/" + f["file"].split("/", 1)[1] for f in manifest["files"]}:
+            raise ValueError("Unknown files in ZIP")
         if len(manifest["files"]) != 12:
             raise ValueError("Expected exactly 12 teaching files")
         seen = set()
@@ -46,6 +50,23 @@ def validate_pack(path):
                 raise ValueError("Checksum or size mismatch: " + name)
             verified.append((target, data))
     return verified
+
+def verify_remote_manifest(files, records):
+    if not isinstance(records,list) or len(records) != 12:
+        raise ValueError("Supabase asset registry must contain exactly 12 draft resources")
+    lookup={r.get("storage_path"):r for r in records if isinstance(r,dict)}
+    if len(lookup) != 12:
+        raise ValueError("Supabase asset registry has duplicate or missing paths")
+    for filename,data in files:
+        record=lookup.get(filename)
+        mime="text/csv" if filename.endswith(".csv") else "text/markdown"
+        if (not record or record.get("published") is not False
+            or record.get("content_bytes") != len(data)
+            or record.get("content_sha256") != sha(data)
+            or record.get("content_type") != mime
+            or record.get("source_version") != "v0.1"):
+            raise ValueError("Supabase asset registry does not match the private pack")
+    print("PASS: all 12 private ZIP files match current Supabase database metadata")
 
 def request(method, url, key, data=None, content_type=None):
     headers = {
@@ -80,6 +101,16 @@ def main():
     url = os.environ.get("SUPABASE_URL", PUBLIC_PATH).strip().rstrip("/")
     if not key or not url.startswith("https://"):
         raise RuntimeError("Set SUPABASE_SERVICE_ROLE_KEY and a secure SUPABASE_URL locally before upload")
+    # A service key is used only in this opt-in command, never in public JS.
+    bucket_url=url+"/storage/v1/bucket/"+urllib.parse.quote(BUCKET,safe="")
+    status,raw_bucket=request("GET",bucket_url,key)
+    if status!=200 or json.loads(raw_bucket).get("public") is not False:
+        raise RuntimeError("Target Storage bucket must be private")
+    query=urllib.parse.urlencode({"course_slug":"eq."+COURSE,
+       "select":"storage_path,content_sha256,content_bytes,content_type,published,source_version"})
+    status,raw_records=request("GET",url+"/rest/v1/academy_course_assets?"+query,key)
+    if status!=200:raise RuntimeError("Unable to verify private asset metadata")
+    verify_remote_manifest(files,json.loads(raw_records))
     for index, (filename, data) in enumerate(files, 1):
         path = urllib.parse.quote(filename, safe="/")
         private = url + "/storage/v1/object/authenticated/" + BUCKET + "/" + path
