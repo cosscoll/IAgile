@@ -63,7 +63,26 @@ async function authenticate(){
 async function validateZip(file,remoteMetadata){
   if(!file||file.size===0||file.size>MAX_ZIP_BYTES)
     throw Error('Archive absente ou trop volumineuse (limite 100 Ko).');
-  const all=unzipSync(new Uint8Array(await file.arrayBuffer()));
+  // Inspect ZIP central-directory metadata BEFORE decompressing any entry.
+  // This limits accidental huge archives and trivial decompression bombs.
+  let entriesSeen=0;
+  let advertisedBytes=0;
+  const all=unzipSync(new Uint8Array(await file.arrayBuffer()),{
+    filter(entry){
+      entriesSeen++;
+      if(entriesSeen>15)throw Error('Archive : trop de fichiers.');
+      const allowed=entry.name==='manifest.json'||entry.name==='README.md'||
+        /^datasets\\/[A-Z0-9-]+\\.(md|csv)$/.test(entry.name);
+      if(!allowed)throw Error('Fichier inattendu ou chemin dangereux dans l’archive.');
+      if(!Number.isSafeInteger(entry.originalSize)||
+         entry.originalSize>MAX_FILE_BYTES||
+         entry.originalSize<0)throw Error('Fichier ZIP annoncé trop volumineux.');
+      advertisedBytes+=entry.originalSize;
+      if(advertisedBytes>MAX_TOTAL_BYTES)
+        throw Error('Taille totale décompressée excessive.');
+      return entry.name!=='README.md';
+    }
+  });
   if(!all['manifest.json'])throw Error('Manifeste JSON absent.');
   const manifest=JSON.parse(decoder.decode(all['manifest.json']));
   if(manifest.course_slug!==COURSE||manifest.status!=='draft_unpublished'||manifest.version!=='0.1')
