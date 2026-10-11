@@ -28,6 +28,7 @@ jobs:
         run: npm test
       - name: Tester les interfaces privées Academy et les outils de ressources
         run: |
+          node --check academy-private/import.js
           node --check academy-private/app.js
           node --check academy-private/instructor.js
           node --check academy-private/deliverables.js
