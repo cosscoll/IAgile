@@ -1,57 +1,49 @@
-# IAgile — CHROME V21
+# IAgile — Vitrine publique et Academy privée
 
-Site public : https://cosscoll.github.io/IAgile/
+Site de présentation : https://cosscoll.github.io/IAgile/
 
-## État actuel
+**État au 11 octobre 2026 : pré-lancement.** Aucun achat ni inscription payante n'est ouvert.
 
-Site vitrine en pré-lancement, pas de vente ouverte. Les quatre parcours disposent d'un aperçu commercial : sites web 3D, agents personnalisés, automatisation, IA au quotidien. La présentation immersive d’origine est conservée.
+## Ce qui est public
 
-## Pages
+- `index.html` : expérience immersive, quatre formations et mini-démonstrations.
+- `formations/*.html` : aperçu de chaque parcours, jamais les leçons complètes.
+- `parcours.html`, `a-propos.html`, `faq.html`, `ouverture.html` : orientation, informations et transparence.
+- `ressources/index.html` : exercices gratuits et limités. Diagnostic Processus, Scorecard, démonstration locale, Incident Lab Automatisation, Agent Readiness, brief 3D. **Aucune collecte d'email** dans ces exercices.
+- `chatbot.js` : assistant guidé local par défaut. Le chatbot génératif n'est pas activé en production ; son éventuel backend ne doit jamais exposer de secret dans GitHub Pages.
 
-- `index.html` : 5 scènes immersives, 4 formations, simulations et chatbot guidé.
-- `formations/*.html` : aperçu commercial, public cible et résultat visé ; leçons réservées à des sites distincts.
-- `parcours.html` : orientation interactive, comparaison et export texte sans collecte.
-- `a-propos.html` : présentation du projet et état honnête du développement.
-- `faq.html` : réponses actualisées aux questions des futurs apprenants.
-- `404.html` : page de secours.
+Les exercices gratuits sont des **aperçus**, pas des copies des modules payants.
 
-## Important : distinction chatbot
+## Architecture de l'Academy
 
-`chatbot.js` utilise par défaut l'assistant guidé local. `chatbot-ai.js` et `backend-iagile/api/chat.js` forment la version générative à activer après déploiement d'un backend sécurisé et configuration de `chat-config.js`. Ne jamais publier les clés API dans ce dépôt. Voir `docs/CHATBOT-IA-DEPLOIEMENT.md`. Tant que le serveur n'est pas activé, le site conserve son assistant guidé.
+Le portail unique IAgile Academy gérera les quatre formations avec une authentification commune et des droits distincts par parcours. Les leçons, travaux, retours et supports restent privés dans Supabase, contrôlés côté serveur.
 
-## Tests
+**Branche de développement Academy :** [PR #12](https://github.com/cosscoll/IAgile/pull/12). Ce code n'est pas fusionné dans `main`, ni déployé comme Academy opérationnelle. Les fichiers privés et corrigés **ne doivent jamais être ajoutés à ce dépôt GitHub public, même sur une branche expérimentale**. Le répertoire `academy-private/` contient l'interface et les scripts de tests, pas les leçons.
 
-Exécuter `node tests/site-check.mjs` pour valider les fichiers, métadonnées, ancres et liens locaux. Un parcours navigateur doit vérifier le desktop, le mobile et le rendu WebGL matériel.
+Au 11 octobre : 47 modules structurés dont 12 leçons approfondies (9 Processus + 3 premières leçons des autres parcours), 13 consignes de travaux non publiées ; zéro compte Auth et zéro fichier de cours effectivement téléversé dans le bucket privé. Trois modules approfondis sont aussi sauvegardés dans les programmes maîtres du Google Drive privé.
 
-## Déploiement
+## Publication et contrôles
 
-GitHub Pages, branche `main`. Éviter les publications concurrentes depuis plusieurs workflows.
+GitHub Pages est publié par **un seul** mécanisme, le workflow natif `pages build and deployment`. Le workflow `.github/workflows/deploy.yml` sert exclusivement de QA et vérifie les fichiers autorisés ; il ne déploie rien.
 
-## Blocages commerciaux
+Le workflow `.github/workflows/verify-live-pages.yml` teste le site **réellement accessible**, notamment le SHA exact servi par l'accueil, les pages publiques et les chemins techniques interdits. Déclencheurs : push sur `main`, fin de déploiement Pages lorsqu'elle est disponible, vérification quotidienne et lancement manuel.
 
-Voir `docs/ETAT-LANCEMENT.md`. Tant que le vendeur, l'offre, la conformité, la livraison pédagogique et les paiements ne sont pas validés, aucune inscription payante ne doit être activée.
+Dernière preuve de contrôle : [GitHub Actions, 11 octobre 2026](https://github.com/cosscoll/IAgile/actions/runs/38165219434) — SHA exact confirmé, 22 chemins publics HTTP 200, 12 chemins privés HTTP 404. Les tests CI ne remplacent pas un audit réel de performances mobiles et d'accessibilité avec lecteurs d'écran.
 
-## Répartition vitrine / plateformes de formation
+Pour la QA locale :
+```sh
+npm test
+```
+Les tests Chromium des exercices gratuits sont exécutés par `.github/workflows/verify-marketing.yml`.
 
-- `index.html`, `parcours.html` et les quatre pages sous `formations/` constituent uniquement **la vitrine publique** : bénéfices, résultat visé et très courts aperçus.
-- Chaque formation aura **son propre site d'apprentissage dédié**, avec accès réservé aux apprenants inscrits ; aucun des quatre sites privés n'est encore connecté.
-- Les leçons détaillées, ateliers, exercices corrigés, évaluations, modèles et projets complets **ne doivent pas être publiés dans ce dépôt GitHub public ni dans GitHub Pages**.
-- Le contenu de formation doit être stocké dans un dépôt privé et livré via une plateforme avec contrôle d'accès **côté serveur** après inscription/paiement. Un masquage HTML ou JavaScript ne protège pas les fichiers.
-- Le dossier `pilote/` contient exclusivement un aperçu commercial limité ; les anciennes versions pédagogiques V17/V18 restent visibles dans l'historique de ce dépôt public et ne doivent pas être considérées comme privées.
-- Les prix, modalités de vente et ouvertures d'inscriptions restent à valider.
+## Retards et conditions de mise en marché
 
-## Mise à jour V21 (9 octobre 2026)
+1. Héberger l'Academy sur un domaine/sous-domaine autorisé, avec comptes Auth pilotes et redirections email opérationnelles.
+2. Téléverser et contrôler réellement les douze ressources privées, puis tester les droits de lecture, de suspension et de révocation avec plusieurs comptes.
+3. Valider pédagogiquement le premier parcours auprès d'apprenants volontaires.
+4. Définir vendeur, clientèle B2B/B2C, tarifs, TVA, conditions contractuelles, confidentialité, assistance et remboursement avant activation du paiement.
+5. Configurer une mesure d'audience appropriée et un outil de collecte d'intérêt seulement après le choix d'un prestataire et d'informations de confidentialité fiables.
 
-- V20 et V19 responsive intégrées à la V21 : parcours commercial, démonstrations courtes, liens directs vers les formations et transparence sur l'ouverture.
-- Préservation des cas de pratique ajoutés à la branche principale le 9 octobre, sans fournir les méthodes complètes.
-- Publication GitHub Pages limitée à 36 fichiers de vitrine explicitement autorisés, non aux dossiers internes du dépôt.
-- Les données juridiques, le contact réel et la validation de marque restent à finaliser avant commercialisation.
-- Le dépôt reste public, y compris l'historique des anciennes ressources pédagogiques.
+Le fichier `docs/ETAT-LANCEMENT.md` suit les décisions. Il n'existe actuellement aucun achat, liste d'attente ni newsletter fonctionnels sur le site.
 
-## Qualité des déploiements — 9 octobre 2026
-
-- Le workflow personnalisé `Deploy IAgile CHROME vitrine` vérifie le code **avant son propre déploiement** via `node tests/site-check.mjs` et `node --check` sur les scripts principaux.
-- Le contrôle inspecte les pages, les ancres, le sitemap, les quatre aperçus des formations et la liste explicite des seuls actifs autorisés à être publiés.
-- Ces vérifications ne remplacent **pas** les tests visuels, mobiles, GPU ni les tests de parcours de conversion effectués dans un navigateur réel.
-
-**Attention :** le dépôt possède aussi un déploiement GitHub Pages automatique natif (`pages build and deployment`), distinct du workflow personnalisé. Tant que la source Pages n'est pas configurée sur **GitHub Actions uniquement**, cette seconde publication peut contourner le contrôle personnalisé. Une modification des paramètres Pages du dépôt est requise pour garantir un gate unique.
+**Sécurité :** le dépôt et tout son historique sont publics. Ne jamais y commiter de clé API, mot de passe, ZIP de supports premium, livrable apprenant ou corrigé.
