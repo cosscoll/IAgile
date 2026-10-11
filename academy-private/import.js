@@ -105,7 +105,9 @@ async function validateZip(file,remoteMetadata){
 }
 
 async function verify(){
-  clearStage();
+  staged=null;
+  $('upload').disabled=true;
+  $('files').replaceChildren();
   const file=$('package').files?.[0];
   if(!file){info('Sélectionnez une archive .zip privée.');return;}
   $('verify').disabled=true;
