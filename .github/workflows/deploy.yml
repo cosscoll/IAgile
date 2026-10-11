@@ -35,6 +35,7 @@ jobs:
           node --check formation.js
           node --check parcours.js
           node --check tests/live-site-check.mjs
+          node --check tests/public-live-proof.mjs
       - name: Vérifier la liste autorisée des actifs de la vitrine (sans déploiement)
         shell: bash
         run: |
