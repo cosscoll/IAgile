@@ -92,7 +92,7 @@ def main():
         if code != 404:
             raise RuntimeError("Unable to verify remote file " + filename)
         destination = url + "/storage/v1/object/" + BUCKET + "/" + path
-        mimetype = "text/csv; charset=utf-8" if filename.endswith(".csv") else "text/markdown; charset=utf-8"
+        mimetype = "text/csv" if filename.endswith(".csv") else "text/markdown"
         created, _ = request("POST", destination, key, data, mimetype)
         if created not in (200, 201):
             raise RuntimeError("Unexpected response to private upload")
