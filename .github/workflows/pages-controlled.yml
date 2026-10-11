@@ -1,0 +1,71 @@
+name: IAgile — Déploiement contrôlé (activation manuelle)
+# Prêt pour une migration Pages vers "GitHub Actions".
+# Ne pas activer avant d'avoir changé Settings > Pages > Build and deployment > Source.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer la version exacte à publier
+        uses: actions/checkout@v4
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Exécuter les contrôles du site
+        run: |
+          set -euo pipefail
+          npm test
+          node --check script.js
+          node --check chatbot.js
+          node --check chatbot-ai.js
+          node --check api/chat.js
+          node --check formation.js
+          node --check parcours.js
+          node --check scripts/build-public.mjs
+          node --check tests/staged-public.test.mjs
+      - name: Construire l'artefact public autorisé
+        run: |
+          set -euo pipefail
+          node scripts/build-public.mjs
+          node tests/publication-boundary.test.mjs public-site
+          node tests/staged-public.test.mjs
+      - name: Préparer GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Charger uniquement l'artefact contrôlé
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public-site
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publier la vitrine vérifiée
+        id: deployment
+        uses: actions/deploy-pages@v4
+  verify:
+    if: github.ref == 'refs/heads/main'
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer la version publiée
+        uses: actions/checkout@v4
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Vérifier HTTP, révision et confidentialité en production
+        run: node tests/public-live-proof.mjs
