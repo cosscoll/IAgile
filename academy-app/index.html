@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#080f1b">
+<title>Espace apprenant | IAgile</title>
+<meta name="description" content="Espace privé des apprenants IAgile. Accès réservé aux formations actives.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script defer src="config.js"></script><script defer src="app.js"></script>
+</head><body data-course="">
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="site-header"><a class="brand" href="index.html" aria-label="IAgile Academy, accueil">I<span>A</span>gile <small>ACADEMY</small></a>
+<nav aria-label="Navigation principale"><a href="index.html">Tableau de bord</a><a href="https://cosscoll.github.io/IAgile/">Site vitrine</a></nav><button type="button" id="logout" hidden>Se déconnecter</button></header>
+<main id="contenu" class="shell"><section class="hero"><div class="eyebrow">IAGILE ACADEMY / APERÇU SÉCURISÉ</div><h1>Vos formations.<br><span>Votre progression.</span></h1><p>Un compte unique pour retrouver les formations auxquelles vous êtes inscrit. Aucune leçon complète n’est hébergée sur le site vitrine.</p></section>
+<p class="state" id="status" role="status" aria-live="polite">Connexion au service de formation…</p>
+<section class="auth" id="auth-section" hidden aria-labelledby="auth-title"><div><p class="eyebrow">ACCÈS AU COMPTE</p><h2 id="auth-title">Connexion par e-mail</h2><p>Un lien de connexion vous sera envoyé. La connexion ne donne pas automatiquement accès à une formation payante.</p></div><form id="login-form"><label for="email">Votre adresse e-mail</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="vous@exemple.fr" required><button type="submit">Recevoir mon lien</button></form></section>
+<section class="area" id="learner-section" hidden><div class="area-title"><p class="eyebrow">MON ESPACE</p><h2>Les quatre parcours</h2><p id="account-info"></p></div>
+<div class="course-grid"><a class="course-card" href="cours/sites-3d/index.html"><span>PARCOURS / SITES-3D</span><strong>Créer des sites web 3D animés</strong><small>Vérifier mon accès <span aria-hidden="true">↗</span></small></a>
+<a class="course-card" href="cours/agents/index.html"><span>PARCOURS / AGENTS</span><strong>Créer des agents personnalisés</strong><small>Vérifier mon accès <span aria-hidden="true">↗</span></small></a>
+<a class="course-card" href="cours/automatisation/index.html"><span>PARCOURS / AUTOMATISATION</span><strong>Automatiser une tâche fastidieuse</strong><small>Vérifier mon accès <span aria-hidden="true">↗</span></small></a>
+<a class="course-card" href="cours/processus/index.html"><span>PARCOURS / PROCESSUS</span><strong>Simplifier les processus du quotidien</strong><small>Vérifier mon accès <span aria-hidden="true">↗</span></small></a></div>
+</section>
+</main><footer><span>IAgile Academy — Prototype privé, pas de vente ouverte.</span><a href="https://cosscoll.github.io/IAgile/faq.html">Questions fréquentes</a></footer>
+</body></html>
