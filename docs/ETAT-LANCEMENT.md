@@ -35,3 +35,12 @@ Ne pas confondre la publication technique GitHub Pages avec une validation de la
 - D'ici là, contrôler chaque ajout de fichier dans `_config.yml`, exécuter la QA, vérifier les ressources internes par des requêtes HTTP et contrôler le marqueur de révision sur la page d'accueil.
 - **À vérifier encore :** accès public effectif, ressources sensibles non servies, rendu mobile/WebGL et parcours clavier sur un vrai navigateur. Un test Node local ne les prouve pas.
 - Le pré-lancement reste ouvert et aucune vente ne doit être engagée sur la seule base de la présence du site en ligne.
+
+
+## Reprise opérationnelle du 11 octobre 2026
+
+**Exécuté dans le dépôt :** suppression des fermetures HTML invalides sur les quatre pages de formation ; création d'un constructeur d'artefact public à 50 fichiers ; tests des liens, secrets apparents, rendu de SHA et contenu de l'artefact ; préparation du workflow contrôlé GitHub Actions avec vérification HTTP post-déploiement. Documentation de bascule : docs/DEPLOIEMENT-CONTROLE.md. Ce workflow est préparé, **pas encore activé** ; la publication native reste la méthode en place.
+
+**Base Academy vérifiée directement :** projet IAgile Academy actif, 10 tables protégées par RLS, 47 modules non publiés, 14 consignes non publiées, 12 références de supports, 0 objet dans le bucket privé, 0 inscription. 35 modules ont moins de 500 caractères : l'espace apprenant n'est pas prêt à la commercialisation. Aucune alerte de sécurité automatique remontée par Supabase, ce qui n'équivaut pas à des tests d'isolement multi-comptes.
+
+**Dépendances encore à lever :** workflow de publication contrôlée à activer de façon coordonnée dans Settings > Pages, dépôt/stockage réel des cours payants dans un espace non public, finalisation de contenus techniques et évaluations, site apprenant connecté à Auth + contrôle d'inscription, tests fonctionnels réels, identité du vendeur et cadre commercial/juridique. Vérification du site public non effectuée dans cette session (accès HTTP externe indisponible depuis les moyens essayés) : ne pas affirmer que les derniers commits sont déjà visibles sur GitHub Pages.
