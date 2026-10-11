@@ -4,6 +4,7 @@
 exclude:
   - ".github/"
   - "academy-private/"
+  - "academy-app/"
   - "api/"
   - "backend-iagile/"
   - "docs/"
