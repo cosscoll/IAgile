@@ -36,11 +36,12 @@ jobs:
           node --check parcours.js
           node --check tests/live-site-check.mjs
           node --check tests/public-live-proof.mjs
-      - name: Vérifier la liste autorisée des actifs de la vitrine (sans déploiement)
+          node --check scripts/build-public.mjs
+          node --check tests/staged-public.test.mjs
+      - name: Construire et inspecter les seuls actifs publics (sans déploiement)
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p public-site
           files=(
             "404.html"
             "a-propos.html"
@@ -93,15 +94,6 @@ jobs:
             "styles.css"
             "v21-conversion.css"
           )
-          for path in "${files[@]}"; do
-            test -f "$path" || { echo "Missing public asset: $path"; exit 1; }
-            mkdir -p "public-site/$(dirname "$path")"
-            cp "$path" "public-site/$path"
-          done
-          actual=$(find public-site -type f | wc -l)
-          test "$actual" -eq "${#files[@]}"
-          test ! -e public-site/docs
-          test ! -e public-site/learning-engine.js
-          test ! -e public-site/learning-engine.css
-          test ! -e public-site/.git
+          node scripts/build-public.mjs
           node tests/publication-boundary.test.mjs public-site
+          node tests/staged-public.test.mjs
