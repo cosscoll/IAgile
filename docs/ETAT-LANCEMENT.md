@@ -15,7 +15,7 @@ La vitrine V21 présente quatre formations et un catalogue d'exercices gratuits 
 - Code et tests dans la [PR #12](https://github.com/cosscoll/IAgile/pull/12), conservée en brouillon.
 - Supabase IAgile Academy actif, 10 tables métier sous RLS, bucket `iagile-course-files` privé.
 - 47 modules : 9 Processus aboutis en première rédaction + 3 modules 0 des autres parcours récemment approfondis + 35 trames courtes.
-- 13 consignes de travaux : 7 Processus, 2 Automatisation, 2 Agents, 2 Sites 3D.
+- 14 consignes de travaux : 8 Processus dont une épreuve finale inédite, 2 Automatisation, 2 Agents, 2 Sites 3D.
 - Douze fichiers pédagogiques fictifs préparés, checksums enregistrés, **0 fichier réellement transféré dans Storage**.
 - **0 compte Auth réel**, 0 inscription, 0 travaux d'apprenants enregistrés ; toute formation est `published=false`.
 - Tests RLS SQL transactionnels et Chromium simulés réussis ; les vrais tests Auth/Storage multi-comptes restent à faire.
