@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/site-check.mjs && node --test tests/chat.test.mjs && node tests/publication-boundary.test.mjs && node tests/jekyll-boundary.test.mjs",
+    "test": "node tests/site-check.mjs && node --test tests/chat.test.mjs && node tests/publication-boundary.test.mjs && node tests/jekyll-boundary.test.mjs && node tests/academy-shell.test.mjs",
     "build:public": "node scripts/build-public.mjs",
     "test:public": "node tests/publication-boundary.test.mjs public-site && node tests/staged-public.test.mjs"
   }
