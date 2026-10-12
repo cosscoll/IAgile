@@ -236,3 +236,34 @@ Le projet final a une grille provisoire /100, une exigence de 5 à 10 processus,
 - Aucun prix, contrat définitif, consentement client, facture, certificat, transaction réelle ou inscription commerciale créé.
 
 **Blocages à traiter sans masquer l'état réel :** compte marchand et vendeur validés ; décision juridique sur le type de prestation et mode de facturation ; validation finale du corpus ; import privé vérifié ; permissions Vercel et quota pour actualisation du staging ; deux vrais comptes et tests de droits ; prix et checkout test ; facture/remboursement ; revue pédagogique humaine et support.
+
+
+## 14. Sprint autonome complémentaire — 12 octobre 2026
+
+**Interface de correction formateur : développée, pas encore validée en réel.**
+- PR #40 fusionnée : nouvelle route `academy-app/instructor.html` + JS/CSS pour lister uniquement les copies des cours attribués, si le formateur est actif et si cours/consignes sont publiés. Les contenus des apprenants sont restitués en texte inerte, et non en HTML interprété. Une correction est enregistrée avec l'identifiant de version de la réponse ; le trigger `academy_feedback_verify_answer_version` refuse un travail devenu périmé. Une relecture de la correction en base est exigée avant confirmation.
+- Tests automatisés de liste, filtrage de modules non publiés et correctifs périmés ; test Chromium simulant un visiteur, un compte sans attribution et un formateur autorisé. Aucun compte, copie ou correcteur réel créé. Nouvelle interface **non encore redéployée sur le staging Vercel**.
+- PR #43 fusionnée : correspondance des versions de réponses sur la représentation sérialisée exacte, sans `Date.parse` (qui tronque les microsecondes) ; test de modification à une microseconde d'intervalle.
+
+**Parcours pilote : test de navigation intégrale, simulations uniquement.**
+- PR #41 fusionnée : scénario navigateur avec 9 modules, 9 livrables et 12 fichiers factices, testant mobile, navigation, notes, progression, remise d'un travail, absence d'exécution HTML et téléchargement privé déclenché par clic. Test Chromium réussi.
+- Cette preuve est un **test de code avec contenus inventés**, ni un essai pédagogique sur les données Lumen/Orbe/Sillage, ni une validation des autorisations sous de vraies identités Auth.
+
+**Facturation : enregistrement serveur de paiement préparé, vente fermée.**
+- PR #42 fusionnée et migration appliquée : `academy_billing.record_checkout_payment(...)`, opération SQL atomique, idempotente grâce à `event_id` unique et à un verrou de commande. Refus si utilisateur, cours, marchand, montant, devise, statut, Checkout Session, PaymentIntent, mode live/test et consentement ne concordent pas.
+- Permission de fonction sous `service_role` uniquement ; `anon` et `authenticated` refusés (vérifié dans la base, essai d'appel sous `authenticated` : 42501). Un appel de simulation serveur avec commande inexistante est rejeté (22023), sans création de commande.
+- La fonction **n'authentifie pas elle-même le webhook Stripe** : un endpoint backend autorisé, avec HMAC brut Stripe vérifié avant l'appel, reste à développer. Elle ne délivre aucun droit de cours, ne facture aucun client, n'émet aucune facture. Zéro commande, compte Auth, événement et inscription après cette opération.
+- Les critères légaux, marchands, prix, facture, rétractation et remboursement restent `blocked`.
+
+**Laboratoires des trois formations techniques : prototypes privés exécutés.**
+- Archive `IAgile_Labs_Techniques_Atlas_Boussole_Atrium_v01_PRIVE.zip` dans la bibliothèque `/IAgile — Supports de formation`, SHA256 de l'archive `3342cc490b51de211ef02405cf5627889bca79f0a8af0aa434abb47bd44b3482`.
+- **Atlas (Automatisation)** : mini-workflow Node sans effet externe ; jeu fictif de sept demandes, doublon, données sensibles, consentement, validation humaine et reprise après répétition ; tests réussis.
+- **Boussole (Agents)** : démonstrateur déterministe de permission des outils, sources à jour et brouillon soumis à validation ; tests réussis, **aucune API LLM réelle**.
+- **Atrium (3D)** : projet WebGL2 sans dépendances utilisant shaders, perspectives, profondeur, animation désactivable, clavier et prise en compte de `prefers-reduced-motion`. Tests mathématiques et statiques réussis ; recette graphique Chromium limitée par erreur d'initialisation GPU dans l'environnement automatisé. Une validation sur appareils réels reste obligatoire.
+- Archive et code pédagogique conservés hors GitHub public. Ce sont **des laboratoires de démarrage**, non une certification de complétude des 38 modules techniques.
+
+**Offre commerciale préparée, tarifs non décidés.**
+- Document Drive privé « IAgile — Décision commerciale première formation — 3 offres à arbitrer » : https://docs.google.com/document/d/1R5CtdvzcmBgnjCwbzy-n5bT3tV_wacyJLTp9uGtiHVU/edit .
+- Format autonome, accompagné et B2B sur devis, avec aperçu gratuit séparé. Les fourchettes de recherche reprises du benchmark sont des hypothèses à valider auprès d'acheteurs, **non des tarifs commercialisés**. Identité légale, TVA, type de contrat, support et compte marchand toujours manquants.
+
+**Conclusion de la session :** aucun élève inscrit ; tous les indicateurs `published=false` ; aucune facture et aucune vente ; aucun contenu premium exposé dans le dépôt public. L'Academy Vercel protège toujours un déploiement antérieur, non synchronisé avec les PR #40–43. Avant premier encaissement : choisir et intégrer le corpus canonique privé, vérifier les fichiers en Storage, déployer le dernier frontend, réaliser des tests Auth/RLS avec de vrais comptes, qualifier et approuver le vendeur, les prix et les contrats, connecter le marchand IAgile puis tester une vente/rétractation/facture complète.

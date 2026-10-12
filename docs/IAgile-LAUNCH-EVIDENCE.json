@@ -32,19 +32,19 @@
       "id": "academy_browser",
       "label": "Navigation réelle et redirections Auth testées",
       "status": "blocked",
-      "evidence": "Protection SSO refuse la vérification HTTP (403 de la connexion). Navigation et Auth réelles non testées."
+      "evidence": "Browser QA mock learner (9 modules/9 deliverables/12 assets) et interface formateur réussis. Aucun accès réel SSO/PKCE/SDK sur dernier staging Vercel ; quota/autorisation bloquants."
     },
     {
       "id": "auth_isolation",
       "label": "Deux comptes réels, accès/cours et RLS vérifiés",
       "status": "blocked",
-      "evidence": "0 utilisateur Auth, 0 inscription au dernier audit"
+      "evidence": "RLS test de refus avec identités simulées. Interface formateur développée ; zéro utilisateur Auth et aucun test positif avec vrais comptes."
     },
     {
       "id": "pedagogy_pilot",
       "label": "Copie d'essai et revue humaine sur le corpus final",
       "status": "blocked",
-      "evidence": "Aucun vrai apprenant ni épreuve de transfert observé"
+      "evidence": "Tests Chromium synthétiques réussis sur le parcours pilote, supports canonique V0.9.1 et corrections à valider ; aucun vrai apprenant ni transfert évalué."
     },
     {
       "id": "seller",
@@ -62,7 +62,7 @@
       "id": "price",
       "label": "Offre et prix définitivement approuvés",
       "status": "blocked",
-      "evidence": "Étude concurrentielle sans tarif IAgile validé"
+      "evidence": "Trois scénarios d'offre et hypothèses de prix privés préparés dans Drive ; aucun prix ni conditions approuvés."
     },
     {
       "id": "merchant",
@@ -74,7 +74,7 @@
       "id": "signed_checkout",
       "label": "Paiement signé, événements idempotents et refus de spoofing",
       "status": "blocked",
-      "evidence": "Simulation HMAC signée + vérification commande réussies ; aucun webhook, paiement, inscription ou gestion idempotente en serveur réel."
+      "evidence": "Simulation webhook signé + transaction privée record_checkout_payment testées. Aucun endpoint Stripe déployé et aucun système d'accès post-paiement."
     },
     {
       "id": "invoices",
@@ -92,7 +92,7 @@
       "id": "customer_support",
       "label": "Accompagnement, corrections et contact disponibles",
       "status": "blocked",
-      "evidence": "Contact SAV et correcteur responsable restent à désigner"
+      "evidence": "Interface formateur et correction versionnée développées/testées en mock. Pas de responsable réel, de SLA ni de canal de support commercial validé."
     }
   ]
 }
