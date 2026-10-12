@@ -2,7 +2,9 @@ import {createHmac, timingSafeEqual} from 'node:crypto';
 // Verify Stripe's signed raw payload before any event can trigger fulfillment.
 // The signing secret is provided by server configuration, never by a browser.
 export function verifyWebhookBody(body, header, secret, clock=Math.floor(Date.now()/1000)){
-  if(typeof body!=='string'||typeof header!=='string'||typeof secret!=='string')return false;
+  if(typeof body!=='string'||Buffer.byteLength(body,'utf8')>1048576||
+     typeof header!=='string'||header.length>8192||
+     typeof secret!=='string'||!secret.startsWith('whsec_')||secret.length<16)return false;
   const fields=header.split(',');
   const timestamp=fields.find(x=>x.trim().startsWith('t='))?.trim().slice(2);
   const time=Number(timestamp);
