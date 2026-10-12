@@ -22,7 +22,7 @@ Ordre des priorités :
 
 **P4. Préparer puis valider la commercialisation.** Prix, vendeur, marque, conformité, vente, support, données et communications. Aucun checkout actif avant les validations nécessaires.
 
-## 2. Base de départ observée
+## 2. État actuel du catalogue — vérifié le 12 octobre 2026
 
 | Élément | Situation constatée |
 | --- | --- |
@@ -30,8 +30,8 @@ Ordre des priorités :
 | Academy | Code de quatre parcours et tableau de bord en dépôt, **non hébergé** |
 | Backend d'apprentissage | Supabase IAgile Academy identifié, 10 tables RLS et bucket privé |
 | Modules | 47 fiches non publiées : 9 processus, 12 agents, 11 automatisation, 15 sites 3D |
-| Modules très succincts | 35/47 sous 500 caractères, surtout dans les trois cursus techniques |
-| Travaux / supports | 14 consignes non publiées, 12 fiches de ressources mais aucun fichier dans le stockage privé |
+| Modules très succincts | **0/47** sous 500 caractères, après enrichissement privé de 35 fiches ; ne vaut pas validation technique ou pédagogique |
+| Travaux / supports | **15** consignes non publiées (dont Playbook final Processus), 12 références de ressources mais **0** fichier dans le stockage privé |
 | Apprenants | Zéro inscription, pas de test avec plusieurs comptes réels |
 | Tests | QA GitHub, simulations Auth/RLS, Chromium desktop/mobile et contrôle de SDK réalisés ; **pas une validation multi-comptes en production** |
 | Hébergement Academy | Tentative Vercel refusée avec `403` dans l'espace `procollomb-6607` |
@@ -53,7 +53,7 @@ Ordre des priorités :
 
 **Sortie du chantier :** première formation entièrement documentée et testable, mais toujours `published=false` tant que la livraison sécurisée, l'évaluation pédagogique et les tests apprenants ne sont pas acquis.
 
-Puis étendre le système aux 35 modules succincts : agents (11), automatisation (10), sites 3D (14). Tester concrètement les logiciels, laboratoires et modèles 3D correspondants, et ne jamais inventer de preuve de fonctionnement.
+Les **35 fiches anciennement succinctes ont été développées et intégrées à Supabase le 12 octobre 2026** : Agents (11), Automatisation (10), Sites 3D (14). L'étape suivante n'est plus d'ajouter des paragraphes, mais de **tester concrètement** les logiciels, laboratoires, modèles 3D, corrections et résultats, sans inventer de preuves de fonctionnement.
 
 ### B — Produit, sécurité et livraison (avancer indépendamment sur les tests)
 
@@ -115,7 +115,7 @@ Pour une **formation commercialisable** : support présent et sécurisé, accès
 | P1 | Audit pédagogique détaillé des 9 modules « IA au quotidien » et des 8 livrables depuis les sources existantes | Oui | Terminé — rapport privé Drive vérifié le 12/10/2026 |
 | P1 | Tableau de correspondance modules ↔ fichiers Drive ↔ tables Academy ↔ supports | Oui | Terminé pour Processus — 12 références cohérentes par nom, mais 0 fichier disponible en Storage |
 | P1 | Gabarit unique de contrôle qualité et barème de revue pédagogique des quatre cursus | Oui | À faire |
-| P1 | Vérifier et corriger les 35 modules succincts, par groupe cohérent | Oui, sous réserve des informations sources | À faire |
+| P1 | Rédiger les 35 modules techniques initialement succincts | Oui | **Terminé — 35/35 textes intégrés en privé, aucune publication** ; recette technique et tests apprenants à faire |
 | P2 | Reprendre la création du staging Academy après erreur Vercel 403 | Non pour le compte Vercel tant que l'autorisation manque | Bloqué |
 | P2 | Réaliser les tests Auth et RLS multi-comptes réels sur staging | Après hébergement + comptes de test autorisés | Bloqué |
 | P2 | Tester les supports premium en Storage privé et leurs politiques de lecture | Oui pour préparer tests ; après disponibilité des fichiers pour essais finaux | À faire |
@@ -184,3 +184,31 @@ Un neuvième livrable `processus/8` a été ajouté dans la table privée `acade
 État Supabase vérifié après l'insertion : 9 livrables `processus`, **0 publié** ; 0 module de la formation publié ; 0 cours publié ; 0 fichier dans le bucket privé. Le conseiller de sécurité Supabase ne signale aucune alerte au 12 octobre 2026.
 
 Le projet final a une grille provisoire /100, une exigence de 5 à 10 processus, des mesures contrôlables, au moins 3 essais répétés et des critères bloquants explicites. Il reste à harmoniser le corrigé formateur, à vérifier les ressources exactes, à réaliser des tests Auth/RLS avec de vrais comptes, puis à évaluer l'apprentissage avant toute publication payante. Détails pédagogiques et errata conservés **uniquement** dans le dossier Drive privé.
+
+## 12. Production de contenu — 47 modules rédigés, à qualifier (12 octobre 2026)
+
+**Opération réellement effectuée en base Supabase** : réécriture des seules 35 fiches de moins de 500 caractères, avec prédicats protecteurs `published=false` et `char_length(body_markdown)<500`, sans changer les autres cours et sans transférer de contenu premium dans ce dépôt public. Le module 0 de chacun des trois parcours techniques, ainsi que les 9 modules Processus, étaient déjà développés et ont été conservés.
+
+| Parcours | Modules développés | Très courts (moins de 500 caractères) | Total de caractères | Publiés |
+| --- | ---: | ---: | ---: | ---: |
+| Agents IA — cas fil rouge Boussole | 12/12 | 0 | 62 886 | 0 |
+| Automatisation — cas Atlas | 11/11 | 0 | 44 864 | 0 |
+| IA au quotidien — cas Lumen/Orbe/Sillage | 9/9 | 0 | 42 047 | 0 |
+| Sites web 3D — cas L'Atrium | 15/15 | 0 | 53 988 | 0 |
+| **TOTAL** | **47/47** | **0** | **203 785** | **0** |
+
+**Le mot « rédigé » ne signifie PAS « prêt à vendre ».** Les textes techniques contiennent objectifs, exercices fictifs, méthodes, barèmes et critères bloquants, mais les laboratoires réels n8n/Make, agent LLM SDK/no-code, scène 3D R3F/GLB, mesures GPU, double correction et tests utilisateurs n'ont pas été démontrés par cette opération. La longueur est un indicateur de complétude éditoriale de premier niveau, non de performance pédagogique.
+
+**Preuve éditoriale privée :** rapport Google Drive « Audit éditorial après enrichissement des 47 modules » : https://docs.google.com/document/d/1eMrtS21H006jYDuGN1_Q4QV_aaiHCORUKSRNAr3vHLI/edit . Les cours détaillés et les corrigés restent dans la base et le Drive à accès restreint.
+
+**Livraison encore verrouillée :** à la dernière mesure, 0 cours, 0 module, 0 consigne et 0 fiche de ressource publiés, 0 fichier dans Storage, 0 profil apprenant et 0 inscription. Les conseillers de sécurité Supabase n'ont relevé aucune alerte, ce qui **ne** valide **pas** à lui seul l'authentification de plusieurs vrais comptes.
+
+**Backlog actualisé, par ordre de valeur :**
+
+1. Rapprocher les 12 sources canoniques de Processus avec l'archive candidate V0.9, vérifier chaque cas, choisir explicitement la version et finaliser le corrigé correspondant. Ne pas utiliser le corrigé formateur historique pour noter un autre corpus.
+2. Remédier à l'autorisation d'hébergement de staging Academy (Vercel / alternative autorisée), puis tester Auth, RLS et téléchargements privés avec plusieurs véritables comptes aux droits différents.
+3. Transformer les exercices déjà rédigés en *démonstrations exécutées* et tests reproductibles pour les trois parcours techniques, avec preuves des résultats et corrections des écarts.
+4. Vérifier accessibilité, navigation, mobile, répétition et transfert d'apprentissage sur le pilote avant toute mise sur le marché.
+5. Préparer séparément offre, conformité, tarif et paiement de test pour décision humaine.
+
+**Règle de reprise :** ne plus refaire le chantier de rédaction déjà terminé simplement pour augmenter le volume de texte. Travailler sur **preuve d'exécution, fichiers, corrections, accès, pédagogie réelle et lancement**.
