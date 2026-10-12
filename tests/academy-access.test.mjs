@@ -25,7 +25,7 @@ function element(){
 async function simulate({
   course='agents', user=true, profile=true, enrollment=true,
   published=true, modules=[{title:'Leçon autorisée',body_markdown:'Texte privé',module_index:0}],
-  moduleError=false, profileError=false
+  moduleError=false, profileError=false, progressError=false, writeError=false
 }={}){
   const elements=new Map();
   for(const id of ['status','auth-section','learner-section','logout','login-form','account-info','modules'])
@@ -34,11 +34,13 @@ async function simulate({
   form.elements={email:{value:'pilote@example.invalid'}};
   form.reportValidity=()=>true;
   const calls=[];
+  const writes=[];
   const responses={
     academy_profiles:{data:profile?{account_status:'active'}:null,error:profileError?{message:'denied'}:null},
     academy_enrollments:{data:enrollment?[{course_slug:course,active:true}]:[],error:null},
     academy_courses:{data:{slug:course,published},error:null},
-    academy_course_modules:{data:modules,error:moduleError?{message:'RLS blocked'}:null}
+    academy_course_modules:{data:modules,error:moduleError?{message:'RLS blocked'}:null},
+    academy_module_progress:{data:[],error:progressError?{message:'Progression refusée'}:null}
   };
   const makeQuery=table=>{
     const state={table, filters:[],columns:''};
@@ -48,6 +50,7 @@ async function simulate({
     };
     const q={
       select(cols){state.columns=cols;return q},
+      upsert(payload,opts){writes.push({table,payload,opts});return Promise.resolve({error:writeError?{message:'RLS denied'}:null})},
       eq(key,value){state.filters.push([key,value]);return q},
       maybeSingle(){return Promise.resolve(result())},
       order(){return Promise.resolve(result())},
@@ -82,7 +85,7 @@ async function simulate({
   vm.runInNewContext(source,context,{filename:'academy-app/app.js'});
   // Flush multiple async Supabase query steps, allowing refresh() to settle.
   for(let i=0;i<12;i++)await new Promise(resolve=>setImmediate(resolve));
-  return {elements,calls};
+  return {elements,calls,writes};
 }
 
 const tests=[
@@ -114,3 +117,31 @@ const injected=await simulate({modules:[{title:'<img src=x onerror=alert(1)>',bo
 assert(injected.elements.get('modules').children.some(n=>n.children.some(v=>v.textContent==='<script>bad()</script>')));
 assert(!source.includes('innerHTML'),'Private Markdown must never be parsed as raw HTML');
 console.log('PASS course content rendered as inert text');
+
+const section=permitted.elements.get('modules').children.find(n=>n.className==='lesson');
+const completion=section?.children.find(n=>n.className==='complete-button');
+assert(completion,'A learner must have an accessible progress action');
+assert.equal(completion.attributes['aria-pressed'],'false');
+await completion.listeners.click();
+assert.equal(permitted.writes.length,1,'One completion event must produce one DB mutation');
+assert.equal(permitted.writes[0].table,'academy_module_progress');
+assert.equal(permitted.writes[0].payload.user_id,'pilot-1');
+assert.equal(permitted.writes[0].payload.course_slug,'agents');
+assert.equal(permitted.writes[0].payload.completed,true);
+assert.equal(permitted.writes[0].opts.onConflict,'user_id,course_slug,module_index');
+assert.equal(completion.attributes['aria-pressed'],'true','Success must update UI only after DB success');
+console.log('PASS learner completion is persisted for the exact account and course');
+
+const rejected=await simulate({writeError:true});
+const rejectedButton=rejected.elements.get('modules').children
+  .find(n=>n.className==='lesson')?.children.find(n=>n.className==='complete-button');
+await rejectedButton.listeners.click();
+assert.equal(rejectedButton.attributes['aria-pressed'],'false','RLS-denied write cannot display false success');
+assert(rejected.elements.get('status').textContent.includes('n’a pas été enregistrée'));
+console.log('PASS denied progress write does not fake success');
+
+const offline=await simulate({progressError:true});
+const offlineButton=offline.elements.get('modules').children
+  .find(n=>n.className==='lesson')?.children.find(n=>n.className==='complete-button');
+assert(offlineButton.disabled,'Unable to read progress must disable progress writes');
+console.log('PASS inaccessible progress stays read-only');
