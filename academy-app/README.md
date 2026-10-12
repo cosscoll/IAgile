@@ -82,3 +82,7 @@ Ce test est statique : il ne remplace pas les tests d'accès avec plusieurs comp
 - Navigation par choix de module et boutons précédent/suivant ; `aria-current="step"`, `aria-controls`, focus et désactivation des boutons hors limites. UX disponible même quand la lecture de progression est temporairement inaccessible ; l'écriture de progression reste désactivée dans ce cas.
 - Les modules non publiés ou les données privées ne sont jamais inclus dans le dépôt ni demandés par le client avant la validation des droits. La présentation du seul module sélectionné n'est **pas** en elle-même un mécanisme de sécurité.
 - QA simulée avec trois leçons et un parcours avec une leçon déjà terminée, plus test Chromium mobile sur deux leçons fictives.
+
+## Notes personnelles par module — sprint autonome 12 octobre
+
+L'apprenant dispose d'une zone de notes personnelles distincte pour chaque module publié, avec limite de 4 000 caractères. La note est sauvegardée dans `academy_module_progress.notes` en préservant l'état `completed` lu au préalable. En cas d'erreur de lecture, l'édition est bloquée ; une écriture refusée ne confirme pas une sauvegarde. RLS applique les droits de compte et d'inscription côté Supabase. Ces tests utilisent un backend simulé, pas encore de vrais comptes pilotes.
