@@ -208,7 +208,7 @@ const rejectedButton=rejected.elements.get('modules').children
   .find(n=>n.className==='lesson')?.children.find(n=>n.className==='complete-button');
 await rejectedButton.listeners.click();
 assert.equal(rejectedButton.attributes['aria-pressed'],'false','RLS-denied write cannot display false success');
-assert(rejected.elements.get('status').textContent.includes('n’a pas été enregistrée'));
+assert(rejected.elements.get('status').textContent.includes('n’a pas été confirmée'));
 console.log('PASS denied progress write does not fake success');
 
 const offline=await simulate({progressError:true});
