@@ -216,7 +216,7 @@
     const saved = new Map((!answersError && Array.isArray(answers) ? answers : [])
       .map(record => [record.deliverable_index,record]));
     const {data: feedback, error: feedbackError} = await client.from('academy_deliverable_feedback')
-      .select('deliverable_index,status,feedback_text').eq('user_id',userId).eq('course_slug',course);
+      .select('deliverable_index,status,feedback_text,answer_updated_at').eq('user_id',userId).eq('course_slug',course);
     if (request !== sequence) return;
     const reviews = new Map((!feedbackError && Array.isArray(feedback) ? feedback : [])
       .map(record => [record.deliverable_index,record]));
@@ -281,8 +281,12 @@
           if (error) {
             state.textContent='Enregistrement refusé ou indisponible. Votre saisie reste visible.';
           } else {
+            const changed=currentValue!==String(saved.get(task.deliverable_index)?.content||'');
             saved.set(task.deliverable_index,{content:currentValue});
-            state.textContent='Travail enregistré. Vous pouvez reprendre cette réponse plus tard.';
+            if (changed && assessment) assessment.hidden=true;
+            state.textContent=changed && assessment
+              ? 'Nouvelle version enregistrée. L’ancienne correction est masquée dans l’attente d’une nouvelle évaluation.'
+              : 'Travail enregistré. Vous pouvez reprendre cette réponse plus tard.';
           }
         } catch (_error) {
           if (request===sequence) state.textContent='Erreur réseau. Votre saisie n’a pas été confirmée.';
@@ -292,8 +296,15 @@
       });
       article.append(form);
       const review=reviews.get(task.deliverable_index);
-      if (review) {
-        const assessment=document.createElement('aside');
+      const answerTimestamp=saved.get(task.deliverable_index)?.updated_at;
+      const reviewTimestamp=review?.answer_updated_at;
+      const reviewMatchesAnswer=!!answerTimestamp && !!reviewTimestamp &&
+        Number.isFinite(Date.parse(answerTimestamp)) &&
+        Date.parse(answerTimestamp)===Date.parse(reviewTimestamp);
+      let assessment=null;
+      // Never show a verdict for a different version or an unreadable answer.
+      if (review && reviewMatchesAnswer) {
+        assessment=document.createElement('aside');
         assessment.className='instructor-feedback';
         const assessmentTitle=document.createElement('h4');
         assessmentTitle.textContent='Retour du formateur';
