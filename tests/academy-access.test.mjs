@@ -26,7 +26,7 @@ function element(){
 async function simulate({
   course='agents', user=true, profile=true, enrollment=true,
   published=true, modules=[{title:'Leçon autorisée',body_markdown:'Texte privé',module_index:0}],
-  moduleError=false, profileError=false, progressError=false, writeError=false, progress=[],
+  moduleError=false, profileError=false, progressError=false, writeError=false, progress=[], deferProgressWrites=false,
   tasks=[], answers=[], feedback=[], answersError=false, answerWriteError=false,
   assets=[], assetsError=false, storageError=false, signedUrl='https://example.supabase.co/storage/v1/object/sign/iagile-course-files/agents/sample.md?token=test'
 }={}){
@@ -38,6 +38,7 @@ async function simulate({
   form.reportValidity=()=>true;
   const calls=[];
   const writes=[];
+  const pendingWrites=[];
   const signatures=[];
   const responses={
     academy_profiles:{data:profile?{account_status:'active'}:null,error:profileError?{message:'denied'}:null},
@@ -58,7 +59,7 @@ async function simulate({
     };
     const q={
       select(cols){state.columns=cols;return q},
-      upsert(payload,opts){writes.push({table,payload,opts});return Promise.resolve({error:(table==='academy_deliverable_answers'?answerWriteError:writeError)?{message:'RLS denied'}:null})},
+      upsert(payload,opts){writes.push({table,payload,opts});if(table==='academy_module_progress'&&deferProgressWrites)return new Promise(resolve=>pendingWrites.push(()=>resolve({error:writeError?{message:'RLS denied'}:null})));return Promise.resolve({error:(table==='academy_deliverable_answers'?answerWriteError:writeError)?{message:'RLS denied'}:null})},
       eq(key,value){state.filters.push([key,value]);return q},
       maybeSingle(){return Promise.resolve(result())},
       order(){return Promise.resolve(result())},
@@ -95,7 +96,7 @@ async function simulate({
   vm.runInNewContext(source,context,{filename:'academy-app/app.js'});
   // Flush multiple async Supabase query steps, allowing refresh() to settle.
   for(let i=0;i<12;i++)await new Promise(resolve=>setImmediate(resolve));
-  return {elements,calls,writes,signatures};
+  return {elements,calls,writes,pendingWrites,signatures};
 }
 
 const tests=[
@@ -383,3 +384,29 @@ deniedNoteForm.children.find(n=>n.rows===4).value='Ne pas effacer';
 await deniedNoteForm.listeners.submit({preventDefault(){}});
 assert(deniedNoteForm.children.some(n=>n.textContent.includes('non enregistrées')));
 console.log('PASS refused note save does not display false success');
+
+
+assert(source.includes('let lessonWritePending=false'),'Lesson operations must share an in-flight write lock');
+assert(source.includes('lessonWritePending || button.disabled'),'Progress and notes cannot write concurrently');
+assert(source.includes('lessonWritePending || noteSave.disabled'),'Notes must honor the same write lock');
+console.log('PASS learner progress and notes use one in-flight write guard per module');
+
+const locked=await simulate({deferProgressWrites:true});
+const lockedLesson=locked.elements.get('modules').children.find(n=>n.className==='lesson');
+const lockedComplete=lockedLesson.children.find(n=>n.className==='complete-button');
+const lockedNotes=lockedLesson.children.find(n=>n.className==='lesson-notes-form');
+lockedNotes.children.find(n=>n.rows===4).value='Mon point important';
+const notePromise=lockedNotes.listeners.submit({preventDefault(){}});
+assert.equal(locked.writes.length,1);
+assert.equal(lockedComplete.disabled,true,'Completion is disabled while notes are saving');
+await lockedComplete.listeners.click();
+assert.equal(locked.writes.length,1,'Concurrent completion must not overwrite in-flight notes');
+locked.pendingWrites[0]();
+await notePromise;
+assert.equal(lockedComplete.disabled,false);
+const completePromise=lockedComplete.listeners.click();
+assert.equal(locked.writes.length,2);
+assert.equal(locked.writes[1].payload.notes,'Mon point important','Completion preserves saved notes');
+locked.pendingWrites[1]();
+await completePromise;
+console.log('PASS simultaneous notes and progress writes are serialized, preserving both states');
