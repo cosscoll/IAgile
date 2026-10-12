@@ -198,7 +198,7 @@ console.log('PASS inaccessible progress stays read-only');
 
 const task={deliverable_index:2,title:'Projet contrôlé',instructions_markdown:'Décrivez votre procédure.'};
 const validDeliverable=await simulate({
-  tasks:[task], answers:[{deliverable_index:2,content:'Première réponse',updated_at:'2026-10-12T08:00:00Z'}],
+  tasks:[task], answers:[{deliverable_index:2,content:'Première réponse',updated_at:'2026-10-12T08:00:00+00:00'}],
   feedback:[{deliverable_index:2,status:'en révision',feedback_text:'Soignez les cas limites.',answer_updated_at:'2026-10-12T08:00:00+00:00'}]
 });
 assert.equal(validDeliverable.elements.get('deliverables').hidden,false);
@@ -234,6 +234,15 @@ const oldFeedback=await simulate({
 });
 assert(!oldFeedback.elements.get('deliverables-content').children[0].children.some(n=>n.className==='instructor-feedback'),'Stale feedback must never be shown');
 console.log('PASS historical feedback is not shown against a newer learner answer');
+
+const fineRevision=await simulate({
+  tasks:[task],
+  answers:[{deliverable_index:2,content:'Révision',updated_at:'2026-10-12T08:00:00.000002+00:00'}],
+  feedback:[{deliverable_index:2,status:'validé',feedback_text:'Ancien avis',answer_updated_at:'2026-10-12T08:00:00.000001+00:00'}]
+});
+assert(!fineRevision.elements.get('deliverables-content').children[0].children
+  .some(n=>n.className==='instructor-feedback'));
+console.log('PASS timestamp precision retains separate revisions');
 
 const noAnswerFeedback=await simulate({
   tasks:[task],answers:[],
