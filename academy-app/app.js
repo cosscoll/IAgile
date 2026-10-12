@@ -383,9 +383,12 @@
       const review=reviews.get(task.deliverable_index);
       const answerTimestamp=saved.get(task.deliverable_index)?.updated_at;
       const reviewTimestamp=review?.answer_updated_at;
-      const reviewMatchesAnswer=!!answerTimestamp && !!reviewTimestamp &&
-        Number.isFinite(Date.parse(answerTimestamp)) &&
-        Date.parse(answerTimestamp)===Date.parse(reviewTimestamp);
+      // PostgREST serializes both PostgreSQL timestamptz columns consistently.
+      // Compare the full serialized value: Date.parse() truncates microseconds
+      // and can incorrectly match two distinct revisions within one millisecond.
+      const reviewMatchesAnswer=typeof answerTimestamp==='string' &&
+        typeof reviewTimestamp==='string' && !!answerTimestamp &&
+        answerTimestamp===reviewTimestamp;
       let assessment=null;
       // Never show a verdict for a different version or an unreadable answer.
       if (review && reviewMatchesAnswer) {
