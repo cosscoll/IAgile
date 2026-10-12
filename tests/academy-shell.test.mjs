@@ -34,4 +34,7 @@ for(const [slug,file] of [['',path.join(app,'index.html')],...slugs.map(s=>[s,pa
  assert(source.includes('app.js')&&source.includes('config.js')&&source.includes('app.css'),'Shared guarded app missing');
  assert(!/<script[^>]*>[\s\S]*?(?:body_markdown|course_slug)[\s\S]*?<\/script>/i.test(source),'Premium data embedded in HTML');
 }
+const vercel=JSON.parse(fs.readFileSync(path.join(app,'vercel.json'),'utf8'));
+assert(vercel.headers?.[0]?.headers?.some(h=>h.key==='X-Robots-Tag'&&h.value.includes('noindex')),'Staging deployment must block search indexation');
+assert(vercel.headers[0].headers.some(h=>h.key==='Content-Security-Policy'&&h.value.includes("frame-ancestors 'none'")),'Missing staging CSP');
 console.log('PASS — private Academy shell: 5 entrypoints, no embedded lessons, guarded Supabase access');
