@@ -67,8 +67,29 @@ async function simulate({
     };
     return q;
   };
+  const storedProgress=new Map(progress.map(p=>[p.module_index,{...p}]));
   const client={
     from:makeQuery,
+    rpc(name,payload){
+      assert.equal(name,'academy_save_progress');
+      const prior=storedProgress.get(payload.p_module_index)||{notes:'',completed:false};
+      const next={
+        notes:payload.p_notes===undefined?String(prior.notes||''):payload.p_notes,
+        completed:payload.p_completed===undefined?!!prior.completed:payload.p_completed,
+        updated_at:'2026-10-12T13:00:00Z'
+      };
+      writes.push({table:'academy_module_progress',rpc:name,rpcPayload:payload,
+        payload:{user_id:'pilot-1',course_slug:payload.p_course_slug,
+        module_index:payload.p_module_index,completed:next.completed,notes:next.notes},
+        opts:{onConflict:'user_id,course_slug,module_index'}});
+      const finish=()=>{
+        if(writeError)return {data:null,error:{message:'RLS denied'}};
+        storedProgress.set(payload.p_module_index,next);
+        return {data:next,error:null};
+      };
+      if(deferProgressWrites)return new Promise(resolve=>pendingWrites.push(()=>resolve(finish())));
+      return Promise.resolve(finish());
+    },
     storage:{from(bucket){return {createSignedUrl(filePath,expiry,opts){signatures.push({bucket,filePath,expiry,opts});return Promise.resolve({data:storageError?null:{signedUrl},error:storageError?{message:'Access denied'}:null});}}}},
     auth:{
       getUser:async()=>({data:{user:user?{id:'pilot-1',email:'pilote@example.invalid'}:null},error:null}),
@@ -187,7 +208,7 @@ const rejectedButton=rejected.elements.get('modules').children
   .find(n=>n.className==='lesson')?.children.find(n=>n.className==='complete-button');
 await rejectedButton.listeners.click();
 assert.equal(rejectedButton.attributes['aria-pressed'],'false','RLS-denied write cannot display false success');
-assert(rejected.elements.get('status').textContent.includes('n’a pas été enregistrée'));
+assert(rejected.elements.get('status').textContent.includes('n’a pas été confirmée'));
 console.log('PASS denied progress write does not fake success');
 
 const offline=await simulate({progressError:true});
@@ -382,7 +403,7 @@ const deniedNoteForm=notesDenied.elements.get('modules').children.find(n=>n.clas
   .children.find(n=>n.className==='lesson-notes-form');
 deniedNoteForm.children.find(n=>n.rows===4).value='Ne pas effacer';
 await deniedNoteForm.listeners.submit({preventDefault(){}});
-assert(deniedNoteForm.children.some(n=>n.textContent.includes('non enregistrées')));
+assert(deniedNoteForm.children.some(n=>n.textContent.includes('non confirmées')));
 console.log('PASS refused note save does not display false success');
 
 
@@ -410,3 +431,13 @@ assert.equal(locked.writes[1].payload.notes,'Mon point important','Completion pr
 locked.pendingWrites[1]();
 await completePromise;
 console.log('PASS simultaneous notes and progress writes are serialized, preserving both states');
+
+assert.equal(noteCase.writes[0].rpc,'academy_save_progress');
+assert.equal(noteCase.writes[0].rpcPayload.p_course_slug,'agents');
+assert.equal(noteCase.writes[0].rpcPayload.p_notes,'À revoir : vérifier les sources');
+assert(!Object.hasOwn(noteCase.writes[0].rpcPayload,'user_id'),
+  'Authenticated user ID must be derived server-side, never supplied by browser');
+assert.equal(locked.writes[1].rpcPayload.p_completed,true);
+assert(!Object.hasOwn(locked.writes[1].rpcPayload,'p_notes'),
+  'Completion RPC must never overwrite notes with an old value');
+console.log('PASS atomic progress API: independent field patch and server-derived user ID');

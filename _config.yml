@@ -8,6 +8,7 @@ exclude:
   - "api/"
   - "backend-iagile/"
   - "docs/"
+  - "supabase/"
   - "tests/"
   - "scripts/"
   - "public-site/"
