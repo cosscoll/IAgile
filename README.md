@@ -1,5 +1,8 @@
 # IAgile — CHROME V21
 
+**Reprise des travaux :** [Pilotage opérationnel et feuille de route](docs/PILOTAGE-IAgile.md). Ce document priorise les prochains sprints, leur validation et les dépendances externes.
+
+
 Site public : https://cosscoll.github.io/IAgile/
 
 ## État actuel
