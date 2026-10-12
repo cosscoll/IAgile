@@ -12,6 +12,8 @@
   const modules = document.getElementById('modules');
   const deliverables = document.getElementById('deliverables');
   const deliverablesContent = document.getElementById('deliverables-content');
+  const resources = document.getElementById('course-resources');
+  const resourcesList = document.getElementById('course-resources-list');
   let sequence = 0;
 
   const message = text => { status.textContent = text; };
@@ -19,6 +21,8 @@
     if (modules) { modules.replaceChildren(); modules.hidden = true; }
     if (deliverables) deliverables.hidden = true;
     if (deliverablesContent) deliverablesContent.replaceChildren();
+    if (resources) resources.hidden = true;
+    if (resourcesList) resourcesList.replaceChildren();
   };
   const config = window.IAgileAcademyConfig;
   if ((course && !allow.has(course)) || !config?.url || !config?.publishableKey || !window.supabase?.createClient) {
@@ -227,6 +231,70 @@
     deliverables.hidden=false;
   }
 
+
+  async function showResources(request) {
+    if (!resources || !resourcesList || request !== sequence) return;
+    const {data: files, error: filesError} = await client.from('academy_course_assets')
+      .select('asset_key,title,storage_path,module_index,content_bytes')
+      .eq('course_slug',course).eq('published',true).order('module_index',{ascending:true});
+    if (request !== sequence || filesError || !Array.isArray(files)) return;
+    // A row never grants access. Storage RLS must also authorize the signed URL.
+    for (const file of files) {
+      const path=String(file.storage_path||'');
+      if (!path.startsWith(course+'/') || path.includes('..') ||
+          !/^[A-Za-z0-9._/-]+$/.test(path)) continue;
+      const item=document.createElement('article');
+      item.className='course-resource';
+      const name=document.createElement('h3');
+      name.textContent=String(file.title||'Support');
+      const detail=document.createElement('p');
+      detail.textContent='Module '+(Number(file.module_index)+1)+
+        (Number.isFinite(Number(file.content_bytes)) ? ' · '+String(file.content_bytes)+' octets' : '');
+      const trigger=document.createElement('button');
+      trigger.type='button';
+      trigger.className='complete-button';
+      trigger.textContent='Générer un lien temporaire';
+      const note=document.createElement('p');
+      note.className='course-resource-status';
+      note.setAttribute('role','status');
+      note.setAttribute('aria-live','polite');
+      const link=document.createElement('a');
+      link.hidden=true;
+      link.textContent='Ouvrir le support (valable 60 secondes)';
+      link.target='_blank';
+      link.rel='noopener noreferrer';
+      trigger.addEventListener('click',async()=>{
+        if(request!==sequence||trigger.disabled)return;
+        trigger.disabled=true;
+        link.hidden=true;
+        link.removeAttribute('href');
+        note.textContent='Vérification des droits et création du lien…';
+        try{
+          const {data, error}=await client.storage.from('iagile-course-files')
+            .createSignedUrl(path,60,{download:true});
+          if(request!==sequence)return;
+          const signed=String(data?.signedUrl||'');
+          const origin=new URL(config.url).origin;
+          const safePrefix=origin+'/storage/v1/object/sign/iagile-course-files/';
+          if(error || !signed.startsWith(safePrefix)){
+            note.textContent='Ce support est indisponible ou son accès a été refusé.';
+            return;
+          }
+          link.href=signed;
+          link.hidden=false;
+          note.textContent='Lien créé. Il expire 60 secondes après sa génération.';
+        }catch(_error){
+          if(request===sequence)note.textContent='Le téléchargement privé est indisponible.';
+        }finally{
+          if(request===sequence)trigger.disabled=false;
+        }
+      });
+      item.append(name,detail,trigger,note,link);
+      resourcesList.append(item);
+    }
+    resources.hidden=resourcesList.children.length===0;
+  }
+
   async function refresh() {
     const request = ++sequence;
     resetContent();
@@ -338,6 +406,7 @@
       }
       await showModules(lessons,user.id,request);
       if (request === sequence) await showDeliverables(user.id,request);
+      if (request === sequence) await showResources(request);
     } catch (_error) {
       if (request === sequence) failClosed('Vérification indisponible. Aucun cours privé n’a été chargé.');
     }
