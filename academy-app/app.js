@@ -271,7 +271,62 @@
           if (request === sequence) button.disabled = false;
         }
       });
-      section.append(title,body,button);
+      const noteForm=document.createElement('form');
+      noteForm.className='lesson-notes-form';
+      const noteLabel=document.createElement('label');
+      const noteInput=document.createElement('textarea');
+      const noteId='lesson-note-'+course+'-'+item.module_index;
+      noteInput.id=noteId;
+      noteInput.rows=4;
+      noteInput.maxLength=4000;
+      noteInput.value=String(records.get(item.module_index)?.notes||'');
+      noteInput.placeholder='Vos remarques personnelles, questions et points à revoir…';
+      noteLabel.htmlFor=noteId;
+      noteLabel.textContent='Mes notes privées (4 000 caractères maximum)';
+      const noteSave=document.createElement('button');
+      noteSave.type='submit';
+      noteSave.className='complete-button';
+      noteSave.textContent='Enregistrer mes notes';
+      const noteStatus=document.createElement('p');
+      noteStatus.className='lesson-notes-status';
+      noteStatus.setAttribute('role','status');
+      noteStatus.setAttribute('aria-live','polite');
+      noteStatus.textContent=progressReady
+        ? 'Vos notes sont personnelles et restent liées à ce module.'
+        : 'Notes indisponibles tant que votre progression ne peut pas être vérifiée.';
+      noteSave.disabled=!progressReady;
+      noteInput.disabled=!progressReady;
+      noteForm.append(noteLabel,noteInput,noteSave,noteStatus);
+      noteForm.addEventListener('submit',async event=>{
+        event.preventDefault();
+        if(request!==sequence || !progressReady || noteSave.disabled)return;
+        const next=noteInput.value.trim();
+        if(next.length>4000){
+          noteStatus.textContent='La note dépasse 4 000 caractères.';
+          return;
+        }
+        noteSave.disabled=true;
+        noteStatus.textContent='Enregistrement de vos notes…';
+        try{
+          const current=records.get(item.module_index)||{};
+          const {error}=await client.from('academy_module_progress').upsert({
+            user_id:userId,course_slug:course,module_index:item.module_index,
+            completed:!!current.completed,notes:next
+          },{onConflict:'user_id,course_slug,module_index'});
+          if(request!==sequence)return;
+          if(error){
+            noteStatus.textContent='Notes non enregistrées. Votre saisie reste affichée.';
+            return;
+          }
+          records.set(item.module_index,{...current,notes:next});
+          noteStatus.textContent='Notes enregistrées.';
+        }catch(_error){
+          if(request===sequence)noteStatus.textContent='Erreur réseau : notes non confirmées.';
+        }finally{
+          if(request===sequence)noteSave.disabled=false;
+        }
+      });
+      section.append(title,body,button,noteForm);
       modules.append(section);
     }
     modules.append(pager);
