@@ -1,0 +1,35 @@
+name: IAgile — Academy browser QA (private shell)
+on:
+  pull_request:
+    paths:
+      - 'academy-app/**'
+      - 'tests/academy-*.mjs'
+      - '.github/workflows/academy-browser.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visual-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Fetch reviewed source
+        uses: actions/checkout@v4
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned browser test runner
+        run: npm install --no-save --ignore-scripts --no-audit --no-fund playwright@1.55.1
+      - name: Install browser and required system packages
+        run: npx playwright install --with-deps chromium
+      - name: Run mock-only visual and access smoke tests
+        run: node tests/academy-browser.test.mjs
+      - name: Archive simulated UI screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: academy-mock-browser-previews
+          path: academy-browser-artifacts/
+          if-no-files-found: ignore
+          retention-days: 7
