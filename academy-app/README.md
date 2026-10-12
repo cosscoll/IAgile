@@ -17,6 +17,7 @@ Ces entrées constituent des pages dédiées dans une même application, pas enc
 - Connexion par lien e-mail avec Supabase Auth et PKCE (SDK @supabase/supabase-js version 2.117.3 fixée).
 - Pas de création automatique de comptes depuis ce formulaire : shouldCreateUser=false.
 - Contrôle du profil actif, d'une inscription active, du statut publié du cours, puis chargement des modules publiés via RLS côté Supabase.
+- Suivi des modules terminés et possibilité de les marquer à reprendre, stockés dans academy_module_progress avec politique RLS par utilisateur et par formation. Une erreur de lecture désactive l'édition ; une erreur d'écriture ne montre jamais une progression validée.
 - Aucun cours premium, corrigé ou fichier pédagogique n'est intégré dans le HTML, CSS ou JavaScript public. Les corps récupérés depuis la base sont affichés en texte, sans injection de HTML.
 - Aucun achat, attribution d'inscription, import de fichiers, droit formateur ou facturation depuis le navigateur.
 - Si le backend ou les permissions échouent, aucun cours n'est affiché.
@@ -43,5 +44,14 @@ config.js contient uniquement une clé Supabase de type **publishable**, volonta
 ## Tests dans le dépôt
 
 node tests/academy-shell.test.mjs
+node tests/academy-access.test.mjs
 
 Ce test est statique : il ne remplace pas les tests d'accès avec plusieurs comptes réels.
+
+
+## Sprint QA — 12 octobre 2026
+
+- 5 routes HTML, styles responsive, CSP et en-têtes de sécurité pour un futur déploiement HTTPS via academy-app/vercel.json.
+- Tests simulés des états : visiteur non connecté, profil inactif, absence d'inscription, cours non publié, échec de chargement, lecture de progression indisponible, écriture refusée par RLS, écriture autorisée et texte HTML hostile affiché sans exécution.
+- Une tentative de création du projet Vercel « iagile-academy-staging » a été refusée **403 forbidden** pour l'espace « procollomb-6607 ». Aucun projet ou déploiement de staging n'a donc été créé. Reconnecter les autorisations de cet espace Vercel sera nécessaire avant d'utiliser le connecteur pour cette opération.
+- Les redirections d'authentification Supabase doivent être configurées uniquement une fois l'URL de staging réellement connue. Ne pas inventer d'URL de redirection et ne pas activer l'ouverture des comptes publics.
