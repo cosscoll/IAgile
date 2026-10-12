@@ -15,3 +15,19 @@ export function verifyWebhookBody(body, header, secret, clock=Math.floor(Date.no
     return candidate.length===expected.length&&timingSafeEqual(candidate,expected);
   });
 }
+
+const verifiedEvents=new WeakSet();
+export function parseVerifiedWebhook(body,header,secret,clock){
+  if(!verifyWebhookBody(body,header,secret,clock)){
+    throw new Error('Webhook signature rejected or expired');
+  }
+  const event=JSON.parse(body);
+  if(!event||typeof event!=='object'||Array.isArray(event)){
+    throw new Error('Webhook event object invalid');
+  }
+  verifiedEvents.add(event);
+  return event;
+}
+export function isVerifiedWebhook(event){
+  return !!event&&typeof event==='object'&&verifiedEvents.has(event);
+}
