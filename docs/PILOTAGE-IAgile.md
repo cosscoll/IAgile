@@ -160,3 +160,18 @@ Pour une **formation commercialisable** : support présent et sécurisé, accès
 2. Définir une référence unique et un identifiant de version explicite pour chaque épreuve Rivage, puis harmoniser Playbook /100 et transfert /20 ; ne pas utiliser un corrigé d'une autre variante.
 3. Restituer les fichiers contrôlés uniquement dans le stockage Supabase privé et tester la signature et la lecture avec de véritables comptes distincts.
 4. Terminer la QA du parcours pilote et seulement ensuite étendre l'intégration aux trois autres formations.
+
+
+## 10. Sprint S2 — contrôles du 12 octobre 2026 (lot complémentaire)
+
+**Ressources et évaluation (confidentiel, hors GitHub public)**
+- Les douze ressources du kit apprenant V0.8 ont été retrouvées et copiées octet pour octet dans un **paquet d'audit privé**. Le test SHA-256 valide 12/12 fichiers en tant que V0.8, mais **0/12 ne correspondent** aux empreintes Supabase. Ne pas les appeler « canoniques » ni les charger à la place de celles de la base.
+- Un erratum formateur séparé a été créé pour la V0.8 : divergences Lumen, Orbe, Sillage et grilles historiques. Contrôle indépendant : **1 000 €** de devis approuvés et **480 €** de paiements signalés pour le corpus Orbe V0.8 ; ces chiffres ne correspondent pas au corrigé d'une autre version. Les données détaillées et le corrigé restent en **Drive privé**, non dans ce dépôt.
+- Chemins de référence internes : bibliothèque privée ChatGPT `IAgile — Supports de formation/IAgile_Processus_Audit_V08_Versions_20261012_PRIVE.zip`, Drive privé « Errata formateur confidentiel — Jeux de données V0.8 » et audit S1 déjà sauvegardé. Aucun fichier premium n'est exposé par la vitrine.
+
+**Sécurité réelle de la base, tests non destructifs**
+- Les 10 tables Academy ont RLS activé ; le bucket `iagile-course-files` est privé et limite les types à CSV/Markdown.
+- Lectures `SELECT` en transactions en lecture seule : deux identités UUID fictives sous rôle SQL `authenticated` n'ont vu aucune inscription, leçon, consigne ni ressource ; rôle SQL `anon` sans droit de lecture des modules. Il s'agit de tests directs du backend, **pas** d'une connexion Auth réelle ni d'un test d'accès positif avec abonnement.
+- Le trigger `academy_answer_revision_invalidates_feedback` supprime les anciens retours lorsque le contenu d'une réponse change ; le client Academy affiche maintenant un retour seulement si `answer_updated_at` correspond exactement à `updated_at`, et masque l'ancien retour après nouvelle soumission réussie. Tests de version périmée, mise à jour refusée et nouvelle soumission ajoutés et réussis (PR #25).
+
+**Restent bloquants** : réconcilier les fichiers canoniques, harmoniser les corrections et examiner des copies tests, déployer l'Academy en HTTPS, connecter plusieurs véritables comptes de test, publier les objets Storage uniquement après vérification, puis piloter l'apprentissage réel. Tous les drapeaux `published` restent inchangés.
