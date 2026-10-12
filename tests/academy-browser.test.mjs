@@ -50,7 +50,7 @@ function setupFakeSupabase(){
        table==='academy_courses'?[{slug:'agents',published:!!window.__mockPublished}]:[],
        error:null}).then(resolve,reject)},
      order(){return Promise.resolve({data:table==='academy_course_modules'&&window.__mockPublished?
-        [{module_index:0,title:'Leçon fictive',body_markdown:'# Test pédagogique\\n\\n**Démonstration** sans données réelles\\n\\n- Contrôler la source\\n- Vérifier le résultat\\n\\n<img src=x onerror=alert(1)>'}]:
+        [{module_index:0,title:'Leçon fictive',body_markdown:'# Test pédagogique\n\n**Démonstration** sans données réelles\n\n- Contrôler la source\n- Vérifier le résultat\n\n<img src=x onerror=alert(1)>'}]:
         table==='academy_course_assets'&&window.__mockPublished?
         [{asset_key:'demo',title:'Document fictif',storage_path:'agents/demo.txt',module_index:0,content_bytes:120}]:[],error:null})}
     };
