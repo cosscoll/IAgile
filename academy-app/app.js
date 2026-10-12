@@ -305,6 +305,7 @@
       // Never show a verdict for a different version or an unreadable answer.
       if (review && reviewMatchesAnswer) {
         assessment=document.createElement('aside');
+        assessment.hidden=false;
         assessment.className='instructor-feedback';
         const assessmentTitle=document.createElement('h4');
         assessmentTitle.textContent='Retour du formateur';
