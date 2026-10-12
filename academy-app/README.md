@@ -21,6 +21,10 @@ Ces entrées constituent des pages dédiées dans une même application, pas enc
 - Aucun cours premium, corrigé ou fichier pédagogique n'est intégré dans le HTML, CSS ou JavaScript public. Les corps récupérés depuis la base sont affichés en texte, sans injection de HTML.
 - Travaux à rendre : les consignes de academy_deliverable_prompts sont récupérées après contrôle des droits ; réponses propres à l'apprenant sauvegardées via academy_deliverable_answers avec politiques RLS, retour formateur lu depuis academy_deliverable_feedback. Un refus de lecture désactive les modifications pour éviter d'écraser une réponse inconnue ; un échec d'écriture ne produit aucune fausse confirmation.
 - Tableau de bord : différencie inscription active, formation non publiée et cours accessible ; indique les modules terminés lorsque le programme est ouvert.
+- Supports de cours : le registre academy_course_assets est consulté uniquement après Auth, profil actif, inscription active et publication. Il répertorie les ressources `published=true` dont le chemin appartient au cours courant. Un clic explicite demande une URL signée Supabase Storage de **60 secondes**, jamais une URL publique ; refus/erreur/mauvais hôte laissent le lien masqué.
+- Les URL signées sont des jetons temporaires transférables pendant leur courte durée de validité. Ne pas les journaliser, les intégrer dans des analytics ou les afficher par défaut ; leur expiration n'est pas une révocation instantanée après déconnexion.
+- Au 12/10/2026, les **12 références du parcours Processus ne correspondent à aucun objet Storage**. Le code de téléchargement est testé uniquement avec mocks et ne démontre pas qu'un support est déjà disponible pour un véritable apprenant.
+
 - Aucun achat, attribution d'inscription, import de fichiers, droit formateur ou facturation depuis le navigateur.
 - Si le backend ou les permissions échouent, aucun cours n'est affiché.
 

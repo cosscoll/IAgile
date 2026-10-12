@@ -36,18 +36,23 @@ function setupFakeSupabase(){
     signOut:async()=>({error:null}),
     onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})
    },
+   storage:{from:bucket=>({createSignedUrl:async(filePath,seconds)=>({data:{signedUrl:
+       window.IAgileAcademyConfig.url+'/storage/v1/object/sign/'+bucket+'/'+filePath+'?token=mock'},error:null})})},
    from:table=>{
     const q={
      select(){return q},
      eq(){return q},
      maybeSingle(){return Promise.resolve({data:table==='academy_profiles'?
        {account_status:'active'}:table==='academy_courses'?
-       {slug:'agents',published:false}:null,error:null})},
+       {slug:'agents',published:!!window.__mockPublished}:null,error:null})},
      then(resolve,reject){return Promise.resolve({data:
        table==='academy_enrollments'?[{course_slug:'agents',active:true}]:
-       table==='academy_courses'?[{slug:'agents',published:false}]:[],
+       table==='academy_courses'?[{slug:'agents',published:!!window.__mockPublished}]:[],
        error:null}).then(resolve,reject)},
-     order(){return Promise.resolve({data:[],error:null})}
+     order(){return Promise.resolve({data:table==='academy_course_modules'&&window.__mockPublished?
+        [{module_index:0,title:'Leçon fictive',body_markdown:'Démonstration, sans données réelles'}]:
+        table==='academy_course_assets'&&window.__mockPublished?
+        [{asset_key:'demo',title:'Document fictif',storage_path:'agents/demo.txt',module_index:0,content_bytes:120}]:[],error:null})}
     };
     return q;
    }
@@ -57,8 +62,8 @@ function setupFakeSupabase(){
 let browser;
 try {
  browser=await chromium.launch({headless:true});
- async function setup(page,authenticated=false){
-  await page.addInitScript(value=>{window.__mockAuthenticated=value;},authenticated);
+ async function setup(page,authenticated=false,published=false){
+  await page.addInitScript(value=>{window.__mockAuthenticated=value.authenticated;window.__mockPublished=value.published;},{authenticated,published});
   await page.route('https://cdn.jsdelivr.net/**/supabase.js',route=>route.fulfill({
    status:200,contentType:'text/javascript',body:'('+setupFakeSupabase.toString()+')();'
   }));
@@ -94,6 +99,23 @@ try {
  await page.screenshot({path:path.join(output,'academy-preparation.png'),fullPage:true});
  console.log('PASS published state gate: unpublished course and assignments remain invisible');
  await page.close();
+ const activePage=await browser.newPage({viewport:{width:375,height:812}});
+ const signedErrors=await setup(activePage,true,true);
+ await activePage.goto(base+'/cours/agents/index.html',{waitUntil:'domcontentloaded'});
+ await activePage.waitForFunction(()=>document.querySelector('#course-resources')?.hidden===false);
+ assert.equal(await activePage.locator('#course-resources').isVisible(),true);
+ assert.equal(await activePage.locator('#course-resources a').isVisible(),false);
+ await activePage.locator('#course-resources button').click();
+ await activePage.waitForFunction(()=>document.querySelector('#course-resources a')?.hidden===false);
+ const signed=await activePage.locator('#course-resources a').getAttribute('href');
+ const expectedHost=await activePage.evaluate(()=>window.IAgileAcademyConfig.url);
+ assert(signed.startsWith(expectedHost+'/storage/v1/object/sign/iagile-course-files/agents/demo.txt?token='));
+ assert.equal(await activePage.locator('#course-resources a').getAttribute('rel'),'noopener noreferrer');
+ assert(!await activePage.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2));
+ assert.deepEqual(signedErrors,[],'Private resource UI browser exceptions');
+ await activePage.screenshot({path:path.join(output,'academy-signed-link-mock.png'),fullPage:true});
+ console.log('PASS authenticated mock only: private signed resource UI is responsive and gated by click');
+ await activePage.close();
 }finally{
  if(browser)await browser.close();
  await new Promise(resolve=>server.close(resolve));

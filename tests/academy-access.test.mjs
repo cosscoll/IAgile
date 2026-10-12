@@ -18,6 +18,7 @@ function element(){
     replaceChildren(){this.children=[]},
     addEventListener(type,callback){this.listeners[type]=callback},
     setAttribute(key,value){this.attributes[key]=value},
+    removeAttribute(key){delete this.attributes[key]},
     querySelector(){return {textContent:'Créer des agents'}},
     classList:{toggle(){}}
   };
@@ -26,16 +27,18 @@ async function simulate({
   course='agents', user=true, profile=true, enrollment=true,
   published=true, modules=[{title:'Leçon autorisée',body_markdown:'Texte privé',module_index:0}],
   moduleError=false, profileError=false, progressError=false, writeError=false,
-  tasks=[], answers=[], feedback=[], answersError=false, answerWriteError=false
+  tasks=[], answers=[], feedback=[], answersError=false, answerWriteError=false,
+  assets=[], assetsError=false, storageError=false, signedUrl='https://example.supabase.co/storage/v1/object/sign/iagile-course-files/agents/sample.md?token=test'
 }={}){
   const elements=new Map();
-  for(const id of ['status','auth-section','learner-section','logout','login-form','account-info','modules','deliverables','deliverables-content'])
+  for(const id of ['status','auth-section','learner-section','logout','login-form','account-info','modules','deliverables','deliverables-content','course-resources','course-resources-list'])
     elements.set(id,element());
   const form=elements.get('login-form');
   form.elements={email:{value:'pilote@example.invalid'}};
   form.reportValidity=()=>true;
   const calls=[];
   const writes=[];
+  const signatures=[];
   const responses={
     academy_profiles:{data:profile?{account_status:'active'}:null,error:profileError?{message:'denied'}:null},
     academy_enrollments:{data:enrollment?[{course_slug:course,active:true}]:[],error:null},
@@ -44,7 +47,8 @@ async function simulate({
     academy_module_progress:{data:[],error:progressError?{message:'Progression refusée'}:null},
     academy_deliverable_prompts:{data:tasks,error:null},
     academy_deliverable_answers:{data:answers,error:answersError?{message:'RLS denied'}:null},
-    academy_deliverable_feedback:{data:feedback,error:null}
+    academy_deliverable_feedback:{data:feedback,error:null},
+    academy_course_assets:{data:assets,error:assetsError?{message:'forbidden'}:null}
   };
   const makeQuery=table=>{
     const state={table, filters:[],columns:''};
@@ -64,6 +68,7 @@ async function simulate({
   };
   const client={
     from:makeQuery,
+    storage:{from(bucket){return {createSignedUrl(filePath,expiry,opts){signatures.push({bucket,filePath,expiry,opts});return Promise.resolve({data:storageError?null:{signedUrl},error:storageError?{message:'Access denied'}:null});}}}},
     auth:{
       getUser:async()=>({data:{user:user?{id:'pilot-1',email:'pilote@example.invalid'}:null},error:null}),
       signInWithOtp:async()=>({error:null}),
@@ -84,12 +89,13 @@ async function simulate({
       querySelectorAll:()=>[]
     },
     setTimeout:()=>0,
+    URL,
     console
   };
   vm.runInNewContext(source,context,{filename:'academy-app/app.js'});
   // Flush multiple async Supabase query steps, allowing refresh() to settle.
   for(let i=0;i<12;i++)await new Promise(resolve=>setImmediate(resolve));
-  return {elements,calls,writes};
+  return {elements,calls,writes,signatures};
 }
 
 const tests=[
@@ -213,3 +219,59 @@ const scriptItem=scriptSafe.elements.get('deliverables-content').children[0];
 assert(scriptItem.children.some(e=>e.textContent==='<img src=x onerror=alert(1)>'));
 assert(scriptItem.children.some(e=>e.textContent==='<script>alert(1)</script>'));
 console.log('PASS assignment and trainer text remain inert even with HTML payloads');
+
+
+// Storage is private; the resource record alone never authorizes a download.
+const resource={asset_key:'sample',title:'Supports privés',storage_path:'agents/sample.md',module_index:0,content_bytes:123,published:true};
+const assetAllowed=await simulate({assets:[resource]});
+assert.equal(assetAllowed.elements.get('course-resources').hidden,false);
+assert.equal(assetAllowed.signatures.length,0,'Do not generate bearer links before an explicit click');
+const resourceItem=assetAllowed.elements.get('course-resources-list').children[0];
+const resourceButton=resourceItem.children.find(n=>n.type==='button');
+const resourceLink=resourceItem.children.find(n=>n.tagName==='a'||n.textContent.includes('Ouvrir le support'));
+assert(resourceLink.hidden,'Signed URL initially hidden');
+await resourceButton.listeners.click();
+assert.equal(assetAllowed.signatures.length,1);
+assert.equal(assetAllowed.signatures[0].bucket,'iagile-course-files');
+assert.equal(assetAllowed.signatures[0].filePath,'agents/sample.md');
+assert.equal(assetAllowed.signatures[0].expiry,60);
+assert.equal(assetAllowed.signatures[0].opts.download,true);
+assert.equal(resourceLink.hidden,false);
+assert(resourceLink.href.includes('?token='));
+assert.equal(resourceLink.target,'_blank');
+assert.equal(resourceLink.rel,'noopener noreferrer');
+console.log('PASS signed link is requested only after user click, for exact private path and 60 seconds');
+
+const signedDenied=await simulate({assets:[resource],storageError:true});
+const deniedItem=signedDenied.elements.get('course-resources-list').children[0];
+const deniedButton=deniedItem.children.find(n=>n.type==='button');
+const deniedLink=deniedItem.children.find(n=>n.textContent.includes('Ouvrir le support'));
+await deniedButton.listeners.click();
+assert.equal(deniedLink.hidden,true);
+assert(deniedItem.children.some(n=>n.textContent.includes('refusé')));
+console.log('PASS denied storage signature never provides a download link');
+
+const offsite=await simulate({
+  assets:[resource],signedUrl:'https://malicious.invalid/storage/v1/object/sign/iagile-course-files/agents/sample.md'
+});
+const offsiteItem=offsite.elements.get('course-resources-list').children[0];
+await offsiteItem.children.find(n=>n.type==='button').listeners.click();
+assert(offsiteItem.children.find(n=>n.textContent.includes('Ouvrir le support')).hidden);
+console.log('PASS signed URL cannot direct the learner to another host');
+
+const badPath=await simulate({assets:[{...resource,storage_path:'autre-formation/sample.md'}]});
+assert.equal(badPath.elements.get('course-resources').hidden,true);
+assert.equal(badPath.elements.get('course-resources-list').children.length,0);
+console.log('PASS cross-course resource paths are not presented');
+
+const assetsDenied=await simulate({assets:[resource],assetsError:true});
+assert(assetsDenied.elements.get('course-resources').hidden);
+assert.equal(assetsDenied.signatures.length,0);
+const assetsUnenrolled=await simulate({enrollment:false,assets:[resource]});
+assert.equal(assetsUnenrolled.elements.get('course-resources').hidden,true);
+assert(!assetsUnenrolled.calls.some(c=>c.table==='academy_course_assets'));
+const assetsAnonymous=await simulate({user:false,assets:[resource]});
+assert(!assetsAnonymous.calls.some(c=>c.table==='academy_course_assets'));
+const assetsUnpublished=await simulate({published:false,assets:[resource]});
+assert(!assetsUnpublished.calls.some(c=>c.table==='academy_course_assets'));
+console.log('PASS private asset lookup obeys course/enrollment gate and fails closed');
