@@ -64,3 +64,12 @@ Ce test est statique : il ne remplace pas les tests d'accès avec plusieurs comp
 - Tests simulés des états : visiteur non connecté, profil inactif, absence d'inscription, cours non publié, échec de chargement, lecture de progression indisponible, écriture refusée par RLS, écriture autorisée et texte HTML hostile affiché sans exécution.
 - Une tentative de création du projet Vercel « iagile-academy-staging » a été refusée **403 forbidden** pour l'espace « procollomb-6607 ». Aucun projet ou déploiement de staging n'a donc été créé. Reconnecter les autorisations de cet espace Vercel sera nécessaire avant d'utiliser le connecteur pour cette opération.
 - Les redirections d'authentification Supabase doivent être configurées uniquement une fois l'URL de staging réellement connue. Ne pas inventer d'URL de redirection et ne pas activer l'ouverture des comptes publics.
+
+
+## Retours formateur et versionnement des réponses — contrôle S2
+
+- Lors de la lecture, l'Academy compare l'horodatage `academy_deliverable_feedback.answer_updated_at` avec `academy_deliverable_answers.updated_at`. L'ancien verdict n'est pas montré si la réponse ne correspond plus.
+- Après une nouvelle saisie **réellement enregistrée**, l'ancienne correction est masquée immédiatement ; une écriture rejetée la conserve si elle correspond toujours à la réponse sauvegardée.
+- Supabase applique déjà les triggers `academy_answer_touch_on_edit` (nouveau timestamp serveur) et `academy_answer_revision_invalidates_feedback` (invalidation des retours). Le navigateur constitue une sécurité UX complémentaire, non la source de vérité.
+- Tests automatisés : réponse/performance des versions concordantes, correction périmée, absence de réponse, échec d'écriture et succès d'enregistrement.
+- Les vérifications RLS réalisées avec deux rôles `authenticated` simulant des UUID sans inscription sont des contrôles de refus. Il faut toujours tester plusieurs comptes Auth réels avec inscriptions différentes pour valider l'Academy avant toute ouverture.
