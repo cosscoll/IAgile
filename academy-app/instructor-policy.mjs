@@ -2,8 +2,9 @@
 export const allowedCourses=new Set(['processus','agents','automatisation','sites-3d']);
 const key=(user,course,index)=>JSON.stringify([user,course,index]);
 export function sameRevision(a,b){
-  const x=Date.parse(String(a||'')),y=Date.parse(String(b||''));
-  return Number.isFinite(x)&&Number.isFinite(y)&&x===y;
+  // Supabase serializes both timestamptz columns canonically. Compare every
+  // character: Date.parse() drops microseconds, which could hide a later edit.
+  return typeof a==='string'&&typeof b==='string'&&a.length>0&&a===b;
 }
 export function buildReviewQueue(courses,prompts,answers,feedback){
   const available=new Map((courses||[]).filter(x=>
