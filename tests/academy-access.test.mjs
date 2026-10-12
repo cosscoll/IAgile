@@ -26,7 +26,7 @@ function element(){
 async function simulate({
   course='agents', user=true, profile=true, enrollment=true,
   published=true, modules=[{title:'Leçon autorisée',body_markdown:'Texte privé',module_index:0}],
-  moduleError=false, profileError=false, progressError=false, writeError=false,
+  moduleError=false, profileError=false, progressError=false, writeError=false, progress=[],
   tasks=[], answers=[], feedback=[], answersError=false, answerWriteError=false,
   assets=[], assetsError=false, storageError=false, signedUrl='https://example.supabase.co/storage/v1/object/sign/iagile-course-files/agents/sample.md?token=test'
 }={}){
@@ -44,7 +44,7 @@ async function simulate({
     academy_enrollments:{data:enrollment?[{course_slug:course,active:true}]:[],error:null},
     academy_courses:{data:{slug:course,published},error:null},
     academy_course_modules:{data:modules,error:moduleError?{message:'RLS blocked'}:null},
-    academy_module_progress:{data:[],error:progressError?{message:'Progression refusée'}:null},
+    academy_module_progress:{data:progress,error:progressError?{message:'Progression refusée'}:null},
     academy_deliverable_prompts:{data:tasks,error:null},
     academy_deliverable_answers:{data:answers,error:answersError?{message:'RLS denied'}:null},
     academy_deliverable_feedback:{data:feedback,error:null},
@@ -122,6 +122,45 @@ assert(permitted.elements.get('modules').children.some(n=>n.children.some(v=>v.t
 assert(permitted.calls.some(x=>x.table==='academy_course_modules' && x.filters.some(([k,v])=>k==='published'&&v===true)));
 assert(permitted.calls.some(x=>x.table==='academy_course_modules' && x.filters.some(([k,v])=>k==='course_slug'&&v==='agents')));
 console.log('PASS permitted enrollment receives published modules through RLS-backed query');
+
+
+const moduleList=[
+ {title:'Module de départ',body_markdown:'# Introduction',module_index:0},
+ {title:'Deuxième module',body_markdown:'# Étape 2',module_index:1},
+ {title:'Troisième module',body_markdown:'# Étape 3',module_index:2}
+];
+const navigable=await simulate({modules:moduleList});
+const lessonViews=navigable.elements.get('modules').children.filter(n=>n.className==='lesson');
+const chooser=navigable.elements.get('modules').children.find(n=>n.className==='module-nav');
+const options=chooser.children.find(n=>n.className==='module-nav-list').children.map(li=>li.children[0]);
+const paging=navigable.elements.get('modules').children.find(n=>n.className==='module-pager');
+const [prev,next]=paging.children;
+assert.equal(lessonViews.length,3);
+assert.deepEqual(lessonViews.map(n=>n.hidden),[false,true,true],'Only the selected lesson should be visible');
+assert.equal(options[0].attributes['aria-current'],'step');
+assert.equal(prev.disabled,true);
+assert.equal(next.disabled,false);
+await options[2].listeners.click();
+assert.deepEqual(lessonViews.map(n=>n.hidden),[true,true,false]);
+assert.equal(options[0].attributes['aria-current'],undefined);
+assert.equal(options[2].attributes['aria-current'],'step');
+assert.equal(next.disabled,true);
+await prev.listeners.click();
+assert.deepEqual(lessonViews.map(n=>n.hidden),[true,false,true]);
+assert.equal(prev.disabled,false);
+await next.listeners.click();
+assert.deepEqual(lessonViews.map(n=>n.hidden),[true,true,false]);
+console.log('PASS accessible one-at-a-time lesson navigation, previous and next');
+
+const resume=await simulate({modules:moduleList,progress:[{module_index:0,completed:true}]});
+const resumedLessons=resume.elements.get('modules').children.filter(n=>n.className==='lesson');
+assert.deepEqual(resumedLessons.map(n=>n.hidden),[true,false,true],'Resume first incomplete lesson');
+const resumedNav=resume.elements.get('modules').children.find(n=>n.className==='module-nav');
+const resumedOptions=resumedNav.children.find(n=>n.className==='module-nav-list').children.map(li=>li.children[0]);
+assert(resumedOptions[0].textContent.includes('Terminé'));
+assert.equal(resumedOptions[1].attributes['aria-current'],'step');
+console.log('PASS resume the next incomplete lesson and identify completed modules');
+
 
 const injected=await simulate({modules:[{title:'<img src=x onerror=alert(1)>',body_markdown:'<script>bad()</script>',module_index:0}]});
 assert(injected.elements.get('modules').children.some(n=>n.children.some(v=>v.textContent==='<script>bad()</script>')));
