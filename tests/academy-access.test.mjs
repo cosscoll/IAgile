@@ -106,7 +106,7 @@ for(const t of tests){
 }
 
 const permitted=await simulate();
-assert(permitted.elements.get('status').textContent.includes('module(s) accessibles'));
+assert(permitted.elements.get('status').textContent.includes('progression ont été chargés'));
 assert(!permitted.elements.get('modules').hidden,'enrolled user should receive published lessons');
 assert(permitted.elements.get('modules').children.some(n=>n.children.some(v=>v.textContent==='Texte privé')));
 assert(permitted.calls.some(x=>x.table==='academy_course_modules' && x.filters.some(([k,v])=>k==='published'&&v===true)));
