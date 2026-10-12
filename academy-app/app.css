@@ -12,3 +12,11 @@ footer{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;paddin
 @media(max-width:760px){.site-header{flex-wrap:wrap}.site-header nav{order:3;width:100%;justify-content:space-between;margin:0}.site-header button{margin-left:auto}.auth{grid-template-columns:1fr}.course-grid{grid-template-columns:1fr}.course-card{min-height:185px}.shell{padding-top:54px}.hero h1{font-size:clamp(38px,10vw,65px)}}
 @media(max-width:370px){.brand{font-size:23px}.site-header nav{gap:8px}.site-header nav a{font-size:11px}.course-card{padding:24px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.course-card{transition:none}}
+
+
+/* Module completion — available only after successful enrollment and RLS reads. */
+.progress-summary{display:inline-flex;padding:12px 18px;border:1px solid #465c7b;border-radius:8px;background:#13253c;color:#e0e9fa;font-weight:700;line-height:1.4;margin:4px 0 22px}
+.complete-button{display:inline-flex;align-items:center;justify-content:center;min-height:46px;margin-top:27px;background:#84a9ff;color:#09152a;border:1px solid #84a9ff;border-radius:8px;padding:11px 18px;font-size:13px;font-weight:800;line-height:1.4}
+.complete-button[aria-pressed="true"]{background:#1e3a36;color:#d0fce9;border-color:#4a9c87}
+.complete-button:hover:not(:disabled){filter:brightness(1.12)}
+.complete-button:disabled{opacity:.55;cursor:not-allowed}

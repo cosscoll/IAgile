@@ -33,16 +33,30 @@
     message(text || 'Accès non disponible. Réessayez plus tard.');
   };
 
-  function showModules(items) {
+  async function showModules(items, userId, request) {
     resetContent();
-    if (!modules) return;
+    if (!modules || request !== sequence) return;
     if (!Array.isArray(items) || items.length === 0) {
       message('Aucune leçon n’est encore disponible pour ce parcours.');
       return;
     }
+    const {data: saved, error: progressError} = await client.from('academy_module_progress')
+      .select('module_index,completed,notes').eq('user_id',userId).eq('course_slug',course);
+    if (request !== sequence) return;
+    const records = new Map((!progressError && Array.isArray(saved) ? saved : [])
+      .map(entry => [entry.module_index, entry]));
+    const progressReady = !progressError;
+    const progressLine = document.createElement('p');
+    progressLine.className = 'progress-summary';
+    progressLine.setAttribute('aria-live','polite');
+    const updateSummary = () => {
+      const done = items.filter(item => records.get(item.module_index)?.completed).length;
+      progressLine.textContent = done + ' module(s) terminés sur ' + items.length;
+    };
     const heading = document.createElement('h3');
-    heading.textContent = 'Modules accessibles';
-    modules.append(heading);
+    heading.textContent = 'Votre progression';
+    modules.append(heading, progressLine);
+    updateSummary();
     for (const item of items) {
       const section = document.createElement('section');
       section.className = 'lesson';
@@ -50,13 +64,52 @@
       title.textContent = String(item.title || 'Module');
       const body = document.createElement('div');
       body.className = 'lesson-body';
-      // Never interpret database Markdown or learner text as HTML.
+      // Never interpret the lesson text as HTML; this is a safe initial reader.
       body.textContent = String(item.body_markdown || '');
-      section.append(title, body);
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'complete-button';
+      const updateButton = () => {
+        const done = !!records.get(item.module_index)?.completed;
+        button.textContent = done ? 'Terminé — marquer à reprendre' : 'Marquer comme terminé';
+        button.setAttribute('aria-pressed',String(done));
+      };
+      updateButton();
+      button.disabled = !progressReady;
+      button.addEventListener('click', async () => {
+        if (request !== sequence || !progressReady || button.disabled) return;
+        const previous = records.get(item.module_index);
+        const completed = !previous?.completed;
+        button.disabled = true;
+        try {
+          // This cannot grant enrollment: RLS checks the owner, active
+          // enrollment, active profile and published module server-side.
+          const {error} = await client.from('academy_module_progress').upsert({
+            user_id:userId, course_slug:course, module_index:item.module_index,
+            completed, notes:previous?.notes || ''
+          }, {onConflict:'user_id,course_slug,module_index'});
+          if (request !== sequence) return;
+          if (error) {
+            message('La progression n’a pas été enregistrée. Réessayez.');
+            return;
+          }
+          records.set(item.module_index,{...previous,completed});
+          updateButton();
+          updateSummary();
+          message('Progression enregistrée.');
+        } catch (_error) {
+          if (request === sequence) message('Enregistrement indisponible. Aucun changement confirmé.');
+        } finally {
+          if (request === sequence) button.disabled = false;
+        }
+      });
+      section.append(title,body,button);
       modules.append(section);
     }
     modules.hidden = false;
-    message(items.length + ' module(s) accessibles pour votre inscription active.');
+    message(progressReady
+      ? 'Vos modules et votre progression ont été chargés.'
+      : 'Modules chargés, mais la progression est momentanément indisponible.');
   }
 
   async function refresh() {
@@ -124,7 +177,7 @@
         message('Les leçons n’ont pas pu être chargées. Aucun contenu n’est affiché.');
         return;
       }
-      showModules(lessons);
+      await showModules(lessons,user.id,request);
     } catch (_error) {
       if (request === sequence) failClosed('Vérification indisponible. Aucun cours privé n’a été chargé.');
     }
