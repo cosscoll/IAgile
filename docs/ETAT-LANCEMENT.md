@@ -44,3 +44,20 @@ Ne pas confondre la publication technique GitHub Pages avec une validation de la
 **Base Academy vérifiée directement :** projet IAgile Academy actif, 10 tables protégées par RLS, 47 modules non publiés, 14 consignes non publiées, 12 références de supports, 0 objet dans le bucket privé, 0 inscription. 35 modules ont moins de 500 caractères : l'espace apprenant n'est pas prêt à la commercialisation. Aucune alerte de sécurité automatique remontée par Supabase, ce qui n'équivaut pas à des tests d'isolement multi-comptes.
 
 **Dépendances encore à lever :** workflow de publication contrôlée à activer de façon coordonnée dans Settings > Pages, dépôt/stockage réel des cours payants dans un espace non public, finalisation de contenus techniques et évaluations, site apprenant connecté à Auth + contrôle d'inscription, tests fonctionnels réels, identité du vendeur et cadre commercial/juridique. Vérification du site public non effectuée dans cette session (accès HTTP externe indisponible depuis les moyens essayés) : ne pas affirmer que les derniers commits sont déjà visibles sur GitHub Pages.
+
+
+## Sprint de fiabilisation — 12 octobre 2026
+
+**Résultats vérifiés en GitHub Actions :**
+- Site public GitHub Pages accessible (HTTP 200).
+- 20 URL sensibles (Academy, backend, sources et documents internes) renvoient HTTP 404.
+- Le marqueur de version du site en production correspond exactement au commit main contrôlé, f5f96c601a7c30e7c13eb77bcb39a67dd8be63cc, au moment de l'audit.
+- Les suites de qualité du site, du chatbot, des ressources et de la prépublication passent sur la branche du sprint.
+
+**Academy développée mais non déployée :**
+- Tests automatiques de contrôle d'accès couvrant les états sans connexion, non inscrit, compte inactif, formation non publiée, lecture/écriture refusée et accès valide simulé.
+- Fonction de progression par leçon, lecture et écriture via RLS Supabase ; aucune donnée privée intégrée aux fichiers GitHub.
+- Préparation des en-têtes de sécurité et des règles noindex pour un futur hébergement de staging.
+- La création du projet Vercel séparé est bloquée par un 403 de l'espace procollomb-6607. **Il faut rétablir l'autorisation Vercel**, puis configurer le projet HTTPS et les URL de redirection Auth pour mener des essais multi-comptes.
+
+**Pas encore terminé :** migration du déploiement Pages natif vers GitHub Actions à déclencher et contrôler dans les réglages du dépôt ; staging Academy en ligne ; tests de connexion réelle, autorisations inter-comptes, validations pédagogiques et commerciale.
