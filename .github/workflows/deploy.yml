@@ -101,3 +101,16 @@ jobs:
           node scripts/build-public.mjs
           node tests/publication-boundary.test.mjs public-site
           node tests/staged-public.test.mjs
+
+  live-audit:
+    name: Contrôler le site vitrine déjà publié
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Vérifier HTTP 200 et les exclusions HTTP 404
+        run: node tests/current-live-exposure.test.mjs
