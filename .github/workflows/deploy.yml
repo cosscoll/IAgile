@@ -29,6 +29,7 @@ jobs:
           node tests/publication-boundary.test.mjs
           node tests/jekyll-boundary.test.mjs
           node tests/academy-shell.test.mjs
+          node tests/academy-access.test.mjs
           node --check script.js
           node --check chatbot.js
           node --check chatbot-ai.js
