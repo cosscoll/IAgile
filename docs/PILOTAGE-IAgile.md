@@ -212,3 +212,27 @@ Le projet final a une grille provisoire /100, une exigence de 5 à 10 processus,
 5. Préparer séparément offre, conformité, tarif et paiement de test pour décision humaine.
 
 **Règle de reprise :** ne plus refaire le chantier de rédaction déjà terminé simplement pour augmenter le volume de texte. Travailler sur **preuve d'exécution, fichiers, corrections, accès, pédagogie réelle et lancement**.
+
+
+## 13. Reprise autonome — paiements, staging, ressources privées (12 octobre 2026)
+
+**Paiement : sécurité préparée, ventes toujours fermées.**
+- PR #36 fusionnée : vérification HMAC de la charge brute d'un événement Stripe, validité temporelle, décisions *propose-grant* / *propose-revocation-review* sur commande connue, tests de falsification, somme, cours, identité, doublon, litige. Tests **fictifs uniquement**. Aucun client marchand IAgile, aucun serveur webhook, aucune facture et aucune attribution automatique d'inscription.
+- PR #37 fusionnée : migration appliquée à Supabase créant `academy_billing.orders` et `academy_billing.webhook_events` dans un schéma privé. RLS activé sur les deux tables ; pas de droit de schéma ni d'écriture pour `anon` ou `authenticated`. Compte serveur seul habilité. Enregistrements constatés après migration : 0 commande, 0 événement, 0 inscription.
+- Les critères `signed_checkout`, `merchant`, `seller`, `price`, `invoices`, `refund` restent **bloqués**, même si les tests unitaires sont réussis.
+
+**Académie : hébergement de staging créé, recette réelle non validée.**
+- Projet Vercel `iagile-academy-staging` (ID `prj_bMiSXP3lGCrYPDtzkXAHBPMkXUOC`), premier déploiement `dpl_V6CF2wxkJNikDrTDpnHfn9cMt9Wv` marqué READY, neuf fichiers présents. Protection Vercel Authentication `all` activée.
+- La lecture de page authentifiée par l'outil connecté retourne 403 à l'étape d'autorisation Vercel ; ne pas désactiver la protection pour contourner le test. Un nouveau déploiement visant la version avec RPC atomique a été refusé par limite journalière d'API Vercel (HTTP 402). La version hébergée **n'est donc pas vérifiée à jour** ; les tests Auth multi-comptes sont encore absents.
+
+**Supports Processus : pack d'import contrôlé conservé au privé.**
+- `IAgile_Processus_V091_Preparation_Import_Controle_PRIVE.zip` est maintenant dans la bibliothèque ChatGPT privée `/IAgile — Supports de formation`. Il contient 12 fichiers apprenant V0.9.1, un contrôle indépendant de SHA-256 et taille (12/12 réussis), les écarts des 12 références Supabase, un mode opératoire et une proposition de SQL **non exécutée**, conditionnée à la présence des 12 objets dans le bucket.
+- Source `V0.9.1` toujours **CANDIDAT NON VALIDÉ** et non publié ; 0 fichier Supabase Storage. Le SQL de préparation ne doit pas être utilisé avant une double vérification des octets après import et la validation pédagogique du corpus.
+- Les corrigés et copies formateur restent hors du dépôt public. Tous les drapeaux `published` doivent rester faux jusqu'à la recette.
+
+**Lancement : critères explicites et documents.**
+- `docs/IAgile-LAUNCH-EVIDENCE.json` contient 15 critères d'ouverture ; seuls les contrôles de vitrine et d'existence du staging ont un statut technique `verified`. `npm run qa:launch` reste volontairement non prêt ; ne pas l'utiliser pour déclencher une mise en vente.
+- Runbook privé Drive « IAgile — Runbook opérationnel de première vente » : https://docs.google.com/document/d/1EfsYickzSXcIeQax_1QecZcaPDY73PcbtWTjyZgjuHQ/edit ; kit communication privé, sept posts et trois emails non envoyés : https://docs.google.com/document/d/1_3GuNnaE3k-U_83n7_wMEHwsR_x4ZfN8V14erY_qXw4/edit .
+- Aucun prix, contrat définitif, consentement client, facture, certificat, transaction réelle ou inscription commerciale créé.
+
+**Blocages à traiter sans masquer l'état réel :** compte marchand et vendeur validés ; décision juridique sur le type de prestation et mode de facturation ; validation finale du corpus ; import privé vérifié ; permissions Vercel et quota pour actualisation du staging ; deux vrais comptes et tests de droits ; prix et checkout test ; facture/remboursement ; revue pédagogique humaine et support.
