@@ -39,3 +39,15 @@ Migration **déjà appliquée** dans le projet Supabase IAgile le 12 octobre 202
 Cette structure ne constitue pas un webhook fonctionnel. Il manque le vendeur approuvé, la tarification, les secrets marchand, un endpoint sécurisé, le contrôle de double exécution en transaction, l'attribution des droits d'apprentissage, l'émission de facture et la procédure réglementaire de remboursement. **Aucune session Checkout ni facture n'a été créée.**
 
 Attention : la conservation des commandes doit être ajustée au régime de conservation comptable et RGPD choisi par l'entité vendeuse avant la première vente.
+
+## Transaction privée de confirmation de paiement — 12 octobre 2026
+
+La migration `supabase/migrations/20261012_billing_record_server_verified_checkout.sql` a été appliquée à Supabase. Elle ajoute un booléen test/live aux commandes et événements, puis la fonction privée `academy_billing.record_checkout_payment(...)`.
+
+Elle requiert un appel depuis un **serveur autorisé** ayant préalablement vérifié le webhook Stripe réel, son HMAC sur la charge brute, sa fraîcheur et le paiement encaissé. Cette fonction SQL **ne vérifie pas elle-même Stripe** et ne doit pas être appelée à partir des données d'un navigateur.
+
+Avant d'enregistrer le paiement, elle verrouille la commande canonique et compare : acheteur, formation, marchand, montant, devise, mode test/live, Checkout Session, PaymentIntent et consentement contractuel horodaté. L'ID d'événement est enregistré avec unicité ; une répétition reçoit une décision idempotente. Une transaction valide marque seulement la commande `paid` : elle **n'inscrit aucun apprenant**, ne crée aucune facture et n'envoie aucun e-mail.
+
+Permissions vérifiées dans le projet actif : `service_role` seul peut exécuter la fonction (SECURITY INVOKER) ; `authenticated` et `anon` ne le peuvent pas. Un essai SQL sous `authenticated` a échoué avec `permission denied for schema academy_billing`. État après migration : 0 commande, 0 événement, 0 inscription et 0 compte Auth.
+
+Les étapes critiques suivantes restent absentes : endpoint webhook serveur, fournisseur marchand IAgile identifié, création de commande côté serveur avec données légales validées, facturation, transaction test end-to-end, attribution d'accès après paiement vérifié, synchronisation des remboursements et gestion d'incidents. **Commercialisation : toujours NON AUTORISÉE.**
