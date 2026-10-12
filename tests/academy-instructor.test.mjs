@@ -17,7 +17,13 @@ assert.equal(buildReviewQueue(course,[{...prompts[0],published:false}],[answer],
 assert.equal(buildReviewQueue(course,prompts,[{...answer,course_slug:'sites-3d'}],[current]).length,0);
 assert.equal(buildReviewQueue(course,prompts,[{...answer,deliverable_index:19}],[current]).length,0);
 assert.equal(buildReviewQueue(course,prompts,[{...answer,updated_at:'invalid'}],[current]).length,0);
-assert.equal(sameRevision(stamp,'2026-10-12T12:00:00Z'),true);
+assert.equal(sameRevision(stamp,'2026-10-12T12:00:00Z'),false,
+  'Canonical serialized revision must be byte-exact, not millisecond-rounded');
+assert.equal(sameRevision('2026-10-12T12:00:00.123456+00:00',
+  '2026-10-12T12:00:00.123457+00:00'),false,
+  'A one-microsecond revision change invalidates grading');
+assert.equal(sameRevision('2026-10-12T12:00:00.123456+00:00',
+  '2026-10-12T12:00:00.123456+00:00'),true);
 assert.equal(sameRevision('garbage',stamp),false);
 assert.equal(sameRevision(undefined,undefined),false);
 assert.equal(buildReviewQueue(course,prompts,[answer],[])[0].content,answer.content,
