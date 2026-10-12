@@ -142,9 +142,90 @@
     heading.textContent = 'Votre progression';
     modules.append(heading, progressLine);
     updateSummary();
+
+    const choices=[];
+    const lessonSections=[];
+    let selectedIndex=items.findIndex(item=>!records.get(item.module_index)?.completed);
+    if (selectedIndex<0) selectedIndex=0;
+    const nav=document.createElement('nav');
+    nav.className='module-nav';
+    nav.setAttribute('aria-label','Choisir une leçon de cette formation');
+    const navHeading=document.createElement('p');
+    navHeading.className='module-nav-heading';
+    navHeading.textContent='Choisissez une leçon';
+    const navList=document.createElement('ol');
+    navList.className='module-nav-list';
+    nav.append(navHeading,navList);
+    const current=document.createElement('p');
+    current.className='module-nav-current';
+    current.setAttribute('aria-live','polite');
+    modules.append(nav,current);
+    const previous=document.createElement('button');
+    previous.type='button';
+    previous.className='module-pager-button';
+    previous.textContent='← Leçon précédente';
+    const next=document.createElement('button');
+    next.type='button';
+    next.className='module-pager-button';
+    next.textContent='Leçon suivante →';
+    const pager=document.createElement('div');
+    pager.className='module-pager';
+    pager.append(previous,next);
+    const updateNavStates=()=>{
+      choices.forEach((choice,index)=>{
+        const done=!!records.get(items[index].module_index)?.completed;
+        choice.textContent=(index+1)+'. '+String(items[index].title||'Module')+(done?' · Terminé':'');
+        choice.setAttribute('aria-label','Leçon '+(index+1)+' sur '+items.length+
+          (done?' — terminée':' — à suivre')+' : '+String(items[index].title||'Module'));
+      });
+    };
+    const showSelected=()=>{
+      if (request!==sequence) return;
+      lessonSections.forEach((section,index)=>{
+        section.hidden=index!==selectedIndex;
+      });
+      choices.forEach((choice,index)=>{
+        if(index===selectedIndex)choice.setAttribute('aria-current','step');
+        else choice.removeAttribute('aria-current');
+      });
+      previous.disabled=selectedIndex===0;
+      next.disabled=selectedIndex>=items.length-1;
+      current.textContent='Leçon '+(selectedIndex+1)+' sur '+items.length;
+    };
+    previous.addEventListener('click',()=>{
+      if(request!==sequence||selectedIndex===0)return;
+      selectedIndex--;
+      showSelected();
+      lessonSections[selectedIndex]?.focus?.();
+    });
+    next.addEventListener('click',()=>{
+      if(request!==sequence||selectedIndex>=items.length-1)return;
+      selectedIndex++;
+      showSelected();
+      lessonSections[selectedIndex]?.focus?.();
+    });
     for (const item of items) {
       const section = document.createElement('section');
       section.className = 'lesson';
+      section.id='academy-lesson-'+course+'-'+item.module_index;
+      section.tabIndex=-1;
+      section.hidden=true;
+      const choiceIndex=lessonSections.length;
+      lessonSections.push(section);
+      const navItem=document.createElement('li');
+      const choose=document.createElement('button');
+      choose.type='button';
+      choose.className='module-nav-choice';
+      choose.setAttribute('aria-controls',section.id);
+      choose.addEventListener('click',()=>{
+        if(request!==sequence)return;
+        selectedIndex=choiceIndex;
+        showSelected();
+        section.focus?.();
+      });
+      navItem.append(choose);
+      navList.append(navItem);
+      choices.push(choose);
       const title = document.createElement('h4');
       title.textContent = String(item.title || 'Module');
       const body = document.createElement('div');
@@ -182,6 +263,7 @@
           records.set(item.module_index,{...previous,completed});
           updateButton();
           updateSummary();
+          updateNavStates();
           message('Progression enregistrée.');
         } catch (_error) {
           if (request === sequence) message('Enregistrement indisponible. Aucun changement confirmé.');
@@ -192,6 +274,9 @@
       section.append(title,body,button);
       modules.append(section);
     }
+    modules.append(pager);
+    updateNavStates();
+    showSelected();
     modules.hidden = false;
     message(progressReady
       ? 'Vos modules et votre progression ont été chargés.'
