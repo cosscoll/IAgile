@@ -93,3 +93,21 @@ L'application est exclue des deux voies de publication de la vitrine (Jekyll et 
 **Statut : source développée, non hébergée, non testée de bout en bout.** Il faut configurer un domaine HTTPS de staging et les redirect URLs de Supabase Auth, créer des comptes pilotes avec profils et droits distincts, vérifier l'isolation RLS, les accès aux supports et l'ergonomie mobile avant de prétendre à un espace apprenant fonctionnel. Les quatre routes représentent à ce stade quatre points d'entrée d'une même application, pas quatre sites hébergés indépendamment. Documentation : academy-app/README.md.
 
 Contrôle complémentaire Storage : les politiques SELECT sont limitées au bucket privé et aux ressources publiées associées à une inscription active ; une politique distincte encadre les brouillons formateurs. Les fonctions academy_private utilisent un search_path fixé, ne sont pas exécutables par anon, et seules deux fonctions de lecture de rôle sont exécutables par authenticated. Aucune alerte automatique de sécurité actuellement remontée. Cela ne remplace pas un test d'intrusion ni un parcours multi-comptes.
+
+
+## Sprint autonome du 12 octobre 2026 — livrables et validation navigateur
+
+**Application Academy (code encore non hébergé)**
+- Ajout des interfaces de livrables aux quatre formations : consignes uniquement publiées et lues après contrôle d'identité, de profil actif, d'inscription et de cours publié.
+- Sauvegarde des réponses dans academy_deliverable_answers, avec propriétaire user_id, course_slug et deliverable_index ; les politiques RLS conservent l'autorisation côté base. Si la récupération des réponses échoue, édition désactivée pour ne pas écraser des données inconnues. En cas d'échec d'enregistrement, le statut de succès n'est pas affiché.
+- Retour formateur dans academy_deliverable_feedback affiché en lecture seule ; aucune modification ni décision de notation côté navigateur.
+- Tableau de bord différenciant cours sans inscription, inscription active mais cours en préparation, et cours publié. Compteur de modules terminés lorsque les données nécessaires sont disponibles.
+- Aucun support premium ni corrigé copié dans GitHub ou rendu visible sur la vitrine.
+
+**Vérifications automatiques**
+- Tests Node simulant les accès anonymes et refusés, les contenus publiés/non publiés, les brouillons sauvegardés, les refus d'écriture et la sécurité de l'affichage des textes.
+- Test Chromium sur 1440 px, 375 px et 320 px : formulaire anonyme visible, cours masqués, absence de débordement horizontal. Une visite en tant que compte simulé sur une formation encore non publiée vérifie que modules et livrables restent invisibles.
+- Contrôle en ligne de l'URL exacte du SDK Supabase : HTTP 200 confirmé dans la CI.
+- Diagnostic Supabase relancé le 12 octobre : aucune alerte de sécurité ; deux index non utilisés signalés au niveau informatif, sans justification pour les retirer maintenant ([documentation Supabase](https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index)).
+
+**Limites indispensables à rappeler** : le navigateur utilise une simulation de Supabase, pas deux vrais comptes apprenants. Les tests de RLS réels, la configuration de l'Auth de staging et le déploiement restent bloqués tant que l'accès Vercel à l'espace procollomb-6607 n'est pas rétabli (403). Le site vitrine et l'espace apprenant restent séparés. Aucun paiement ni inscription commerciale n'a été ouvert.
