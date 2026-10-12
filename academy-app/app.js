@@ -264,13 +264,57 @@
       }
       const active = new Set((enrollments || []).filter(e => e.active).map(e => e.course_slug));
       if (!course) {
+        const {data: catalogue, error: catalogueError} = await client.from('academy_courses')
+          .select('slug,published');
+        if (request !== sequence) return;
+        if (catalogueError || !Array.isArray(catalogue)) {
+          message('Vos inscriptions sont vérifiées, mais le statut des formations est temporairement indisponible.');
+          return;
+        }
+        const published = new Set(catalogue.filter(row => row.published).map(row => row.slug));
+        const available = [...active].filter(slug => published.has(slug));
+        let totalByCourse = new Map();
+        let completedByCourse = new Map();
+        if (available.length) {
+          const {data: availableModules, error: moduleListError} = await client.from('academy_course_modules')
+            .select('course_slug,module_index').eq('published',true);
+          if (request !== sequence) return;
+          const {data: progressRows, error: progressRowsError} = await client.from('academy_module_progress')
+            .select('course_slug,module_index,completed').eq('user_id',user.id).eq('completed',true);
+          if (request !== sequence) return;
+          if (!moduleListError && !progressRowsError) {
+            for (const row of availableModules || []) {
+              if (!available.includes(row.course_slug)) continue;
+              totalByCourse.set(row.course_slug,(totalByCourse.get(row.course_slug)||0)+1);
+            }
+            for (const row of progressRows || []) {
+              if (!available.includes(row.course_slug)) continue;
+              completedByCourse.set(row.course_slug,(completedByCourse.get(row.course_slug)||0)+1);
+            }
+          }
+        }
         for (const card of document.querySelectorAll('.course-card')) {
           const match = card.getAttribute('href')?.match(/cours\/([^/]+)\//);
           if (!match) continue;
-          card.classList.toggle('has-access',active.has(match[1]));
-          card.setAttribute('aria-label', card.querySelector('strong')?.textContent + (active.has(match[1]) ? ' — inscription active' : ' — accès réservé'));
+          const slug = match[1];
+          const enrolled = active.has(slug);
+          const open = enrolled && published.has(slug);
+          card.classList.toggle('has-access',open);
+          const detail = card.querySelector('small');
+          let label = 'Accès réservé';
+          if (enrolled && !open) label = 'Inscription active · formation en préparation';
+          if (open) {
+            label = 'Formation accessible';
+            if (totalByCourse.has(slug)) {
+              label += ' · '+(completedByCourse.get(slug)||0)+' / '+totalByCourse.get(slug)+' modules terminés';
+            }
+          }
+          if (detail) detail.textContent=label;
+          card.setAttribute('aria-label',(card.querySelector('strong')?.textContent||'Formation')+' — '+label);
         }
-        message(active.size ? 'Vos inscriptions actives ont été vérifiées.' : 'Vous n’avez aucune formation active pour le moment.');
+        message(available.length ? 'Vos formations accessibles et votre progression sont à jour.'
+          : (active.size ? 'Vos inscriptions sont actives. Les formations sont encore en préparation.'
+          : 'Vous n’avez aucune formation active pour le moment.'));
         return;
       }
       if (!active.has(course)) {
