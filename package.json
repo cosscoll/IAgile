@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/site-check.mjs && node --test tests/chat.test.mjs && node tests/publication-boundary.test.mjs && node tests/jekyll-boundary.test.mjs && node tests/academy-shell.test.mjs && node tests/academy-access.test.mjs && node tests/academy-dashboard.test.mjs && node tests/academy-private-assets.test.mjs",
+    "test": "node tests/site-check.mjs && node --test tests/chat.test.mjs && node tests/publication-boundary.test.mjs && node tests/jekyll-boundary.test.mjs && node tests/academy-shell.test.mjs && node tests/academy-access.test.mjs && node tests/academy-dashboard.test.mjs && node tests/academy-private-assets.test.mjs && node tests/academy-launch-gate.test.mjs",
     "build:public": "node scripts/build-public.mjs",
     "test:public": "node tests/publication-boundary.test.mjs public-site && node tests/staged-public.test.mjs",
-    "qa:private-assets": "node scripts/verify-private-course-assets.mjs"
+    "qa:private-assets": "node scripts/verify-private-course-assets.mjs",
+    "qa:launch": "node scripts/academy-launch-gate.mjs"
   }
 }

@@ -1,0 +1,98 @@
+{
+  "version": "2026-10-12-prelaunch",
+  "notice": "Ce fichier documente des contrôles, il ne remplace pas leurs preuves. Ne jamais le traiter comme une autorisation de facturer.",
+  "project": "IAgile",
+  "last_reviewed": "2026-10-12",
+  "gates": [
+    {
+      "id": "vitrine",
+      "label": "Site vitrine et exclusion des fichiers privés",
+      "status": "verified",
+      "evidence": "GitHub Pages workflow: HTTP 200, commit main exact et 20 chemins internes refusés"
+    },
+    {
+      "id": "curriculum_reference",
+      "label": "Référentiel apprenant et corrigés versionnés",
+      "status": "blocked",
+      "evidence": "Candidat V0.9.1 privé, formateur à valider; 12 SHA Supabase différents"
+    },
+    {
+      "id": "private_storage",
+      "label": "12 fichiers réellement dans Storage et vérifiés",
+      "status": "blocked",
+      "evidence": "0 objet Storage au dernier audit"
+    },
+    {
+      "id": "academy_staging",
+      "label": "Staging Academy HTTPS construit",
+      "status": "verified",
+      "evidence": "Vercel prj_bMiSXP3lGCrYPDtzkXAHBPMkXUOC et deployment READY, SSO all"
+    },
+    {
+      "id": "academy_browser",
+      "label": "Navigation réelle et redirections Auth testées",
+      "status": "blocked",
+      "evidence": "Lecture HTTP de staging bloquée par SSO, dernière version frontend non redéployée"
+    },
+    {
+      "id": "auth_isolation",
+      "label": "Deux comptes réels, accès/cours et RLS vérifiés",
+      "status": "blocked",
+      "evidence": "0 utilisateur Auth, 0 inscription au dernier audit"
+    },
+    {
+      "id": "pedagogy_pilot",
+      "label": "Copie d'essai et revue humaine sur le corpus final",
+      "status": "blocked",
+      "evidence": "Aucun vrai apprenant ni épreuve de transfert observé"
+    },
+    {
+      "id": "seller",
+      "label": "Identité du vendeur et régime fiscal vérifiés",
+      "status": "blocked",
+      "evidence": "Aucune entité vendeuse ni SIREN validés dans le dossier de lancement"
+    },
+    {
+      "id": "legal_offer",
+      "label": "Contrat, CGV et obligations de formation validés",
+      "status": "blocked",
+      "evidence": "Trames internes encore non contractuelles; régime juridique à choisir"
+    },
+    {
+      "id": "price",
+      "label": "Offre et prix définitivement approuvés",
+      "status": "blocked",
+      "evidence": "Étude concurrentielle sans tarif IAgile validé"
+    },
+    {
+      "id": "merchant",
+      "label": "Compte paiement IAgile identifié et isolé",
+      "status": "blocked",
+      "evidence": "Seul compte Stripe test trouvé : environnement test d'un autre projet"
+    },
+    {
+      "id": "signed_checkout",
+      "label": "Paiement signé, événements idempotents et refus de spoofing",
+      "status": "blocked",
+      "evidence": "Aucun checkout IAgile et aucun webhook opérationnels"
+    },
+    {
+      "id": "invoices",
+      "label": "Facture conforme et email de confirmation testés",
+      "status": "blocked",
+      "evidence": "Pas de numéro de facture ni émetteur IAgile confirmé"
+    },
+    {
+      "id": "refund",
+      "label": "Rétractation et remboursement selon contrat testés",
+      "status": "blocked",
+      "evidence": "Aucun remboursement ou procédure contractuelle testés"
+    },
+    {
+      "id": "customer_support",
+      "label": "Accompagnement, corrections et contact disponibles",
+      "status": "blocked",
+      "evidence": "Contact SAV et correcteur responsable restent à désigner"
+    }
+  ]
+}
