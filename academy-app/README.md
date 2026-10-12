@@ -98,3 +98,13 @@ npm run qa:private-assets -- /chemin/prive/manifest.json /chemin/prive/datasets 
 L'outil est **en lecture seule** : il vérifie les SHA-256, tailles, types CSV/Markdown, chemins dédiés à la formation, absence de symlinks et fichiers non inventoriés. Il refuse les manifestes marqués publiés ou déjà importés, et ne fait aucun transfert vers Supabase. Les tests utilisent exclusivement un cas fictif généré au moment de leur exécution.
 
 La réussite de ce contrôle ne prouve pas que les fichiers sont stockés dans le bucket privé ni accessibles uniquement aux étudiants autorisés. Après validation pédagogique et import par un opérateur autorisé, vérifier les octets réellement récupérés et tester RLS/Auth avec plusieurs comptes distincts avant toute publication.
+
+## Espace de correction formateur (pré-lancement du 12 octobre 2026)
+
+Route dédiée `/instructor.html`, non indexée. Authentification par e-mail uniquement pour un compte **préexistant** (`shouldCreateUser:false`). Le navigateur vérifie le statut actif, les attributions `academy_instructor_courses`, les cours publiés et les consignes publiées, puis lit les copies et corrections via les règles RLS de Supabase. Aucune vue formateur n'est accessible aux visiteurs non connectés et aucune élévation de rôle n'est réalisée depuis le navigateur.
+
+Les copies sont affichées exclusivement en texte inerte (`textContent`), y compris si elles contiennent des chaînes HTML potentiellement dangereuses. La liste est limitée temporairement aux 200 premières copies les plus récentes ; la pagination reste à implémenter pour une exploitation à grande échelle. L'identifiant de compte apparaît uniquement dans cette interface formateur privée. Il ne doit pas être publié dans la vitrine, un email ou une capture publique.
+
+Lorsqu'un formateur valide un travail ou demande une révision, l'écriture inclut `answer_updated_at`. Le trigger SQL `academy_feedback_verify_answer_version` refuse les corrections périmées, et le navigateur vérifie ensuite la version et le contenu relus en base avant d'afficher la confirmation. La possibilité de modification d'une correction existante dépend des politiques RLS en vigueur.
+
+**Non validé avec de vraies personnes** : aucun compte formateur, aucun apprenant et aucun cours publié à ce jour. La route est un développement préparé et contrôlé en CI, pas une correction opérationnelle démontrée. Le staging Vercel existant n'est pas automatiquement synchronisé après un commit GitHub ; il faudra le redéployer derrière SSO, puis tester deux comptes apprenants et un formateur avec rôles réels.

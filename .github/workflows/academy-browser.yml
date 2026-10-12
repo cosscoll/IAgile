@@ -26,7 +26,9 @@ jobs:
       - name: Install browser and required system packages
         run: npx playwright install --with-deps chromium
       - name: Run mock-only visual and access smoke tests
-        run: node tests/academy-browser.test.mjs
+        run: |
+          node tests/academy-browser.test.mjs
+          node tests/academy-instructor-browser.test.mjs
       - name: Archive simulated UI screenshots
         if: always()
         uses: actions/upload-artifact@v4
