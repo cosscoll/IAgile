@@ -112,8 +112,8 @@ Pour une **formation commercialisable** : support présent et sécurisé, accès
 
 | Priorité | Action | Peut être faite sans intervention ? | État |
 | --- | --- | --- | --- |
-| P1 | Audit pédagogique détaillé des 9 modules « IA au quotidien » et des 8 livrables depuis les sources existantes | Oui | À faire — prochain travail |
-| P1 | Tableau de correspondance modules ↔ fichiers Drive ↔ tables Academy ↔ supports | Oui | À faire |
+| P1 | Audit pédagogique détaillé des 9 modules « IA au quotidien » et des 8 livrables depuis les sources existantes | Oui | Terminé — rapport privé Drive vérifié le 12/10/2026 |
+| P1 | Tableau de correspondance modules ↔ fichiers Drive ↔ tables Academy ↔ supports | Oui | Terminé pour Processus — 12 références cohérentes par nom, mais 0 fichier disponible en Storage |
 | P1 | Gabarit unique de contrôle qualité et barème de revue pédagogique des quatre cursus | Oui | À faire |
 | P1 | Vérifier et corriger les 35 modules succincts, par groupe cohérent | Oui, sous réserve des informations sources | À faire |
 | P2 | Reprendre la création du staging Academy après erreur Vercel 403 | Non pour le compte Vercel tant que l'autorisation manque | Bloqué |
@@ -125,4 +125,15 @@ Pour une **formation commercialisable** : support présent et sécurisé, accès
 
 ### Choix par défaut pour la reprise
 
-**Reprendre S1, formation IA au quotidien.** Dresser immédiatement la matrice des 9 modules et 8 livrables à partir des documents officiels de Drive et de la base réelle. Ne rien publier, ne créer aucun cours premium sur GitHub, et livrer un audit module par module avec les corrections réalisables.
+**S1 exécuté pour IA au quotidien : reprendre S2 avec la résolution de versions des ressources et examens.** L'audit interne des 9 modules et 8 livrables est archivé dans Google Drive privé. Les 12 fichiers anciens retrouvés en bibliothèque présentent des empreintes et des tailles différentes du manifeste actuel (0/12 correspondances) : ne pas écraser les ressources en base ni publier les cours avant arbitrage des versions.
+
+
+## 8. Compte rendu du sprint 1 — 12 octobre 2026
+
+- **Terminé, preuves conservées dans Drive privé :** examen détaillé des neuf modules, des huit travaux et du programme/manuel d'évaluation ; relevé de leurs dépendances.
+- **Structure pédagogique :** les neuf textes Academy contiennent déjà de véritables exercices et plusieurs critères de validation. Ne pas les réécrire systématiquement ; concentrer les corrections sur les divergences vérifiées et les fichiers nécessaires.
+- **Dépendances de support :** 12 ressources décrites dans le registre Supabase, zéro objet dans le bucket privé ; cinq modules utilisent des jeux de données externes.
+- **Archives récupérées :** les douze anciens fichiers existent dans une archive apprenant privée, mais **0/12 empreintes et tailles ne correspondent** à la version indexée dans Academy. La variante archivale doit être comparée puis versionnée ou remplacée explicitement ; aucun import aveugle.
+- **Évaluation :** plusieurs versions de scénario final et des grilles de notation distinctes exigent un choix éditorial cohérent avant ouverture.
+- **Changements sur données sensibles :** aucun contenu premium copié dans GitHub ; aucun cours publié ; aucun fichier Storage remplacé.
+- **Prochain bloc autonome :** rechercher la version canonique des douze fichiers, analyser l'écart avec la version archivée, figer le protocole de correspondance exercices/corrigés et préparer l'import privé sécurisé. L'Academy reste non commercialisable.
