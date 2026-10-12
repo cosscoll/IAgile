@@ -73,3 +73,12 @@ Ce test est statique : il ne remplace pas les tests d'accès avec plusieurs comp
 - Supabase applique déjà les triggers `academy_answer_touch_on_edit` (nouveau timestamp serveur) et `academy_answer_revision_invalidates_feedback` (invalidation des retours). Le navigateur constitue une sécurité UX complémentaire, non la source de vérité.
 - Tests automatisés : réponse/performance des versions concordantes, correction périmée, absence de réponse, échec d'écriture et succès d'enregistrement.
 - Les vérifications RLS réalisées avec deux rôles `authenticated` simulant des UUID sans inscription sont des contrôles de refus. Il faut toujours tester plusieurs comptes Auth réels avec inscriptions différentes pour valider l'Academy avant toute ouverture.
+
+
+## Navigation des leçons — sprint autonome du 12 octobre 2026
+
+- Après contrôle Auth, profil, inscription, état publié et RLS, les modules sont présentés **un par un**. Le sommaire indique clairement les leçons terminées ; un seul corps de leçon est visible.
+- À l'ouverture, la première leçon **non terminée** est sélectionnée automatiquement, ce qui évite de chercher son point de reprise. Le comportement ne s'appuie pas sur une préférence persistée en local : la base de progression apprenant demeure la source de vérité.
+- Navigation par choix de module et boutons précédent/suivant ; `aria-current="step"`, `aria-controls`, focus et désactivation des boutons hors limites. UX disponible même quand la lecture de progression est temporairement inaccessible ; l'écriture de progression reste désactivée dans ce cas.
+- Les modules non publiés ou les données privées ne sont jamais inclus dans le dépôt ni demandés par le client avant la validation des droits. La présentation du seul module sélectionné n'est **pas** en elle-même un mécanisme de sécurité.
+- QA simulée avec trois leçons et un parcours avec une leçon déjà terminée, plus test Chromium mobile sur deux leçons fictives.
