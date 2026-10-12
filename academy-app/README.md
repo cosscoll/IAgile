@@ -68,7 +68,7 @@ Ce test est statique : il ne remplace pas les tests d'accès avec plusieurs comp
 
 ## Retours formateur et versionnement des réponses — contrôle S2
 
-- Lors de la lecture, l'Academy compare l'horodatage `academy_deliverable_feedback.answer_updated_at` avec `academy_deliverable_answers.updated_at`. L'ancien verdict n'est pas montré si la réponse ne correspond plus.
+- Lors de la lecture, l'Academy compare les horodatages `academy_deliverable_feedback.answer_updated_at` et `academy_deliverable_answers.updated_at` **dans leur représentation PostgreSQL complète**. Un `Date.parse()` limité aux millisecondes n'est pas suffisamment strict pour des modifications successives à quelques microsecondes d'écart. L'ancien verdict reste masqué si les deux valeurs ne sont pas exactement identiques.
 - Après une nouvelle saisie **réellement enregistrée**, l'ancienne correction est masquée immédiatement ; une écriture rejetée la conserve si elle correspond toujours à la réponse sauvegardée.
 - Supabase applique déjà les triggers `academy_answer_touch_on_edit` (nouveau timestamp serveur) et `academy_answer_revision_invalidates_feedback` (invalidation des retours). Le navigateur constitue une sécurité UX complémentaire, non la source de vérité.
 - Tests automatisés : réponse/performance des versions concordantes, correction périmée, absence de réponse, échec d'écriture et succès d'enregistrement.
