@@ -175,3 +175,12 @@ Pour une **formation commercialisable** : support présent et sécurisé, accès
 - Le trigger `academy_answer_revision_invalidates_feedback` supprime les anciens retours lorsque le contenu d'une réponse change ; le client Academy affiche maintenant un retour seulement si `answer_updated_at` correspond exactement à `updated_at`, et masque l'ancien retour après nouvelle soumission réussie. Tests de version périmée, mise à jour refusée et nouvelle soumission ajoutés et réussis (PR #25).
 
 **Restent bloquants** : réconcilier les fichiers canoniques, harmoniser les corrections et examiner des copies tests, déployer l'Academy en HTTPS, connecter plusieurs véritables comptes de test, publier les objets Storage uniquement après vérification, puis piloter l'apprentissage réel. Tous les drapeaux `published` restent inchangés.
+
+
+## 11. Formation pilote — ajout du projet final brouillon (12 octobre 2026)
+
+Un neuvième livrable `processus/8` a été ajouté dans la table privée `academy_deliverable_prompts` : **« Projet final — Playbook IA personnel (/100) »**, 2 057 caractères d'instructions, `published=false`. L'épreuve « Mission Rivage » conserve son numéro 7 et son objectif de transfert ; aucun ancien contenu n'a été écrasé.
+
+État Supabase vérifié après l'insertion : 9 livrables `processus`, **0 publié** ; 0 module de la formation publié ; 0 cours publié ; 0 fichier dans le bucket privé. Le conseiller de sécurité Supabase ne signale aucune alerte au 12 octobre 2026.
+
+Le projet final a une grille provisoire /100, une exigence de 5 à 10 processus, des mesures contrôlables, au moins 3 essais répétés et des critères bloquants explicites. Il reste à harmoniser le corrigé formateur, à vérifier les ressources exactes, à réaliser des tests Auth/RLS avec de vrais comptes, puis à évaluer l'apprentissage avant toute publication payante. Détails pédagogiques et errata conservés **uniquement** dans le dossier Drive privé.
