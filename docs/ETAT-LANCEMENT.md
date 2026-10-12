@@ -61,3 +61,14 @@ Ne pas confondre la publication technique GitHub Pages avec une validation de la
 - La création du projet Vercel séparé est bloquée par un 403 de l'espace procollomb-6607. **Il faut rétablir l'autorisation Vercel**, puis configurer le projet HTTPS et les URL de redirection Auth pour mener des essais multi-comptes.
 
 **Pas encore terminé :** migration du déploiement Pages natif vers GitHub Actions à déclencher et contrôler dans les réglages du dépôt ; staging Academy en ligne ; tests de connexion réelle, autorisations inter-comptes, validations pédagogiques et commerciale.
+
+
+## Session complémentaire du 12 octobre 2026 — nouveaux résultats
+
+- Prototype Academy enrichi de la **remise des travaux** avec sauvegarde des réponses et retours formateur en lecture seule, derrière les contrôles Auth/RLS existants.
+- Tableau de bord amélioré : différencie droit d'inscription et publication effective ; n'annonce plus un cours en préparation comme accessible.
+- Tests de sécurité sur les travaux (anonyme, non inscrit, cours fermé, réponse non lisible, écriture refusée et texte HTML hostile) et tests d'état du tableau de bord ajoutés à la QA.
+- Contrôle visuel automatique Chromium : ordinateur 1440 px, mobile 375 px, petit mobile 320 px, sans débordement détecté ; masquage du cours non publié vérifié avec un compte simulé. Captures temporaires dans les artefacts GitHub Actions.
+- Présence du fichier SDK Supabase au CDN contrôlée par la CI.
+- Avis Supabase au 12/10/2026 : **aucune alerte de sécurité** ; 2 index non utilisés classés informatifs (ne pas supprimer sans mesure).
+- **Hébergement de staging toujours bloqué** par l'autorisation Vercel (403 sur procollomb-6607). Sans cet hébergement et les URL Auth configurées, impossible de valider la connexion par e-mail et l'accès premium avec de vrais comptes. Ne pas déclarer l'Academy commercialisable.
