@@ -159,8 +159,8 @@ console.log('PASS inaccessible progress stays read-only');
 
 const task={deliverable_index:2,title:'Projet contrôlé',instructions_markdown:'Décrivez votre procédure.'};
 const validDeliverable=await simulate({
-  tasks:[task], answers:[],
-  feedback:[{deliverable_index:2,status:'en révision',feedback_text:'Soignez les cas limites.'}]
+  tasks:[task], answers:[{deliverable_index:2,content:'Première réponse',updated_at:'2026-10-12T08:00:00Z'}],
+  feedback:[{deliverable_index:2,status:'en révision',feedback_text:'Soignez les cas limites.',answer_updated_at:'2026-10-12T08:00:00+00:00'}]
 });
 assert.equal(validDeliverable.elements.get('deliverables').hidden,false);
 const entries=validDeliverable.elements.get('deliverables-content').children;
@@ -183,7 +183,36 @@ assert.equal(validDeliverable.writes[0].payload.deliverable_index,2);
 assert.equal(validDeliverable.writes[0].payload.content,'Un résultat mesurable');
 assert.equal(validDeliverable.writes[0].opts.onConflict,'user_id,course_slug,deliverable_index');
 assert(state.textContent.includes('enregistré'),'Only a successful database response may confirm saving');
+assert(item.children.find(e=>e.className==='instructor-feedback').hidden===true,'Prior feedback must disappear after a successful new answer');
+assert(state.textContent.includes('nouvelle évaluation'),'New answer must signal correction is pending');
 console.log('PASS learner can save an authorized assignment in its own course');
+
+
+const oldFeedback=await simulate({
+  tasks:[task],
+  answers:[{deliverable_index:2,content:'Version 2',updated_at:'2026-10-12T08:02:00Z'}],
+  feedback:[{deliverable_index:2,status:'validé',feedback_text:'Ancienne approbation',answer_updated_at:'2026-10-12T08:00:00Z'}]
+});
+assert(!oldFeedback.elements.get('deliverables-content').children[0].children.some(n=>n.className==='instructor-feedback'),'Stale feedback must never be shown');
+console.log('PASS historical feedback is not shown against a newer learner answer');
+
+const noAnswerFeedback=await simulate({
+  tasks:[task],answers:[],
+  feedback:[{deliverable_index:2,status:'validé',feedback_text:'Note orpheline',answer_updated_at:'2026-10-12T08:00:00Z'}]
+});
+assert(!noAnswerFeedback.elements.get('deliverables-content').children[0].children.some(n=>n.className==='instructor-feedback'),'Missing answer must hide orphan review');
+
+const deniedEdit=await simulate({
+  tasks:[task],answerWriteError:true,
+  answers:[{deliverable_index:2,content:'Ancienne réponse',updated_at:'2026-10-12T08:00:00Z'}],
+  feedback:[{deliverable_index:2,status:'validé',feedback_text:'Validation actuelle',answer_updated_at:'2026-10-12T08:00:00Z'}]
+});
+const dItem=deniedEdit.elements.get('deliverables-content').children[0];
+const dForm=dItem.children.find(n=>n.className==='deliverable-form');
+dForm.children.find(n=>n.rows===6).value='Nouvelle réponse refusée';
+await dForm.listeners.submit({preventDefault(){}});
+assert.equal(dItem.children.find(n=>n.className==='instructor-feedback').hidden,false,'Failed write must not hide valid prior feedback');
+console.log('PASS failed answer edits retain the valid review on the saved version');
 
 const writeDenied=await simulate({tasks:[task],answerWriteError:true});
 const badForm=writeDenied.elements.get('deliverables-content').children[0].children.find(e=>e.className==='deliverable-form');
