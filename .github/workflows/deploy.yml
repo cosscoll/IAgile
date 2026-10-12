@@ -113,4 +113,6 @@ jobs:
         with:
           node-version: '20'
       - name: Vérifier HTTP 200 et les exclusions HTTP 404
-        run: node tests/current-live-exposure.test.mjs
+        run: |
+          node tests/current-live-exposure.test.mjs
+          node tests/current-live-revision.test.mjs
