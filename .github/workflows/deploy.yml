@@ -35,6 +35,7 @@ jobs:
           node tests/academy-launch-gate.test.mjs
           node tests/academy-checkout-policy.test.mjs
           node tests/academy-billing-ledger.test.mjs
+          node tests/repository-private-boundary.test.mjs
           node --check script.js
           node --check chatbot.js
           node --check chatbot-ai.js
