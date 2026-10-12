@@ -50,7 +50,8 @@ function setupFakeSupabase(){
        table==='academy_courses'?[{slug:'agents',published:!!window.__mockPublished}]:[],
        error:null}).then(resolve,reject)},
      order(){return Promise.resolve({data:table==='academy_course_modules'&&window.__mockPublished?
-        [{module_index:0,title:'Leçon fictive',body_markdown:'# Test pédagogique\n\n**Démonstration** sans données réelles\n\n- Contrôler la source\n- Vérifier le résultat\n\n<img src=x onerror=alert(1)>'}]:
+        [{module_index:0,title:'Leçon fictive',body_markdown:'# Test pédagogique\n\n**Démonstration** sans données réelles\n\n- Contrôler la source\n- Vérifier le résultat\n\n<img src=x onerror=alert(1)>'},
+         {module_index:1,title:'Deuxième leçon fictive',body_markdown:'## Suite pédagogique\\n\\nUn exercice supplémentaire.'}]:
         table==='academy_course_assets'&&window.__mockPublished?
         [{asset_key:'demo',title:'Document fictif',storage_path:'agents/demo.txt',module_index:0,content_bytes:120}]:[],error:null})}
     };
@@ -104,6 +105,16 @@ try {
  await activePage.goto(base+'/cours/agents/index.html',{waitUntil:'domcontentloaded'});
  await activePage.waitForFunction(()=>document.querySelector('#course-resources')?.hidden===false);
  assert.equal(await activePage.locator('#course-resources').isVisible(),true);
+ assert.equal(await activePage.locator('.module-nav-choice').count(),2,'Two published lessons need two navigation choices');
+ assert.equal(await activePage.locator('.lesson:visible').count(),1,'Only one lesson is readable at once');
+ assert.equal(await activePage.locator('.module-nav-choice[aria-current="step"]').count(),1);
+ await activePage.locator('.module-nav-choice').nth(1).click();
+ assert.equal(await activePage.locator('.lesson:visible h4').textContent(),'Deuxième leçon fictive');
+ assert.equal(await activePage.locator('.module-pager-button').nth(1).isDisabled(),true);
+ await activePage.locator('.module-pager-button').nth(0).click();
+ assert.equal(await activePage.locator('.lesson:visible h4').textContent(),'Leçon fictive');
+ assert.equal(await activePage.locator('.module-pager-button').nth(0).isDisabled(),true);
+
  assert.equal(await activePage.locator('.lesson-body h5').count(),1,'Markdown headings must be semantic');
  assert.equal(await activePage.locator('.lesson-body strong').count(),1,'Emphasis should be visible');
  assert.equal(await activePage.locator('.lesson-body li').count(),2,'List items should be readable');
