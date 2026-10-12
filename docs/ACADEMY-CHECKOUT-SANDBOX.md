@@ -25,3 +25,17 @@ Commande locale : `npm run qa:checkout-simulation`. Aucun paramètre marchand n'
 Une simulation signée valide des règles logiques, **pas** la comptabilité, l'exhaustivité des événements réels, la conformité du checkout, le routage réseau ni les fonctions d'inscription. Les statuts du registre `docs/IAgile-LAUNCH-EVIDENCE.json` restent `blocked` sur marchand, prix, paiement, facturation, remboursements et contrats.
 
 Source technique : [Stripe — webhooks](https://docs.stripe.com/webhooks), [Stripe — fulfillment Checkout](https://docs.stripe.com/checkout/fulfillment).
+
+## Fondation serveur Supabase — registre privé
+
+Migration **déjà appliquée** dans le projet Supabase IAgile le 12 octobre 2026 :
+`supabase/migrations/20261012_academy_billing_private_ledger.sql`.
+
+- `academy_billing.orders` : commande liée à un utilisateur existant, une formation connue, un montant, une devise, une version contractuelle et un marchand explicite. Les références de session et d'intention de paiement sont uniques.
+- `academy_billing.webhook_events` : journal avec identifiant d'événement unique, objet concerné, compte marchand, statut de traitement et lien éventuel avec une commande.
+- Schéma **privé**, non exposé comme API client ; RLS activé sur les deux tables et droits supprimés pour `anon` et `authenticated`. Le rôle serveur `service_role` possède les droits nécessaires.
+- Lecture après migration : **0 commande, 0 événement de paiement**, 0 inscription et 0 utilisateur à cette date.
+
+Cette structure ne constitue pas un webhook fonctionnel. Il manque le vendeur approuvé, la tarification, les secrets marchand, un endpoint sécurisé, le contrôle de double exécution en transaction, l'attribution des droits d'apprentissage, l'émission de facture et la procédure réglementaire de remboursement. **Aucune session Checkout ni facture n'a été créée.**
+
+Attention : la conservation des commandes doit être ajustée au régime de conservation comptable et RGPD choisi par l'entité vendeuse avant la première vente.
