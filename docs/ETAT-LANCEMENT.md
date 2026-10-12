@@ -72,3 +72,14 @@ Ne pas confondre la publication technique GitHub Pages avec une validation de la
 - Présence du fichier SDK Supabase au CDN contrôlée par la CI.
 - Avis Supabase au 12/10/2026 : **aucune alerte de sécurité** ; 2 index non utilisés classés informatifs (ne pas supprimer sans mesure).
 - **Hébergement de staging toujours bloqué** par l'autorisation Vercel (403 sur procollomb-6607). Sans cet hébergement et les URL Auth configurées, impossible de valider la connexion par e-mail et l'accès premium avec de vrais comptes. Ne pas déclarer l'Academy commercialisable.
+
+
+## Mise à jour factuelle du 12 octobre 2026 — rédaction et vérification des formations
+
+- **47 modules sur 47** possèdent désormais un cours développé en base privée Supabase, **aucun sous 500 caractères** : Agents 12, Automatisation 11, Processus 9, Sites 3D 15. **35 anciennes fiches courtes** ont été complétées aujourd'hui.
+- **15 consignes de livrables** existent dans l'Academy, dont le projet final Playbook Processus sur 100 points, toujours non publié.
+- Le corpus Processus V0.9 a été reconstruit comme **candidat**, avec douze jeux de données et un corrigé formateur séparé en bibliothèque privée. Test SHA-256 des 12/12 fichiers candidats réussi ; **0/12** correspondent au manifeste antérieur Supabase. Aucun import forcé ni écrasement d'objets Storage. Rapport privé Drive : https://docs.google.com/document/d/1Qi6YTfEEJpjDWLruemTrSbBiBdMKRQpGuFQPCtHemmA/edit
+- L'interface Academy, toujours **non déployée**, a désormais une navigation par leçon, un retour au premier module non terminé et un contrôle strict de version des avis formateurs. Les tests de code et les tests Chromium avec comptes simulés passent, mais ne prouvent pas l'accès de vrais comptes.
+- **Aucune ouverture commerciale** : 0 cours/module/livrable/fiche d'asset publié ; 0 fichier dans le stockage privé ; 0 compte apprenant et inscription. Les conseillers de sécurité Supabase ont rendu 0 alerte au dernier contrôle.
+
+Le programme n'est pas achevé par sa seule rédaction : l'ordre de travail est désormais **cohérence des sources et corrigés, exécution des laboratoires techniques, staging privé et tests Auth/RLS multi-comptes, pilotes pédagogiques**, puis décisions commerciales. Rapport éditorial privé : https://docs.google.com/document/d/1eMrtS21H006jYDuGN1_Q4QV_aaiHCORUKSRNAr3vHLI/edit .
