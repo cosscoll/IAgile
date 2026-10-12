@@ -10,10 +10,16 @@
   const form = document.getElementById('login-form');
   const info = document.getElementById('account-info');
   const modules = document.getElementById('modules');
+  const deliverables = document.getElementById('deliverables');
+  const deliverablesContent = document.getElementById('deliverables-content');
   let sequence = 0;
 
   const message = text => { status.textContent = text; };
-  const resetContent = () => { if (modules) { modules.replaceChildren(); modules.hidden = true; } };
+  const resetContent = () => {
+    if (modules) { modules.replaceChildren(); modules.hidden = true; }
+    if (deliverables) deliverables.hidden = true;
+    if (deliverablesContent) deliverablesContent.replaceChildren();
+  };
   const config = window.IAgileAcademyConfig;
   if ((course && !allow.has(course)) || !config?.url || !config?.publishableKey || !window.supabase?.createClient) {
     message('Le service apprenant n’est pas configuré. Aucun contenu privé ne peut être chargé.');
@@ -112,6 +118,115 @@
       : 'Modules chargés, mais la progression est momentanément indisponible.');
   }
 
+
+  async function showDeliverables(userId, request) {
+    if (!deliverables || !deliverablesContent || request !== sequence) return;
+    const {data: tasks, error: taskError} = await client.from('academy_deliverable_prompts')
+      .select('deliverable_index,title,instructions_markdown')
+      .eq('course_slug',course).eq('published',true).order('deliverable_index',{ascending:true});
+    if (request !== sequence) return;
+    if (taskError) {
+      // The modules remain readable but no private prompt is shown after refusal.
+      return;
+    }
+    if (!Array.isArray(tasks) || !tasks.length) return;
+    const {data: answers, error: answersError} = await client.from('academy_deliverable_answers')
+      .select('deliverable_index,content,updated_at').eq('user_id',userId).eq('course_slug',course);
+    if (request !== sequence) return;
+    const saved = new Map((!answersError && Array.isArray(answers) ? answers : [])
+      .map(record => [record.deliverable_index,record]));
+    const {data: feedback, error: feedbackError} = await client.from('academy_deliverable_feedback')
+      .select('deliverable_index,status,feedback_text').eq('user_id',userId).eq('course_slug',course);
+    if (request !== sequence) return;
+    const reviews = new Map((!feedbackError && Array.isArray(feedback) ? feedback : [])
+      .map(record => [record.deliverable_index,record]));
+
+    for (const task of tasks) {
+      const article=document.createElement('article');
+      article.className='deliverable-card';
+      const title=document.createElement('h3');
+      title.textContent=String(task.title||'Livrable');
+      const directions=document.createElement('p');
+      directions.className='deliverable-instructions';
+      // Premium Markdown is displayed as plain text to prevent HTML injection.
+      directions.textContent=String(task.instructions_markdown||'');
+      article.append(title,directions);
+      const form=document.createElement('form');
+      form.className='deliverable-form';
+      const label=document.createElement('label');
+      const textarea=document.createElement('textarea');
+      const fieldId='deliverable-'+course+'-'+task.deliverable_index;
+      textarea.id=fieldId;
+      textarea.rows=6;
+      textarea.maxLength=10000;
+      textarea.required=true;
+      textarea.placeholder='Décrivez votre démarche et votre résultat…';
+      textarea.value=String(saved.get(task.deliverable_index)?.content||'');
+      label.htmlFor=fieldId;
+      label.textContent='Votre travail (10 000 caractères maximum)';
+      const save=document.createElement('button');
+      save.type='submit';
+      save.className='complete-button';
+      save.textContent='Enregistrer mon travail';
+      const state=document.createElement('p');
+      state.className='deliverable-state';
+      state.setAttribute('role','status');
+      state.setAttribute('aria-live','polite');
+      state.textContent=answersError
+        ? 'Lecture des réponses indisponible. Enregistrement désactivé pour éviter un écrasement.'
+        : (saved.has(task.deliverable_index) ? 'Travail déjà enregistré. Vous pouvez le modifier.' : 'Travail non encore enregistré.');
+      save.disabled=!!answersError;
+      textarea.disabled=!!answersError;
+      form.append(label,textarea,save,state);
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        const value=textarea.value.trim();
+        if (request!==sequence || answersError || save.disabled) return;
+        if (!value || value.length>10000) {
+          state.textContent='Votre travail doit contenir entre 1 et 10 000 caractères.';
+          return;
+        }
+        const currentValue=value;
+        save.disabled=true;
+        state.textContent='Enregistrement en cours…';
+        try {
+          // RLS limits writes to the signed-in student and published assignment.
+          // Never write enrollments or instructor feedback from the browser.
+          const {error}=await client.from('academy_deliverable_answers').upsert({
+            user_id:userId,course_slug:course,deliverable_index:task.deliverable_index,
+            content:currentValue
+          },{onConflict:'user_id,course_slug,deliverable_index'});
+          if (request!==sequence) return;
+          if (error) {
+            state.textContent='Enregistrement refusé ou indisponible. Votre saisie reste visible.';
+          } else {
+            saved.set(task.deliverable_index,{content:currentValue});
+            state.textContent='Travail enregistré. Vous pouvez reprendre cette réponse plus tard.';
+          }
+        } catch (_error) {
+          if (request===sequence) state.textContent='Erreur réseau. Votre saisie n’a pas été confirmée.';
+        } finally {
+          if (request===sequence) save.disabled=false;
+        }
+      });
+      article.append(form);
+      const review=reviews.get(task.deliverable_index);
+      if (review) {
+        const assessment=document.createElement('aside');
+        assessment.className='instructor-feedback';
+        const assessmentTitle=document.createElement('h4');
+        assessmentTitle.textContent='Retour du formateur';
+        const assessmentText=document.createElement('p');
+        assessmentText.textContent=(review.status ? 'Statut : '+String(review.status)+'. ' : '')+
+          String(review.feedback_text||'');
+        assessment.append(assessmentTitle,assessmentText);
+        article.append(assessment);
+      }
+      deliverablesContent.append(article);
+    }
+    deliverables.hidden=false;
+  }
+
   async function refresh() {
     const request = ++sequence;
     resetContent();
@@ -178,6 +293,7 @@
         return;
       }
       await showModules(lessons,user.id,request);
+      if (request === sequence) await showDeliverables(user.id,request);
     } catch (_error) {
       if (request === sequence) failClosed('Vérification indisponible. Aucun cours privé n’a été chargé.');
     }
