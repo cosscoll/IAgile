@@ -32,6 +32,7 @@ jobs:
           node tests/academy-access.test.mjs
           node tests/academy-dashboard.test.mjs
           node tests/academy-private-assets.test.mjs
+          node tests/academy-launch-gate.test.mjs
           node --check script.js
           node --check chatbot.js
           node --check chatbot-ai.js
