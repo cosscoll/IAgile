@@ -20,19 +20,19 @@
       "id": "private_storage",
       "label": "12 fichiers réellement dans Storage et vérifiés",
       "status": "blocked",
-      "evidence": "0 objet Storage au dernier audit"
+      "evidence": "0 objet Storage. Pack privé V0.9.1 vérifié 12/12 localement, import et validation pédagogique toujours manquants."
     },
     {
       "id": "academy_staging",
       "label": "Staging Academy HTTPS construit",
       "status": "verified",
-      "evidence": "Vercel prj_bMiSXP3lGCrYPDtzkXAHBPMkXUOC et deployment READY, SSO all"
+      "evidence": "Vercel deployment initial READY + SSO all. La version courante avec RPC n'a pas été redéployée (quota API 402)."
     },
     {
       "id": "academy_browser",
       "label": "Navigation réelle et redirections Auth testées",
       "status": "blocked",
-      "evidence": "Lecture HTTP de staging bloquée par SSO, dernière version frontend non redéployée"
+      "evidence": "Protection SSO refuse la vérification HTTP (403 de la connexion). Navigation et Auth réelles non testées."
     },
     {
       "id": "auth_isolation",
@@ -68,25 +68,25 @@
       "id": "merchant",
       "label": "Compte paiement IAgile identifié et isolé",
       "status": "blocked",
-      "evidence": "Seul compte Stripe test trouvé : environnement test d'un autre projet"
+      "evidence": "Registre privé academy_billing créé et protégé, mais compte marchand IAgile non identifié."
     },
     {
       "id": "signed_checkout",
       "label": "Paiement signé, événements idempotents et refus de spoofing",
       "status": "blocked",
-      "evidence": "Aucun checkout IAgile et aucun webhook opérationnels"
+      "evidence": "Simulation HMAC signée + vérification commande réussies ; aucun webhook, paiement, inscription ou gestion idempotente en serveur réel."
     },
     {
       "id": "invoices",
       "label": "Facture conforme et email de confirmation testés",
       "status": "blocked",
-      "evidence": "Pas de numéro de facture ni émetteur IAgile confirmé"
+      "evidence": "Registre de commandes privé créé mais aucune facture, vendeur, TVA ni confirmation transactionnelle configurés."
     },
     {
       "id": "refund",
       "label": "Rétractation et remboursement selon contrat testés",
       "status": "blocked",
-      "evidence": "Aucun remboursement ou procédure contractuelle testés"
+      "evidence": "Simulations de réversibilité seulement ; aucun traitement réel lié aux droits et au contrat."
     },
     {
       "id": "customer_support",
