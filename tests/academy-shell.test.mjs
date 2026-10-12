@@ -17,6 +17,11 @@ assert(!/sb_secret_|service_role|OPENAI_API_KEY/.test(config),'A secret key is f
 assert(logic.includes(".from('academy_profiles')"),'Missing active profile check');
 assert(logic.includes(".from('academy_enrollments')"),'Missing server-side enrollment lookup');
 assert(logic.includes(".from('academy_course_modules')"),'Missing RLS-backed lesson lookup');
+assert(logic.includes(".from('academy_deliverable_prompts')"),'Missing RLS-backed assignment prompts');
+assert(logic.includes(".from('academy_deliverable_answers')"),'Missing scoped learner submission lookup');
+assert(logic.includes(".from('academy_deliverable_feedback')"),'Missing read-only instructor feedback');
+assert(!/\.from\('academy_deliverable_feedback'\)[\s\S]{0,120}\.(?:insert|update|upsert|delete)\(/.test(logic),'Learners must not write instructor feedback');
+
 assert(logic.includes(".eq('published',true)"),'Lessons must be explicitly published');
 assert(logic.includes("record?.published"),'Course must be published');
 assert(logic.includes('body.textContent'),'Learner-generated or Markdown body must not be inserted as HTML');
@@ -31,6 +36,11 @@ for(const [slug,file] of [['',path.join(app,'index.html')],...slugs.map(s=>[s,pa
  assert(source.includes('data-course="'+slug+'"'),'Wrong route identifier for '+(slug||'dashboard'));
  assert(source.includes('id="login-form"')&&source.includes('id="logout"'),'Missing account controls');
  assert(source.includes('id="auth-section"')&&source.includes('id="learner-section" hidden'),'Private state must start hidden');
+ if(slug){
+   assert(source.includes('id="deliverables"')&&source.includes('id="deliverables-content"'),'Course missing private assignment region');
+   assert(source.includes('id="deliverables" class="deliverables" hidden'),'Assignment region must start hidden');
+ }
+
  assert(source.includes('app.js')&&source.includes('config.js')&&source.includes('app.css'),'Shared guarded app missing');
  assert(!/<script[^>]*>[\s\S]*?(?:body_markdown|course_slug)[\s\S]*?<\/script>/i.test(source),'Premium data embedded in HTML');
 }

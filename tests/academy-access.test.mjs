@@ -25,10 +25,11 @@ function element(){
 async function simulate({
   course='agents', user=true, profile=true, enrollment=true,
   published=true, modules=[{title:'Leçon autorisée',body_markdown:'Texte privé',module_index:0}],
-  moduleError=false, profileError=false, progressError=false, writeError=false
+  moduleError=false, profileError=false, progressError=false, writeError=false,
+  tasks=[], answers=[], feedback=[], answersError=false, answerWriteError=false
 }={}){
   const elements=new Map();
-  for(const id of ['status','auth-section','learner-section','logout','login-form','account-info','modules'])
+  for(const id of ['status','auth-section','learner-section','logout','login-form','account-info','modules','deliverables','deliverables-content'])
     elements.set(id,element());
   const form=elements.get('login-form');
   form.elements={email:{value:'pilote@example.invalid'}};
@@ -40,7 +41,10 @@ async function simulate({
     academy_enrollments:{data:enrollment?[{course_slug:course,active:true}]:[],error:null},
     academy_courses:{data:{slug:course,published},error:null},
     academy_course_modules:{data:modules,error:moduleError?{message:'RLS blocked'}:null},
-    academy_module_progress:{data:[],error:progressError?{message:'Progression refusée'}:null}
+    academy_module_progress:{data:[],error:progressError?{message:'Progression refusée'}:null},
+    academy_deliverable_prompts:{data:tasks,error:null},
+    academy_deliverable_answers:{data:answers,error:answersError?{message:'RLS denied'}:null},
+    academy_deliverable_feedback:{data:feedback,error:null}
   };
   const makeQuery=table=>{
     const state={table, filters:[],columns:''};
@@ -50,7 +54,7 @@ async function simulate({
     };
     const q={
       select(cols){state.columns=cols;return q},
-      upsert(payload,opts){writes.push({table,payload,opts});return Promise.resolve({error:writeError?{message:'RLS denied'}:null})},
+      upsert(payload,opts){writes.push({table,payload,opts});return Promise.resolve({error:(table==='academy_deliverable_answers'?answerWriteError:writeError)?{message:'RLS denied'}:null})},
       eq(key,value){state.filters.push([key,value]);return q},
       maybeSingle(){return Promise.resolve(result())},
       order(){return Promise.resolve(result())},
@@ -145,3 +149,67 @@ const offlineButton=offline.elements.get('modules').children
   .find(n=>n.className==='lesson')?.children.find(n=>n.className==='complete-button');
 assert(offlineButton.disabled,'Unable to read progress must disable progress writes');
 console.log('PASS inaccessible progress stays read-only');
+
+
+const task={deliverable_index:2,title:'Projet contrôlé',instructions_markdown:'Décrivez votre procédure.'};
+const validDeliverable=await simulate({
+  tasks:[task], answers:[],
+  feedback:[{deliverable_index:2,status:'en révision',feedback_text:'Soignez les cas limites.'}]
+});
+assert.equal(validDeliverable.elements.get('deliverables').hidden,false);
+const entries=validDeliverable.elements.get('deliverables-content').children;
+assert.equal(entries.length,1);
+const item=entries[0];
+assert(item.children.some(e=>e.textContent==='Projet contrôlé'),'Title must be visible only after enrollment');
+assert(item.children.some(e=>e.textContent==='Décrivez votre procédure.'),'Instructions must be visible only after enrollment');
+assert(item.children.some(e=>e.className==='instructor-feedback'),'Instructor feedback must be read-only');
+const submission=item.children.find(e=>e.className==='deliverable-form');
+const textarea=submission.children.find(e=>e.tagName==='textarea'||e.rows===6);
+const save=submission.children.find(e=>e.type==='submit');
+const state=submission.children.find(e=>e.className==='deliverable-state');
+textarea.value='Un résultat mesurable';
+await submission.listeners.submit({preventDefault(){}});
+assert.equal(validDeliverable.writes.length,1);
+assert.equal(validDeliverable.writes[0].table,'academy_deliverable_answers');
+assert.equal(validDeliverable.writes[0].payload.user_id,'pilot-1');
+assert.equal(validDeliverable.writes[0].payload.course_slug,'agents');
+assert.equal(validDeliverable.writes[0].payload.deliverable_index,2);
+assert.equal(validDeliverable.writes[0].payload.content,'Un résultat mesurable');
+assert.equal(validDeliverable.writes[0].opts.onConflict,'user_id,course_slug,deliverable_index');
+assert(state.textContent.includes('enregistré'),'Only a successful database response may confirm saving');
+console.log('PASS learner can save an authorized assignment in its own course');
+
+const writeDenied=await simulate({tasks:[task],answerWriteError:true});
+const badForm=writeDenied.elements.get('deliverables-content').children[0].children.find(e=>e.className==='deliverable-form');
+badForm.children.find(e=>e.rows===6).value='Donnée sensible à protéger';
+await badForm.listeners.submit({preventDefault(){}});
+assert(badForm.children.find(e=>e.className==='deliverable-state').textContent.includes('refusé'));
+console.log('PASS rejected assignment writes do not report success');
+
+const readDenied=await simulate({tasks:[task],answersError:true});
+const readForm=readDenied.elements.get('deliverables-content').children[0].children.find(e=>e.className==='deliverable-form');
+assert.equal(readForm.children.find(e=>e.type==='submit').disabled,true);
+assert.equal(readForm.children.find(e=>e.rows===6).disabled,true);
+console.log('PASS unable to read saved answers disables writing to avoid overwriting');
+
+const noAccount=await simulate({user:false,tasks:[task]});
+assert.equal(noAccount.elements.get('deliverables').hidden,true);
+assert(!noAccount.calls.some(e=>e.table.startsWith('academy_deliverable')),'Anonymous user must never fetch assignments');
+
+const noAccess=await simulate({enrollment:false,tasks:[task]});
+assert.equal(noAccess.elements.get('deliverables').hidden,true);
+assert(!noAccess.calls.some(e=>e.table.startsWith('academy_deliverable')),'Unenrolled user must never fetch assignments');
+
+const hiddenCourse=await simulate({published:false,tasks:[task]});
+assert.equal(hiddenCourse.elements.get('deliverables').hidden,true);
+assert(!hiddenCourse.calls.some(e=>e.table.startsWith('academy_deliverable')),'Unpublished course must not fetch assignments');
+console.log('PASS assignments are never queried for anonymous, unenrolled or unpublished courses');
+
+const scriptSafe=await simulate({
+  tasks:[{deliverable_index:2,title:'<img src=x onerror=alert(1)>',instructions_markdown:'<script>alert(1)</script>'}],
+  feedback:[{deliverable_index:2,status:'validé',feedback_text:'<script>alert(1)</script>'}]
+});
+const scriptItem=scriptSafe.elements.get('deliverables-content').children[0];
+assert(scriptItem.children.some(e=>e.textContent==='<img src=x onerror=alert(1)>'));
+assert(scriptItem.children.some(e=>e.textContent==='<script>alert(1)</script>'));
+console.log('PASS assignment and trainer text remain inert even with HTML payloads');

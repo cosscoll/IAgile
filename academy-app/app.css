@@ -20,3 +20,21 @@ footer{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;paddin
 .complete-button[aria-pressed="true"]{background:#1e3a36;color:#d0fce9;border-color:#4a9c87}
 .complete-button:hover:not(:disabled){filter:brightness(1.12)}
 .complete-button:disabled{opacity:.55;cursor:not-allowed}
+
+
+/* Gated learner deliverables: one form per assignment, never public. */
+.deliverables{margin:70px auto 0;max-width:950px;border-top:1px solid var(--line);padding-top:30px}
+.deliverables h2{font-size:clamp(27px,4vw,43px);letter-spacing:-.045em}
+.deliverables-intro{color:var(--muted);line-height:1.75;max-width:735px}
+.deliverable-card{background:#111e31;border:1px solid #354966;border-radius:15px;margin:24px 0;padding:clamp(20px,4vw,36px)}
+.deliverable-card h3{font-size:clamp(19px,2.6vw,27px);letter-spacing:-.035em;margin:0 0 12px}
+.deliverable-instructions{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.75;color:#d2ddeb}
+.deliverable-form{display:grid;gap:12px;margin-top:22px}
+.deliverable-form label{font-size:13px;font-weight:750;color:#e1eafb}
+.deliverable-form textarea{width:100%;resize:vertical;min-height:135px;background:#081421;border:1px solid #71839e;color:#f5f8fc;border-radius:9px;padding:17px;line-height:1.6}
+.deliverable-form .complete-button{justify-self:start;margin-top:6px}
+.deliverable-state{font-size:13px;line-height:1.65;margin:0;color:#b9cbe4}
+.instructor-feedback{padding:18px 22px;margin-top:23px;border-left:4px solid #7dc6b1;background:#162c33;border-radius:6px}
+.instructor-feedback h4{margin:0 0 9px;color:#d6ffee}
+.instructor-feedback p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;margin:0}
+@media(max-width:520px){.deliverable-form .complete-button{width:100%}}

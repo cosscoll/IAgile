@@ -30,6 +30,7 @@ jobs:
           node tests/jekyll-boundary.test.mjs
           node tests/academy-shell.test.mjs
           node tests/academy-access.test.mjs
+          node tests/academy-dashboard.test.mjs
           node --check script.js
           node --check chatbot.js
           node --check chatbot-ai.js
@@ -40,6 +41,7 @@ jobs:
           node --check tests/public-live-proof.mjs
           node --check scripts/build-public.mjs
           node --check academy-app/app.js
+          node --check tests/academy-dashboard.test.mjs
           node --check academy-app/config.js
           node --check tests/staged-public.test.mjs
       - name: Construire et inspecter les seuls actifs publics (sans déploiement)

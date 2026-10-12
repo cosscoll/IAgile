@@ -19,6 +19,8 @@ Ces entrées constituent des pages dédiées dans une même application, pas enc
 - Contrôle du profil actif, d'une inscription active, du statut publié du cours, puis chargement des modules publiés via RLS côté Supabase.
 - Suivi des modules terminés et possibilité de les marquer à reprendre, stockés dans academy_module_progress avec politique RLS par utilisateur et par formation. Une erreur de lecture désactive l'édition ; une erreur d'écriture ne montre jamais une progression validée.
 - Aucun cours premium, corrigé ou fichier pédagogique n'est intégré dans le HTML, CSS ou JavaScript public. Les corps récupérés depuis la base sont affichés en texte, sans injection de HTML.
+- Travaux à rendre : les consignes de academy_deliverable_prompts sont récupérées après contrôle des droits ; réponses propres à l'apprenant sauvegardées via academy_deliverable_answers avec politiques RLS, retour formateur lu depuis academy_deliverable_feedback. Un refus de lecture désactive les modifications pour éviter d'écraser une réponse inconnue ; un échec d'écriture ne produit aucune fausse confirmation.
+- Tableau de bord : différencie inscription active, formation non publiée et cours accessible ; indique les modules terminés lorsque le programme est ouvert.
 - Aucun achat, attribution d'inscription, import de fichiers, droit formateur ou facturation depuis le navigateur.
 - Si le backend ou les permissions échouent, aucun cours n'est affiché.
 
@@ -45,6 +47,9 @@ config.js contient uniquement une clé Supabase de type **publishable**, volonta
 
 node tests/academy-shell.test.mjs
 node tests/academy-access.test.mjs
+node tests/academy-dashboard.test.mjs
+
+La GitHub Action « IAgile — Academy browser QA (private shell) » installe un navigateur Chromium, vérifie les affichages simulés en 1440, 375 et 320 px et conserve temporairement des captures **uniquement avec données fictives**. Pour la relancer : Actions > IAgile — Academy browser QA > Run workflow. Les tests restent indépendants du vrai Supabase.
 
 Ce test est statique : il ne remplace pas les tests d'accès avec plusieurs comptes réels.
 
