@@ -43,6 +43,81 @@
     message(text || 'Accès non disponible. Réessayez plus tard.');
   };
 
+
+  // Only create DOM nodes. Never evaluate HTML or script from premium content.
+  function renderSafeLearningText(target, source) {
+    target.replaceChildren();
+    const lines=String(source||'').replace(/\r\n?/g,'\n').split('\n');
+    let paragraph=[];
+    let list=null;
+    let listKind='';
+    let code=[];
+    let inCode=false;
+    function appendInline(parent, value) {
+      const chunks=String(value).split(/(\*\*[^*]+\*\*)/g);
+      for (const chunk of chunks) {
+        if (!chunk) continue;
+        const strong=chunk.startsWith('**')&&chunk.endsWith('**');
+        const part=document.createElement(strong?'strong':'span');
+        part.textContent=strong?chunk.slice(2,-2):chunk;
+        parent.append(part);
+      }
+    }
+    function flushParagraph() {
+      if (!paragraph.length) return;
+      const p=document.createElement('p');
+      appendInline(p,paragraph.join(' ').trim());
+      target.append(p);
+      paragraph=[];
+    }
+    function endList() {list=null;listKind='';}
+    function finishCode(){
+      const pre=document.createElement('pre');
+      const c=document.createElement('code');
+      c.textContent=code.join('\n');
+      pre.append(c);
+      target.append(pre);
+      code=[];
+    }
+    for (const line of lines) {
+      if (line.trim().startsWith(String.fromCharCode(96).repeat(3))) {
+        flushParagraph();endList();
+        if (inCode) finishCode(); else code=[];
+        inCode=!inCode;
+        continue;
+      }
+      if (inCode){code.push(line);continue;}
+      if (!line.trim()){flushParagraph();endList();continue;}
+      const heading=line.match(/^(#{1,4})\s+(.+)$/);
+      if (heading){
+        flushParagraph();endList();
+        const element=document.createElement(heading[1].length===1?'h5':'h6');
+        appendInline(element,heading[2]);
+        target.append(element);
+        continue;
+      }
+      const bullet=line.match(/^\s*[-*]\s+(.+)$/);
+      const numbered=line.match(/^\s*\d+\.\s+(.+)$/);
+      if(bullet||numbered){
+        flushParagraph();
+        const kind=numbered?'ol':'ul';
+        if(!list||kind!==listKind){
+          list=document.createElement(kind);
+          listKind=kind;
+          target.append(list);
+        }
+        const li=document.createElement('li');
+        appendInline(li,(bullet||numbered)[1]);
+        list.append(li);
+        continue;
+      }
+      endList();
+      paragraph.push(line.trim());
+    }
+    flushParagraph();
+    if(inCode) finishCode();
+  }
+
   async function showModules(items, userId, request) {
     resetContent();
     if (!modules || request !== sequence) return;
@@ -76,6 +151,7 @@
       body.className = 'lesson-body';
       // Never interpret the lesson text as HTML; this is a safe initial reader.
       body.textContent = String(item.body_markdown || '');
+      renderSafeLearningText(body,item.body_markdown);
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'complete-button';
@@ -150,10 +226,11 @@
       article.className='deliverable-card';
       const title=document.createElement('h3');
       title.textContent=String(task.title||'Livrable');
-      const directions=document.createElement('p');
+      const directions=document.createElement('div');
       directions.className='deliverable-instructions';
       // Premium Markdown is displayed as plain text to prevent HTML injection.
       directions.textContent=String(task.instructions_markdown||'');
+      renderSafeLearningText(directions,task.instructions_markdown);
       article.append(title,directions);
       const form=document.createElement('form');
       form.className='deliverable-form';

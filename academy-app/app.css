@@ -51,3 +51,15 @@ footer{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;paddin
 .course-resource a{color:#b4e6ef;font-size:14px;font-weight:700;text-underline-offset:4px}
 .course-resource a:focus-visible{outline:3px solid #b4e6ef;outline-offset:5px}
 @media(max-width:520px){.course-resource .complete-button{width:100%}}
+
+
+/* Safe DOM-only pedagogical Markdown reader. */
+.lesson-body,.deliverable-instructions{white-space:normal;overflow-wrap:anywhere}
+.lesson-body p,.deliverable-instructions p{line-height:1.78;margin:13px 0}
+.lesson-body h5,.deliverable-instructions h5{font-size:19px;line-height:1.4;margin:28px 0 12px;color:#f1f7ff}
+.lesson-body h6,.deliverable-instructions h6{font-size:16px;line-height:1.5;margin:20px 0 9px;color:#cbddff}
+.lesson-body ul,.lesson-body ol,.deliverable-instructions ul,.deliverable-instructions ol{padding-left:26px;margin:15px 0}
+.lesson-body li,.deliverable-instructions li{padding:4px 0;line-height:1.7}
+.lesson-body strong,.deliverable-instructions strong{color:#fff;font-weight:750}
+.lesson-body pre,.deliverable-instructions pre{padding:18px;overflow-x:auto;background:#081425;border:1px solid #324966;border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere}
+.lesson-body code,.deliverable-instructions code{font-family:ui-monospace,Consolas,monospace;font-size:13px}
