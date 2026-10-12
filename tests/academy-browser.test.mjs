@@ -119,7 +119,7 @@ try {
  assert.equal(await activePage.locator('.lesson-body strong').count(),1,'Emphasis should be visible');
  assert.equal(await activePage.locator('.lesson-body li').count(),2,'List items should be readable');
  assert.equal(await activePage.locator('.lesson-body img,.lesson-body script').count(),0,'HTML in course text cannot create real elements');
- assert((await activePage.locator('.lesson-body').innerText()).includes('<img src=x onerror=alert(1)>'),'HTML must remain inert text');
+ assert((await activePage.locator('.lesson:visible .lesson-body').innerText()).includes('<img src=x onerror=alert(1)>'),'HTML must remain inert text');
  assert.equal(await activePage.locator('#course-resources a').isVisible(),false);
  await activePage.locator('#course-resources button').click();
  await activePage.waitForFunction(()=>document.querySelector('#course-resources a')?.hidden===false);
