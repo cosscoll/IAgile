@@ -86,3 +86,15 @@ Ce test est statique : il ne remplace pas les tests d'accès avec plusieurs comp
 ## Notes personnelles par module — sprint autonome 12 octobre
 
 L'apprenant dispose d'une zone de notes personnelles distincte pour chaque module publié, avec limite de 4 000 caractères. La note est sauvegardée dans `academy_module_progress.notes` en préservant l'état `completed` lu au préalable. En cas d'erreur de lecture, l'édition est bloquée ; une écriture refusée ne confirme pas une sauvegarde. RLS applique les droits de compte et d'inscription côté Supabase. Ces tests utilisent un backend simulé, pas encore de vrais comptes pilotes.
+
+## Vérification locale avant import des ressources privées
+
+Le dépôt contient uniquement l'outil de contrôle, sans aucun contenu pédagogique payant :
+
+```bash
+npm run qa:private-assets -- /chemin/prive/manifest.json /chemin/prive/datasets processus
+```
+
+L'outil est **en lecture seule** : il vérifie les SHA-256, tailles, types CSV/Markdown, chemins dédiés à la formation, absence de symlinks et fichiers non inventoriés. Il refuse les manifestes marqués publiés ou déjà importés, et ne fait aucun transfert vers Supabase. Les tests utilisent exclusivement un cas fictif généré au moment de leur exécution.
+
+La réussite de ce contrôle ne prouve pas que les fichiers sont stockés dans le bucket privé ni accessibles uniquement aux étudiants autorisés. Après validation pédagogique et import par un opérateur autorisé, vérifier les octets réellement récupérés et tester RLS/Auth avec plusieurs comptes distincts avant toute publication.

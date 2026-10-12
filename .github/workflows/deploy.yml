@@ -31,6 +31,7 @@ jobs:
           node tests/academy-shell.test.mjs
           node tests/academy-access.test.mjs
           node tests/academy-dashboard.test.mjs
+          node tests/academy-private-assets.test.mjs
           node --check script.js
           node --check chatbot.js
           node --check chatbot-ai.js
@@ -40,6 +41,7 @@ jobs:
           node --check tests/live-site-check.mjs
           node --check tests/public-live-proof.mjs
           node --check scripts/build-public.mjs
+          node --check scripts/verify-private-course-assets.mjs
           node --check academy-app/app.js
           node --check tests/academy-dashboard.test.mjs
           node --check academy-app/config.js
