@@ -254,16 +254,16 @@
         try {
           // This cannot grant enrollment: RLS checks the owner, active
           // enrollment, active profile and published module server-side.
-          const {error} = await client.from('academy_module_progress').upsert({
-            user_id:userId, course_slug:course, module_index:item.module_index,
-            completed, notes:previous?.notes || ''
-          }, {onConflict:'user_id,course_slug,module_index'});
+          const {data: savedProgress,error} = await client.rpc('academy_save_progress',{
+            p_course_slug:course,p_module_index:item.module_index,p_completed:completed
+          });
           if (request !== sequence) return;
-          if (error) {
-            message('La progression n’a pas été enregistrée. Réessayez.');
+          if (error || typeof savedProgress?.completed!=='boolean' ||
+              typeof savedProgress?.notes!=='string') {
+            message('La progression n’a pas été confirmée par le serveur. Réessayez.');
             return;
           }
-          records.set(item.module_index,{...previous,completed});
+          records.set(item.module_index,{...previous,completed:savedProgress.completed,notes:savedProgress.notes});
           updateButton();
           updateSummary();
           updateNavStates();
@@ -314,16 +314,19 @@
         noteStatus.textContent='Enregistrement de vos notes…';
         try{
           const current=records.get(item.module_index)||{};
-          const {error}=await client.from('academy_module_progress').upsert({
-            user_id:userId,course_slug:course,module_index:item.module_index,
-            completed:!!current.completed,notes:next
-          },{onConflict:'user_id,course_slug,module_index'});
+          const {data: savedProgress,error}=await client.rpc('academy_save_progress',{
+            p_course_slug:course,p_module_index:item.module_index,p_notes:next
+          });
           if(request!==sequence)return;
-          if(error){
-            noteStatus.textContent='Notes non enregistrées. Votre saisie reste affichée.';
+          if(error || typeof savedProgress?.completed!=='boolean' ||
+             typeof savedProgress?.notes!=='string'){
+            noteStatus.textContent='Notes non confirmées par le serveur. Votre saisie reste affichée.';
             return;
           }
-          records.set(item.module_index,{...current,notes:next});
+          records.set(item.module_index,{...current,completed:savedProgress.completed,notes:savedProgress.notes});
+          updateButton();
+          updateSummary();
+          updateNavStates();
           noteStatus.textContent='Notes enregistrées.';
         }catch(_error){
           if(request===sequence)noteStatus.textContent='Erreur réseau : notes non confirmées.';
