@@ -352,3 +352,34 @@ assert(!assetsAnonymous.calls.some(c=>c.table==='academy_course_assets'));
 const assetsUnpublished=await simulate({published:false,assets:[resource]});
 assert(!assetsUnpublished.calls.some(c=>c.table==='academy_course_assets'));
 console.log('PASS private asset lookup obeys course/enrollment gate and fails closed');
+
+const noteCase=await simulate();
+const noteLesson=noteCase.elements.get('modules').children.find(n=>n.className==='lesson');
+const noteForm=noteLesson.children.find(n=>n.className==='lesson-notes-form');
+assert(noteForm,'Private note editor is expected on the lesson');
+const noteArea=noteForm.children.find(n=>n.rows===4);
+const noteButton=noteForm.children.find(n=>n.type==='submit');
+noteArea.value='À revoir : vérifier les sources';
+await noteForm.listeners.submit({preventDefault(){}});
+assert.equal(noteCase.writes.length,1);
+assert.equal(noteCase.writes[0].table,'academy_module_progress');
+assert.equal(noteCase.writes[0].payload.notes,'À revoir : vérifier les sources');
+assert.equal(noteCase.writes[0].payload.user_id,'pilot-1');
+assert.equal(noteCase.writes[0].payload.completed,false);
+assert(noteForm.children.some(n=>n.textContent==='Notes enregistrées.'));
+console.log('PASS private notes are saved for the exact learner, course and lesson');
+
+const notesOffline=await simulate({progressError:true});
+const offlineLesson=notesOffline.elements.get('modules').children.find(n=>n.className==='lesson');
+const offlineNoteForm=offlineLesson.children.find(n=>n.className==='lesson-notes-form');
+assert(offlineNoteForm.children.find(n=>n.rows===4).disabled);
+assert(offlineNoteForm.children.find(n=>n.type==='submit').disabled);
+console.log('PASS unreadable progress cannot allow note overwrites');
+
+const notesDenied=await simulate({writeError:true});
+const deniedNoteForm=notesDenied.elements.get('modules').children.find(n=>n.className==='lesson')
+  .children.find(n=>n.className==='lesson-notes-form');
+deniedNoteForm.children.find(n=>n.rows===4).value='Ne pas effacer';
+await deniedNoteForm.listeners.submit({preventDefault(){}});
+assert(deniedNoteForm.children.some(n=>n.textContent.includes('non enregistrées')));
+console.log('PASS refused note save does not display false success');
