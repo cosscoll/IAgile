@@ -383,3 +383,9 @@ deniedNoteForm.children.find(n=>n.rows===4).value='Ne pas effacer';
 await deniedNoteForm.listeners.submit({preventDefault(){}});
 assert(deniedNoteForm.children.some(n=>n.textContent.includes('non enregistrées')));
 console.log('PASS refused note save does not display false success');
+
+
+assert(source.includes('let lessonWritePending=false'),'Lesson operations must share an in-flight write lock');
+assert(source.includes('lessonWritePending || button.disabled'),'Progress and notes cannot write concurrently');
+assert(source.includes('lessonWritePending || noteSave.disabled'),'Notes must honor the same write lock');
+console.log('PASS learner progress and notes use one in-flight write guard per module');
