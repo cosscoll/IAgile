@@ -283,6 +283,12 @@
           link.href=signed;
           link.hidden=false;
           note.textContent='Lien créé. Il expire 60 secondes après sa génération.';
+          setTimeout(()=>{
+            if(request!==sequence || link.href!==signed)return;
+            link.hidden=true;
+            link.removeAttribute('href');
+            note.textContent='Lien expiré. Générez un nouveau lien pour accéder à ce support.';
+          },60000);
         }catch(_error){
           if(request===sequence)note.textContent='Le téléchargement privé est indisponible.';
         }finally{
