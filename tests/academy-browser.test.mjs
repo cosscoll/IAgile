@@ -37,7 +37,7 @@ function setupFakeSupabase(){
     onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})
    },
    storage:{from:bucket=>({createSignedUrl:async(filePath,seconds)=>({data:{signedUrl:
-       'https://example.supabase.co/storage/v1/object/sign/'+bucket+'/'+filePath+'?token=mock'},error:null})})},
+       window.IAgileAcademyConfig.url+'/storage/v1/object/sign/'+bucket+'/'+filePath+'?token=mock'},error:null})})},
    from:table=>{
     const q={
      select(){return q},
@@ -108,7 +108,8 @@ try {
  await activePage.locator('#course-resources button').click();
  await activePage.waitForFunction(()=>document.querySelector('#course-resources a')?.hidden===false);
  const signed=await activePage.locator('#course-resources a').getAttribute('href');
- assert(signed.startsWith('https://example.supabase.co/storage/v1/object/sign/iagile-course-files/agents/demo.txt?token='));
+ const expectedHost=await activePage.evaluate(()=>window.IAgileAcademyConfig.url);
+ assert(signed.startsWith(expectedHost+'/storage/v1/object/sign/iagile-course-files/agents/demo.txt?token='));
  assert.equal(await activePage.locator('#course-resources a').getAttribute('rel'),'noopener noreferrer');
  assert(!await activePage.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2));
  assert.deepEqual(signedErrors,[],'Private resource UI browser exceptions');
