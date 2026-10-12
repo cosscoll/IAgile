@@ -226,7 +226,7 @@
       article.className='deliverable-card';
       const title=document.createElement('h3');
       title.textContent=String(task.title||'Livrable');
-      const directions=document.createElement('p');
+      const directions=document.createElement('div');
       directions.className='deliverable-instructions';
       // Premium Markdown is displayed as plain text to prevent HTML injection.
       directions.textContent=String(task.instructions_markdown||'');
