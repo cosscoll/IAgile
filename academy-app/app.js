@@ -243,11 +243,14 @@
       };
       updateButton();
       button.disabled = !progressReady;
+      let lessonWritePending=false;
       button.addEventListener('click', async () => {
-        if (request !== sequence || !progressReady || button.disabled) return;
+        if (request !== sequence || !progressReady || lessonWritePending || button.disabled) return;
+        lessonWritePending=true;
         const previous = records.get(item.module_index);
         const completed = !previous?.completed;
         button.disabled = true;
+        noteSave.disabled = true;
         try {
           // This cannot grant enrollment: RLS checks the owner, active
           // enrollment, active profile and published module server-side.
@@ -268,7 +271,7 @@
         } catch (_error) {
           if (request === sequence) message('Enregistrement indisponible. Aucun changement confirmé.');
         } finally {
-          if (request === sequence) button.disabled = false;
+          if (request === sequence) { lessonWritePending=false; button.disabled=false; noteSave.disabled=false; }
         }
       });
       const noteForm=document.createElement('form');
@@ -299,13 +302,15 @@
       noteForm.append(noteLabel,noteInput,noteSave,noteStatus);
       noteForm.addEventListener('submit',async event=>{
         event.preventDefault();
-        if(request!==sequence || !progressReady || noteSave.disabled)return;
+        if(request!==sequence || !progressReady || lessonWritePending || noteSave.disabled)return;
         const next=noteInput.value.trim();
         if(next.length>4000){
           noteStatus.textContent='La note dépasse 4 000 caractères.';
           return;
         }
+        lessonWritePending=true;
         noteSave.disabled=true;
+        button.disabled=true;
         noteStatus.textContent='Enregistrement de vos notes…';
         try{
           const current=records.get(item.module_index)||{};
@@ -323,7 +328,7 @@
         }catch(_error){
           if(request===sequence)noteStatus.textContent='Erreur réseau : notes non confirmées.';
         }finally{
-          if(request===sequence)noteSave.disabled=false;
+          if(request===sequence){ lessonWritePending=false; noteSave.disabled=false; button.disabled=false; }
         }
       });
       section.append(title,body,button,noteForm);
