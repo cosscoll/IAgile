@@ -137,3 +137,26 @@ Pour une **formation commercialisable** : support présent et sécurisé, accès
 - **Évaluation :** plusieurs versions de scénario final et des grilles de notation distinctes exigent un choix éditorial cohérent avant ouverture.
 - **Changements sur données sensibles :** aucun contenu premium copié dans GitHub ; aucun cours publié ; aucun fichier Storage remplacé.
 - **Prochain bloc autonome :** rechercher la version canonique des douze fichiers, analyser l'écart avec la version archivée, figer le protocole de correspondance exercices/corrigés et préparer l'import privé sécurisé. L'Academy reste non commercialisable.
+
+
+## 9. Reprise autonome — Sprint 2, 12 octobre 2026
+
+**Travaux vérifiés**
+- Espace apprenant : quatre parcours équipés d'une liste de ressources privées. Un lien signé Supabase est produit uniquement après clic et seulement pour une ligne `published=true` du bon parcours, après authentification et contrôle des inscriptions. Lien valable 60 secondes, expiré dans l'interface au terme de cette durée ; aucune URL permanente publique.
+- Lecture des leçons et des consignes améliorée : paragraphes, titres, listes, blocs de code et emphases créés avec le DOM, sans interprétation HTML. Les tests Chrome sur mobile vérifient la présentation et le caractère inerte du HTML fourni comme texte.
+- Tests automatisés GitHub : contrôles d'accès simulés (visiteur anonyme, sans inscription, cours non publié, refus du registre et du Storage, chemin d'un autre cours), Chromium et CDN Supabase.
+- Sources pédagogiques : archive apprenant privée V0.8 comparée aux 12 entrées de `academy_course_assets`. **0/12 empreintes et tailles correspondent** : aucun écrasement ni import des données archivées.
+- Archive technique **privée** conservée dans la bibliothèque ChatGPT `/IAgile — Supports de formation/IAgile_S2_Controles_Integrite_Prives_20261012.zip`, avec manifeste attendu, tableau des écarts et vérificateur read-only. Ne pas placer ce ZIP dans le dépôt public.
+- Épreuve finale : brouillon privé de cadrage du Playbook IA, distinct de la variante Rivage ; version pédagogique non intégrée au LMS avant harmonisation des grilles et des corpus.
+
+**Dépendances et limites**
+- L'Academy demeure sans environnement HTTPS public : aucun parcours Auth ni autorisation de lecture par deux vrais comptes n'a été testé. Autorisation Vercel 403 encore à résoudre.
+- Supabase Storage ne contient toujours pas les 12 fichiers canoniques ; ceux-ci ne doivent pas être substitués par une archive plus ancienne sans analyse et versionnement.
+- Aucun module, livrable ou asset de formation n'est publié. Aucun paiement ouvert.
+- Les correctifs visuels et les liens temporaires sont des fonctions **développées et testées en simulation**, pas des preuves d'exploitation commerciale.
+
+**Prochain ordre d'exécution**
+1. Retrouver la version canonique des 12 jeux de données et figer une correspondance `source → module → livrable → corrigé` pour les cas Lumen, Orbe et Sillage.
+2. Définir une référence unique et un identifiant de version explicite pour chaque épreuve Rivage, puis harmoniser Playbook /100 et transfert /20 ; ne pas utiliser un corrigé d'une autre variante.
+3. Restituer les fichiers contrôlés uniquement dans le stockage Supabase privé et tester la signature et la lecture avec de véritables comptes distincts.
+4. Terminer la QA du parcours pilote et seulement ensuite étendre l'intégration aux trois autres formations.
