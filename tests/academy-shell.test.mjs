@@ -58,6 +58,7 @@ const expectedAssets=[
   'index.html','app.css','app.js','config.js',
   'instructor.html','instructor.css','instructor.js','instructor-policy.mjs',
   'preflight.html','preflight.css','preflight.js','preflight-policy.mjs',
+  'atelier-preuve.html','atelier-preuve.css','atelier-preuve.js','atelier-preuve-policy.mjs',
   'vercel.json','cours/sites-3d/index.html','cours/agents/index.html',
   'cours/automatisation/index.html','cours/processus/index.html'
 ];
