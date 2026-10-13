@@ -67,6 +67,7 @@ jobs:
           node --check scripts/academy-api-failure-lab.mjs
           node --check academy-app/instructor-rubric.mjs
           node --check scripts/academy-pilot-metrics.mjs
+          node --check scripts/academy-agent-guardrail-lab.mjs
           node --check tests/staged-public.test.mjs
       - name: Construire et inspecter les seuls actifs publics (sans déploiement)
         shell: bash
