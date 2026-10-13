@@ -40,6 +40,11 @@ assert(js.includes('sameRevision(result.data?.answer_updated_at,answer.updated_a
 assert(js.includes('if(request!==generation)return'),'Stale requests must not repaint learner data');
 assert(/onAuthStateChange\(\(\)=>\{\s*\+\+generation;clear\(\);logout\.hidden=true;auth\.hidden=true;/.test(js),
   'Auth state changes must immediately invalidate pending reads and hide private instructor copies');
+assert(js.includes("const {error}=await client.auth.signOut()"),'Instructor sign-out must inspect auth errors');
+assert(js.includes('Déconnexion non confirmée. Réessayez ou rechargez la page.'),
+  'Instructor UI must make sign-out failures explicit');
+assert(/\+\+generation;clear\(\);logout\.hidden=true;auth\.hidden=true;/.test(js),
+  'Instructor logout must immediately hide private copies and account controls');
 assert(html.includes('noindex,nofollow'),'Instructor page must not be indexed');
 assert(html.includes('type="module" src="instructor.js"'),'Instructor JS must be loaded as module');
 console.log('PASS instructor review queue hides private/unpublished/stale content and uses revision-aware save');
