@@ -31,6 +31,7 @@ jobs:
           node tests/academy-shell.test.mjs
           node tests/academy-preflight-policy.test.mjs
           node tests/academy-evidence-policy.test.mjs
+          node tests/academy-api-failure-lab.test.mjs
           node tests/academy-access.test.mjs
           node tests/academy-dashboard.test.mjs
           node tests/academy-private-assets.test.mjs && node tests/academy-private-upload.test.mjs
@@ -60,6 +61,7 @@ jobs:
           node --check academy-app/preflight-policy.mjs
           node --check academy-app/atelier-preuve.js
           node --check academy-app/atelier-preuve-policy.mjs
+          node --check scripts/academy-api-failure-lab.mjs
           node --check tests/staged-public.test.mjs
       - name: Construire et inspecter les seuls actifs publics (sans déploiement)
         shell: bash
