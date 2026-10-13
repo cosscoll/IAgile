@@ -32,6 +32,7 @@ jobs:
           node tests/academy-pilot-browser.test.mjs
           node tests/academy-free-resources-browser.test.mjs
           node tests/academy-preflight-browser.test.mjs
+          node tests/academy-evidence-browser.test.mjs
       - name: Archive simulated UI screenshots
         if: always()
         uses: actions/upload-artifact@v4
