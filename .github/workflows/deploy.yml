@@ -46,6 +46,7 @@ jobs:
           node --check api/chat.js
           node --check formation.js
           node --check parcours.js
+          node --check ressources/ressources.js
           node --check tests/live-site-check.mjs
           node --check tests/public-live-proof.mjs
           node --check scripts/build-public.mjs
