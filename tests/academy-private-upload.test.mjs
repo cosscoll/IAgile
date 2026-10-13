@@ -19,7 +19,7 @@ for(let i=1;i<=12;i++){
   manifest.files.push({name,path:'processus/datasets/'+name,
     bytes:bytes.length,sha256:sha(bytes),mime:'text/markdown',published:false});
 }
-const makeMock=({existing=false,tamper=false,rejectPost=false}={})=>{
+const makeMock=({existing=false,tamper=false,rejectPost=false,publicBucket=false}={})=>{
   const objects=new Map();
   if(existing)for(const file of manifest.files)
     objects.set(file.path,Buffer.from('FAKE DATA '+Number(file.name.match(/\d+/)[0])+' — never publish\n'));
@@ -30,6 +30,12 @@ const makeMock=({existing=false,tamper=false,rejectPost=false}={})=>{
     assert.equal(headers.apikey,serviceRoleKey);
     const u=new URL(url);
     assert.equal(u.origin,projectUrl);
+    if(u.pathname==='/storage/v1/bucket/iagile-course-files'){
+      assert.equal(method,'GET');
+      return new Response(JSON.stringify({public:publicBucket,file_size_limit:51200,
+        allowed_mime_types:['text/csv','text/markdown']}),{
+          status:200,headers:{'content-type':'application/json'}});
+    }
     const prefix='/storage/v1/object/'+(method==='GET'?'authenticated/':'')+'iagile-course-files/';
     assert(u.pathname.startsWith(prefix),'Wrong private bucket endpoint');
     const remote=decodeURIComponent(u.pathname.slice(prefix.length));
@@ -85,6 +91,14 @@ try{
   await assert.rejects(()=>uploadApprovedCourseAssets({...base,execute:true,fetchImpl:corrupt.mock}),
     /downloaded bytes disagree/);
   assert.equal(corrupt.history.filter(x=>x.method==='POST').length,0);
+  const publicStorage=makeMock({publicBucket:true});
+  await assert.rejects(()=>uploadApprovedCourseAssets({...base,execute:true,
+    fetchImpl:publicStorage.mock}),/bucket is public/);
+  assert.equal(publicStorage.history.length,0,
+    'No private asset may be sent or read when bucket is public');
+  await assert.rejects(()=>uploadApprovedCourseAssets({...base,execute:true,
+    serviceRoleKey:'sb_publishable_fake_but_very_long_to_simulate_bad_key'}),
+    /server-only credential/);
   const denied=makeMock({rejectPost:true});
   await assert.rejects(()=>uploadApprovedCourseAssets({...base,execute:true,fetchImpl:denied.mock}),
     /upload refused/);
