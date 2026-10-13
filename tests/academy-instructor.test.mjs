@@ -38,7 +38,7 @@ assert(js.includes("answer_updated_at:answer.updated_at"),'Grades must be tied t
 assert(js.includes('sameRevision(result.data?.answer_updated_at,answer.updated_at)'),
   'Server response version must be verified after write');
 assert(js.includes('if(request!==generation)return'),'Stale requests must not repaint learner data');
-assert(/onAuthStateChange\(\(\)=>\{\s*\+\+generation;clear\(\);logout\.hidden=true;auth\.hidden=true;/.test(js),
+assert(/onAuthStateChange\(event=>\{\s*\+\+generation;clear\(\);logout\.hidden=true;auth\.hidden=true;/.test(js),
   'Auth state changes must immediately invalidate pending reads and hide private instructor copies');
 assert(js.includes("const {error}=await client.auth.signOut()"),'Instructor sign-out must inspect auth errors');
 assert(js.includes('Déconnexion non confirmée. Réessayez ou rechargez la page.'),
@@ -48,3 +48,9 @@ assert(/\+\+generation;clear\(\);logout\.hidden=true;auth\.hidden=true;/.test(js
 assert(html.includes('noindex,nofollow'),'Instructor page must not be indexed');
 assert(html.includes('type="module" src="instructor.js"'),'Instructor JS must be loaded as module');
 console.log('PASS instructor review queue hides private/unpublished/stale content and uses revision-aware save');
+
+assert(js.includes('const PAGE_SIZE=50'),'Review pages must be bounded');
+assert(js.includes('.range(page*PAGE_SIZE,(page+1)*PAGE_SIZE)'),'Review must fetch one page plus a sentinel');
+assert(js.includes('MAX_FEEDBACK_PAGES'),'Grade records must not silently truncate');
+assert(js.includes('logoutRequested'),'Failed logout must block token refresh repaint');
+assert(html.includes('id="previous-page"')&&html.includes('id="next-page"'),'Pagination controls must exist');

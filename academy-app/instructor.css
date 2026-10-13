@@ -16,3 +16,9 @@
 .instructor-review-form button{justify-self:start}
 .instructor-save-status{margin:0;color:#bfd7f7;min-height:1.5em;font:14px/1.5 system-ui}
 @media(max-width:600px){.instructor-review-form button{width:100%}.instructor-answer{max-height:320px;padding:12px}.instructor-copy{padding:14px}}
+
+.instructor-pagination{display:flex;gap:12px;flex-wrap:wrap;margin:15px 0}
+.instructor-pagination[hidden]{display:none}
+.instructor-pagination button{border:1px solid #a8bbd9;border-radius:10px;background:#d4e4ff;color:#0a1729;padding:12px 18px;font:700 14px system-ui;cursor:pointer}
+.instructor-pagination button:disabled{opacity:.5;cursor:not-allowed}
+.instructor-pagination button:focus-visible{outline:3px solid #9ab7ff;outline-offset:2px}

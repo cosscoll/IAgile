@@ -29,22 +29,23 @@ async function openRole(role){
       academy_instructor_courses:[{course_slug:'processus'}],
       academy_courses:[{slug:'processus',title:'IA au quotidien',published:true}],
       academy_deliverable_prompts:[{course_slug:'processus',deliverable_index:3,title:'Exercice test',published:true}],
-      academy_deliverable_answers:[answer],
+      academy_deliverable_answers:value==='teacher-large'?Array.from({length:120},(_,i)=>({...answer,user_id:'learner_'+String(i).padStart(3,'0'),content:'Réponse synthétique '+i})): [answer],
       academy_deliverable_feedback:[]
     };
     const makeQuery=table=>{
+      let start=0,end=Number.MAX_SAFE_INTEGER;
       const q={
-        select(){return q},eq(){return q},in(){return q},order(){return q},limit(){return q},
+        select(){return q},eq(){return q},in(){return q},order(){return q},range(a,b){start=a;end=b;return q},limit(){return q},
         maybeSingle:async()=>({data:table==='academy_profiles'?{account_status:'active'}:
           table==='academy_deliverable_feedback'?review:null,error:null}),
         upsert:async payload=>{
-          if(value!=='teacher')return {error:{message:'RLS'}};
+          if(!['teacher','teacher-large'].includes(value))return {error:{message:'RLS'}};
           if(payload.answer_updated_at!==answer.updated_at)return {error:{message:'stale'}};
           review=payload;return {error:null};
         },
         then(resolve,reject){
-          const data=value!=='teacher'?[]:
-            table==='academy_deliverable_feedback'?(review?[review]:[]):(response[table]||[]);
+          const data=!['teacher','teacher-large'].includes(value)?[]:
+            (table==='academy_deliverable_feedback'?(review?[review]:[]):(response[table]||[])).slice(start,end+1);
           return Promise.resolve({data,error:null}).then(resolve,reject);
         }
       };
@@ -82,5 +83,20 @@ try{
   await teacher.getByText('Correction enregistrée et confirmée pour cette version.').waitFor();
   assert.equal(await teacher.locator('.instructor-copy').count(),1);
   await teacher.close();
-  console.log('PASS instructor browser: guest denied, no assignment denied, RLS mock review and inert HTML');
+  const many=await openRole('teacher-large');
+  await many.locator('.instructor-copy').first().waitFor({state:'visible'});
+  assert.equal(await many.locator('.instructor-copy').count(),50);
+  assert.equal(await many.locator('#next-page').isEnabled(),true);
+  await many.locator('#next-page').click();
+  await many.getByText('Page 2', {exact:false}).first().waitFor();
+  assert.equal(await many.locator('.instructor-copy').count(),50);
+  await many.locator('#next-page').click();
+  await many.getByText('Page 3', {exact:false}).first().waitFor();
+  assert.equal(await many.locator('.instructor-copy').count(),20);
+  assert.equal(await many.locator('#next-page').isDisabled(),true);
+  await many.locator('#previous-page').click();
+  await many.getByText('Page 2', {exact:false}).first().waitFor();
+  assert.equal(await many.locator('.instructor-copy').count(),50);
+  await many.close();
+  console.log('PASS instructor browser: guest denied, RLS mock review, inert HTML and 120-copy pagination');
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve));}
