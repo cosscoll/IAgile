@@ -1,3 +1,4 @@
+import {pathToFileURL} from 'node:url';
 // IAgile Academy — synthetic agent guardrail simulator.
 // NO AI model, network or production tool is called. A green mock test is not an agent evaluation.
 export const ROLES=Object.freeze(['viewer','reviewer','operator']);
@@ -71,4 +72,10 @@ export function runSyntheticEvaluation(){
  });
  return {simulated:true,modelTested:false,externalEffects:0,scenarios:runs.length,
    passed:runs.filter(r=>r.passed).length,runs};
+}
+
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
+ const report=runSyntheticEvaluation();
+ process.stdout.write(JSON.stringify(report,null,2)+'\n');
+ if(report.passed!==report.scenarios)process.exitCode=1;
 }
