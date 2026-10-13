@@ -142,3 +142,12 @@ Référence unique pour les futures synchronisations manuelles : `academy-app/de
 - **Gates de lancement :** contrôle SQL en lecture seule `docs/academy-readiness-gates.sql` renforcé (PR #50). Les ressources doivent correspondre aux **12 chemins exacts**, les comptes pilotes doivent inclure deux apprenants actifs inscrits et un formateur actif, et le pilote doit avoir **9/9 modules publiés**. Ce contrôle ne remplace pas la vérification des empreintes et des droits de fichiers ni les essais réels.
 
 **Statut : NO GO commercial ; aucun achat ou compte pilote créé.** Les contenus V0.9.1 restent dans une bibliothèque privée sans publication ni import automatique.
+
+
+### Préparation de l'import pédagogique contrôlé — 13 octobre 2026
+
+La PR #51 a ajouté `scripts/upload-approved-course-assets.mjs`, un importeur **sec, inactif par défaut**, avec préflight local, contrôle distant des réglages du bucket privé, refus d'une clé `sb_publishable_...`, non-écrasement d'objets existants, lecture distante et comparaison SHA-256 de chaque fichier. Une commande distincte **et** le SHA-256 d'un manifeste éditorialement approuvé sont requis pour autoriser toute écriture. Le script ne modifie pas `academy_course_assets`, les permissions, les indicateurs `published` ou les inscriptions.
+
+Les tests `tests/academy-private-upload.test.mjs` simulent les 12 transferts avec fichiers fictifs, le dry-run sans requête, le rejet des fichiers altérés, un bucket devenu public, le refus réseau et l'import déjà effectué ; les quatre workflows GitHub Actions ont réussi. Guide opérationnel : `docs/ACADEMY-PRIVATE-IMPORT-RUNBOOK.md`. **Aucun upload réel n'a été exécuté** car l'approbation pédagogique et les accès administrateur opérationnels manquent encore.
+
+Validation renforcée du staging `dpl_67SyGj3RafHZRgtNRPPGMnqahk7A` : les 13 fichiers du déploiement ont été rapprochés des 13 sources du commit `a2cffdb9e6c925248423ebc10da415e12d269dfc` par SHA-1 : **13/13 concordances**. Ce contrôle ne démontre toujours pas une navigation SSO/Auth réelle.
