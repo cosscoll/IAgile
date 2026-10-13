@@ -1,27 +1,46 @@
 import assert from 'node:assert/strict';
 import {summarizePilot} from '../scripts/academy-pilot-metrics.mjs';
-const base={test_id:'T01',course:'processus',case_id:'CASE-SOURCE',condition:'guided',
- evidence:'verified',passed:true,minutes:12,help_requests:1};
 const empty=summarizePilot([]);
-assert.equal(empty.status,'no-data');assert.equal(empty.verifiedObservations,0);
-const rows=[base,
- {...base,test_id:'T02',condition:'transfer',evidence:'unverified',minutes:20},
- {...base,test_id:'T03',condition:'delayed',passed:false,minutes:25}];
-const report=summarizePilot(rows);
-assert.equal(report.status,'small-sample');
-assert.equal(report.distinctParticipants,3);
-assert.equal(report.verifiedObservations,2);
-assert.equal(report.counts.guided.passed,1);
-assert.equal(report.counts.transfer.verified,0);
-assert.equal(report.counts.transfer.nonVerified,1);
-assert.equal(report.counts.transfer.passed,0,'Unverified self-claimed passes must not be counted');
-assert.equal(report.medianMinutesVerified,18.5);
-assert.match(report.confidence,/Never infer market/);
-assert.throws(()=>summarizePilot([base,base]),/Duplicate/);
-assert.throws(()=>summarizePilot([{...base,email:'example@invalid.test'}]),/identifier/);
-assert.throws(()=>summarizePilot([{...base,minutes:0}]),/missing valid/);
-assert.throws(()=>summarizePilot([{...base,case_id:'unsafe'}]),/missing valid/);
-assert.equal(summarizePilot(Array.from({length:5},(_,i)=>({
- ...base,test_id:'T0'+(i+1)}))).status,'descriptive-only',
- 'Even five participants are not representative');
-console.log('PASS pilot evidence: zero-data, nonverified outcomes, dedup, pseudonym protection and small sample reporting');
+assert.equal(empty.status,'no-data');
+assert.equal(empty.verifiedObservations,0);
+assert.equal(empty.medianMinutesVerified,null);
+assert.equal(empty.distinctParticipants,0);
+const rows=[
+ {test_id:'T01',course:'processus',case_id:'CASE-A',condition:'guided',evidence:'verified',passed:true,minutes:20,help_requests:2},
+ {test_id:'T01',course:'processus',case_id:'CASE-B',condition:'transfer',evidence:'verified',passed:false,minutes:32,help_requests:1},
+ {test_id:'T02',course:'automatisation',case_id:'CASE-C',condition:'guided',evidence:'unverified',passed:false,minutes:15,help_requests:0},
+ {test_id:'T02',course:'automatisation',case_id:'CASE-D',condition:'delayed',evidence:'not-tested',passed:false,minutes:13,help_requests:0},
+ {test_id:'T03',course:'agents',case_id:'CASE-E',condition:'transfer',evidence:'verified',passed:true,minutes:45,help_requests:5}
+];
+const result=summarizePilot(rows);
+assert.equal(result.status,'small-sample');
+assert.equal(result.distinctParticipants,3);
+assert.equal(result.observations,5);
+assert.equal(result.verifiedObservations,3);
+assert.equal(result.medianMinutesVerified,32);
+assert.equal(result.counts.guided.attempts,2);
+assert.equal(result.counts.guided.verified,1);
+assert.equal(result.counts.guided.nonVerified,1);
+assert.equal(result.counts.transfer.passed,1);
+assert.equal(result.byCourse.processus.passed,1);
+assert.equal(result.byCourse.automatisation.nonVerified,2);
+assert.match(result.confidence,/Never infer market/);
+const rejected=[
+ [...rows,rows[0]],
+ [{...rows[0],email:'test@example.invalid'}],
+ [{...rows[0],student_name:'A'}],
+ [{...rows[0],evidence:'unverified',passed:true}],
+ [{...rows[0],evidence:'not-tested',passed:true}],
+ [{...rows[0],test_id:'real-user-id'}],
+ [{...rows[0],minutes:-1}],
+ [{...rows[0],help_requests:1.5}],
+ [{...rows[0],case_id:'../../fake'}],
+ [{...rows[0],course:'other'}],
+ [{...rows[0],evidence:'unknown'}],
+ [{...rows[0],condition:'unknown'}]
+];
+for(const scenario of rejected)assert.throws(()=>summarizePilot(scenario),/Duplicate|Unexpected|missing valid/);
+const five=Array.from({length:5},(_,i)=>({...rows[0],test_id:'T'+String(i+10)}));
+assert.equal(summarizePilot(five).status,'descriptive-only','Five synthetic participants still yield descriptive data');
+assert.throws(()=>summarizePilot({}),/array/);
+console.log('PASS pilot evidence: zero data, small sample, grouped counts, median, PII rejected and no false pass');
