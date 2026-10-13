@@ -267,6 +267,22 @@ assert(sameForm.children.find(e=>e.className==='deliverable-state').textContent.
 console.log('PASS identical resubmission cannot retain an unverified old grade');
 
 
+const pilotGuide=await simulate({
+  course:'processus',
+  tasks:[
+    {deliverable_index:4,title:'Playbook transmissible',instructions_markdown:'Exercice'},
+    {deliverable_index:7,title:'Mission Rivage',instructions_markdown:'Transfert'},
+    {deliverable_index:8,title:'Mon Playbook final',instructions_markdown:'Projet personnel'}
+  ]
+});
+const guideCards=pilotGuide.elements.get('deliverables-content').children;
+assert.equal(guideCards.length,3);
+assert(guideCards[0].children.find(n=>n.className==='deliverable-stage')?.textContent.includes('module 7'));
+assert(guideCards[1].children.find(n=>n.className==='deliverable-stage')?.textContent.includes('Épreuve de transfert'));
+assert(guideCards[2].children.find(n=>n.className==='deliverable-stage')?.textContent.includes('Projet final personnel'));
+assert(!guideCards[1].children.find(n=>n.className==='deliverable-stage').textContent.includes('Projet final'));
+console.log('PASS Processus tasks show relevant lesson timing and distinguish transfer exam from final Playbook');
+
 const oldFeedback=await simulate({
   tasks:[task],
   answers:[{deliverable_index:2,content:'Version 2',updated_at:'2026-10-12T08:02:00Z'}],
