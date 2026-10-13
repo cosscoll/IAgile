@@ -70,7 +70,7 @@ for(const asset of deployable){
     'Do not deploy a file outside the Academy client directory');
   assert(fs.statSync(path.join(app,asset)).isFile(),'Missing listed deployment asset: '+asset);
 }
-for(const filename of ['index.html','instructor.html',...slugs.map(s=>'cours/'+s+'/index.html')]){
+for(const filename of ['index.html','instructor.html','preflight.html',...slugs.map(s=>'cours/'+s+'/index.html')]){
   const html=fs.readFileSync(path.join(app,filename),'utf8');
   for(const match of html.matchAll(/<(?:script|link)\\b[^>]*\\b(?:src|href)="([^"]+)"/g)){
     const url=match[1].split(/[?#]/)[0];
