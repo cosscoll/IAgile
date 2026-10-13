@@ -1,58 +1,85 @@
--- IAgile Academy / audit read-only des verrous de mise en service
--- Rejouer via Supabase SQL Editor en lecture seule.
--- READY=true constate seulement ce verrou. Ce tableau NE constitue PAS un GO commercial :
--- tests Auth/RLS multi-comptes, validation pédagogique, paiement et conformité exigés séparément.
+-- IAgile Academy — seven read-only, intentionally conservative release checks.
+-- This is a diagnostic snapshot, NOT a commercial authorization.
+-- Auth/RLS multi-account browser tests, educational review, contract and checkout
+-- require separate evidence. Storage SQL metadata does NOT prove the bytes' SHA-256.
 WITH
-inventory AS (
-  SELECT (SELECT count(*) FROM public.academy_course_modules) AS lessons,
-         (SELECT count(*) FROM public.academy_course_modules WHERE published) AS published_lessons,
-         (SELECT count(*) FROM public.academy_profiles) AS profiles,
-         (SELECT count(*) FROM public.academy_enrollments) AS enrollments
+pilot AS (
+  SELECT COUNT(*) AS total,COUNT(*) FILTER (WHERE published) AS published
+  FROM public.academy_course_modules WHERE course_slug='processus'
+),
+course AS (
+  SELECT COUNT(*) AS total,COUNT(*) FILTER (WHERE published) AS published
+  FROM public.academy_courses WHERE slug='processus'
 ),
 assets AS (
-  SELECT (SELECT count(*) FROM public.academy_course_assets WHERE course_slug='processus') AS registered,
-         (SELECT count(*) FROM storage.objects WHERE bucket_id='iagile-course-files') AS stored
+  SELECT COUNT(*) AS registered,
+         COUNT(*) FILTER (WHERE obj.name IS NOT NULL) AS matched_paths
+  FROM public.academy_course_assets AS a
+  LEFT JOIN storage.objects AS obj
+    ON obj.bucket_id='iagile-course-files' AND obj.name=a.storage_path
+  WHERE a.course_slug='processus'
+),
+storage_count AS (
+  SELECT COUNT(*) AS stored
+  FROM storage.objects WHERE bucket_id='iagile-course-files'
 ),
 bucket AS (
-  SELECT (NOT public AND file_size_limit=51200
-    AND allowed_mime_types @> ARRAY['text/csv','text/markdown']::text[]) AS safe
+  SELECT NOT public AND file_size_limit=51200
+    AND allowed_mime_types @> ARRAY['text/csv','text/markdown']::text[] AS safe
   FROM storage.buckets WHERE id='iagile-course-files'
 ),
 rls AS (
-  SELECT count(*) AS total, count(*) FILTER (WHERE c.relrowsecurity) AS protected
-  FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+  SELECT COUNT(*) AS total,COUNT(*) FILTER (WHERE c.relrowsecurity) AS protected
+  FROM pg_class AS c JOIN pg_namespace AS n ON n.oid=c.relnamespace
   WHERE n.nspname='public' AND c.relkind='r' AND c.relname LIKE 'academy_%'
 ),
 exercises AS (
-  SELECT count(*) AS n,
-         bool_or(deliverable_index=7 AND title LIKE 'Épreuve de transfert%') AS transfer_named,
-         bool_or(deliverable_index=8 AND title LIKE 'Projet final%') AS final_named
+  SELECT COUNT(*) AS total,
+         COUNT(*) FILTER (WHERE deliverable_index=7 AND title LIKE 'Épreuve de transfert%') AS transfer,
+         COUNT(*) FILTER (WHERE deliverable_index=8 AND title LIKE 'Projet final%') AS capstone
   FROM public.academy_deliverable_prompts WHERE course_slug='processus'
+),
+learners AS (
+  SELECT COUNT(DISTINCT e.user_id) AS total
+  FROM public.academy_enrollments AS e
+  JOIN public.academy_profiles AS p ON p.user_id=e.user_id
+  WHERE e.course_slug='processus' AND e.active AND p.account_status='active'
+),
+instructors AS (
+  SELECT COUNT(DISTINCT i.instructor_id) AS total
+  FROM public.academy_instructor_courses AS i
+  JOIN public.academy_profiles AS p ON p.user_id=i.instructor_id
+  WHERE i.course_slug='processus' AND p.account_status='active'
 )
 SELECT gate,ready,detail
 FROM (
   SELECT 'private_storage'::text AS gate,
-    coalesce((SELECT safe FROM bucket),false) AS ready,
-    'Bucket privé, fichiers CSV/Markdown, limite de 50 Ko'::text AS detail
+    COALESCE((SELECT safe FROM bucket),false) AS ready,
+    'Bucket privé, CSV/Markdown seulement, taille max 50 Ko'::text AS detail
   UNION ALL SELECT 'rls_all_academy_tables',
-    ((SELECT total FROM rls)>=10 AND (SELECT total FROM rls)=(SELECT protected FROM rls)),
-    (SELECT protected||'/'||total||' tables RLS actives' FROM rls)
+    (SELECT total>=10 AND total=protected FROM rls),
+    (SELECT protected||'/'||total||' tables protégées par RLS' FROM rls)
   UNION ALL SELECT 'grade_revision_guard',
-    EXISTS(SELECT 1 FROM pg_trigger WHERE
-      tgrelid='public.academy_deliverable_feedback'::regclass
-      AND tgname='academy_feedback_verify_answer_version' AND NOT tgisinternal),
-    'Déclencheur serveur anti-correction périmée'
+    EXISTS (SELECT 1 FROM pg_trigger
+      WHERE tgrelid='public.academy_deliverable_feedback'::regclass
+        AND tgname='academy_feedback_verify_answer_version' AND NOT tgisinternal),
+    'Contrôle serveur de version de copie'
   UNION ALL SELECT 'processus_9_assignments',
-    ((SELECT n FROM exercises)=9 AND (SELECT transfer_named FROM exercises)
-       AND (SELECT final_named FROM exercises)),
-    'Épreuve de transfert distincte du Playbook final'
+    (SELECT total=9 AND transfer=1 AND capstone=1 FROM exercises),
+    'Neuf travaux dont Rivage et Playbook final distincts'
   UNION ALL SELECT 'processus_assets_uploaded',
-    ((SELECT registered FROM assets)=12 AND (SELECT stored FROM assets)=12),
-    (SELECT registered||' ressources enregistrées / '||stored||' objets stockés' FROM assets)
+    (SELECT registered=12 AND matched_paths=12 FROM assets)
+      AND (SELECT stored=12 FROM storage_count),
+    (SELECT matched_paths||'/'||registered||' chemins présents, '||
+      (SELECT stored FROM storage_count)||' objets dans le bucket. SHA-256 et droits à vérifier séparément' FROM assets)
   UNION ALL SELECT 'pilot_accounts_prepared',
-    ((SELECT profiles FROM inventory)>=3 AND (SELECT enrollments FROM inventory)>=2),
-    (SELECT profiles||' profils / '||enrollments||' inscriptions (ne prouve pas la RLS)' FROM inventory)
+    (SELECT total>=2 FROM learners) AND (SELECT total>=1 FROM instructors),
+    (SELECT total||' apprenant(s) actif(s) inscrit(s), '||
+      (SELECT total FROM instructors)||' formateur(s) actif(s). RLS réelle à tester' FROM learners)
   UNION ALL SELECT 'lessons_ready_for_publish',
-    ((SELECT published_lessons FROM inventory)>0),
-    (SELECT published_lessons||' / '||lessons||' modules publiés' FROM inventory)
-) gates ORDER BY gate;
+    (SELECT total=9 AND published=9 FROM pilot)
+      AND (SELECT total=1 AND published=1 FROM course),
+    (SELECT published||'/'||total||' modules pilote publiés ; cours publié : '||
+      (SELECT published FROM course) FROM pilot)
+) AS gates
+ORDER BY gate;
