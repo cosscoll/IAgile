@@ -170,6 +170,11 @@ if(!config?.url||!config?.publishableKey||!window.supabase?.createClient){
   logout.addEventListener('click',async()=>{
     ++generation;clear();await client.auth.signOut();void load();
   });
-  client.auth.onAuthStateChange(()=>{setTimeout(()=>{void load();},0);});
+  // Invalidate in-flight reads and hide private copies synchronously on any auth change.
+  client.auth.onAuthStateChange(()=>{
+    ++generation;clear();logout.hidden=true;auth.hidden=true;
+    message('Vérification de la session…');
+    setTimeout(()=>{void load();},0);
+  });
   void load();
 }
