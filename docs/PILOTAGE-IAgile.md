@@ -299,3 +299,12 @@ Les **12 empreintes historiques actuelles** dans `academy_course_assets` (source
 - **Correctif formateur candidat** : fichier `IAgile_Processus_V091_Formateur_CORRIGE_ET_CONTROLES_PRIVE.zip` stocké dans la bibliothèque privée `IAgile — Supports de formation`. Le corrigé porte désormais le nom V0.9.1 et précise la levée de la condition circulaire T02 sans autoriser d'achat ; les 12 fichiers et SHA256 du corpus V0.9.1 sont inchangés. Les tests privés de cohérence des cas réussissent. Aucune double évaluation pédagogique humaine.
 - **Préflight SQL en lecture seule** : `docs/academy-readiness-gates.sql` ; au dernier contrôle 4/7 critères techniques positifs (bucket privé, RLS 10/10, garde version de correction, 9 consignes distinctes), 3/7 non remplis (12 supports enregistrés mais 0 présent dans Storage, aucun compte pilote, 0 des 47 modules publiés). Ces critères ne couvrent pas l'intégralité des conditions de vente.
 - **NE PAS VENDRE** tant que l'import privé validé, les tests Auth/RLS réels, le pilote pédagogique, le parcours de paiement et la conformité ne sont pas passés. Le dépôt public demeure sans supports premium ni corrigés.
+
+
+## Rectificatif de livraison staging : 13 fichiers — 13 octobre 2026
+
+La livraison Vercel `dpl_EM3cXXVNPiL3Q73rsSBe1NYa8UC3` contenait 12 fichiers et omettait `instructor.css`, pourtant référencé dans `instructor.html`. Le paquet a été corrigé puis remplacé par le déploiement **`dpl_9oRY8NfWaBE182HYkQLnjXQK3Npk`** : état `READY`, alias actif `https://iagile-academy-staging.vercel.app/`, arborescence exacte de **13 fichiers**, sans doublon `src/src/`, protection Vercel SSO toujours activée. Le commit applicatif utilisé lors de cet envoi est `75fa8d3c5f9cddae616c751ac207b732eb7e7846`.
+
+La **PR #48** a été fusionnée après quatre workflows GitHub Actions réussis : manifeste exact `academy-app/deployment-files.json` et contrôle CI de toutes les dépendances locales HTML/CSS/JS pour éviter qu'un paquet futur omette une ressource. Le manifest et les tests ont été fusionnés après le déploiement ; ils ne modifient pas les 13 fichiers de l'application déployée.
+
+**Reste non vérifié :** résultat HTTP et parcours utilisateur derrière le SSO Vercel ; Auth Supabase multi-comptes et réglages redirect ; téléchargement des fichiers (Storage vide) ; évaluations pédagogiques et paiement. Ne pas annoncer l'Academy comme lancée ni vendre les accès.
