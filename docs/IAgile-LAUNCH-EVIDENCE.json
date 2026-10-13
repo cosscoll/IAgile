@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-13-prelaunch",
+  "version": "2026-10-13-prelaunch-v2",
   "notice": "Ce fichier documente des contrôles, il ne remplace pas leurs preuves. Ne jamais le traiter comme une autorisation de facturer.",
   "project": "IAgile",
   "last_reviewed": "2026-10-13",
@@ -14,7 +14,7 @@
       "id": "curriculum_reference",
       "label": "Référentiel apprenant et corrigés versionnés",
       "status": "blocked",
-      "evidence": "Corpus V0.9.1 intègre 12/12 fichiers vérifiés et corrigé formateur harmonisé, conservés en bibliothèque privée. Une revue pédagogique humaine demeure indispensable avant d'adopter la version ; 12 empreintes Supabase historiques différentes."
+      "evidence": "47 modules rédigés non publiés ; audit SQL read-only et titres des 38 modules Agents/Automatisation/Sites 3D rapprochés de leurs sources Drive (38/38). Corpus Processus V0.9.1 : 12/12 empreintes privées conformes hors ligne, corrigés à approuver humainement. Audit de contenu et de laboratoires réels non achevé."
     },
     {
       "id": "private_storage",
@@ -26,7 +26,7 @@
       "id": "academy_staging",
       "label": "Staging Academy HTTPS construit",
       "status": "verified",
-      "evidence": "Vercel SSO all actif, dpl_67SyGj3RafHZRgtNRPPGMnqahk7A READY sur iagile-academy-staging.vercel.app ; comparaison indépendante des UID SHA-1 Vercel aux 13 fichiers du commit applicatif a2cffdb9e6c925248423ebc10da415e12d269dfc : 13/13 identiques. Test HTTP authentifié toujours en attente."
+      "evidence": "Staging protégé Vercel dpl_H8tEb5dbB6TKhwCRHNVozBUbCzXL READY, dernier déploiement, SSO activé sur tous les environnements ; les 13 UID SHA-1 Vercel correspondent aux 13 sources du commit applicatif 8f4f74b5ce45b2dde82ce3785d0de36df1e63047. Navigateur SSO + Supabase Auth réel non vérifié."
     },
     {
       "id": "academy_browser",
@@ -74,7 +74,7 @@
       "id": "signed_checkout",
       "label": "Paiement signé, événements idempotents et refus de spoofing",
       "status": "blocked",
-      "evidence": "Registre de paiements serveur privé, simulation de webhook signé et garde de version ; deux index FK manquants corrigés le 13/10. Aucun fournisseur IAgile, endpoint Stripe, paiement réel, ni attribution automatique d'accès."
+      "evidence": "Simulation de signatures Stripe, contrôle d'une commande canonique et décision d'inscription/refund sans effet de bord ; PR #53 et #54 fusionnées, quatre workflows de tests réussis chacune ; aucune API Stripe hébergée, aucune commande réelle, aucun compte marchand IAgile, aucune facture ni attribution de droits."
     },
     {
       "id": "invoices",
@@ -92,7 +92,7 @@
       "id": "customer_support",
       "label": "Accompagnement, corrections et contact disponibles",
       "status": "blocked",
-      "evidence": "Interface formateur et correction versionnée développées/testées en mock. Pas de responsable réel, de SLA ni de canal de support commercial validé."
+      "evidence": "Formateur : interface corrigée, pagination 50 copies avec contrôle navigateur mock à 120 copies et retenue des avis ; PR #52 fusionnée, staging SSO READY. Aucun vrai compte formateur, responsable d'aide ou délai de réponse validé."
     }
   ]
 }
