@@ -75,6 +75,8 @@ jobs:
           node --check scripts/academy-3d-readiness.mjs
           node --check scripts/academy-prompt-compare.mjs
           node --check scripts/create-academy-workspace.mjs
+          node --check academy-app/depannage.js
+          node --check academy-app/depannage-data.mjs
           node --check tests/staged-public.test.mjs
       - name: Construire et inspecter les seuls actifs publics (sans déploiement)
         shell: bash
