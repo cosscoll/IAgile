@@ -10,6 +10,7 @@
     "instructor.css",
     "instructor.js",
     "instructor-policy.mjs",
+    "instructor-rubric.mjs",
     "preflight.html",
     "preflight.css",
     "preflight.js",
