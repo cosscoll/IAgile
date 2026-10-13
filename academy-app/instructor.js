@@ -168,7 +168,17 @@ if(!config?.url||!config?.publishableKey||!window.supabase?.createClient){
   });
   $('reload').addEventListener('click',()=>{void load();});
   logout.addEventListener('click',async()=>{
-    ++generation;clear();await client.auth.signOut();void load();
+    ++generation;clear();logout.hidden=true;auth.hidden=true;
+    message('Déconnexion en cours…');
+    try{
+      const {error}=await client.auth.signOut();
+      if(error)throw new Error('Signout not confirmed');
+      void load();
+    }catch(_error){
+      // Keep copies hidden; allow retry if the server did not confirm sign-out.
+      logout.hidden=false;auth.hidden=true;
+      message('Déconnexion non confirmée. Réessayez ou rechargez la page.');
+    }
   });
   // Invalidate in-flight reads and hide private copies synchronously on any auth change.
   client.auth.onAuthStateChange(()=>{
