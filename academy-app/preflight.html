@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#080f1b">
+<title>Diagnostic de départ | IAgile Academy</title>
+<meta name="description" content="Diagnostic local des prérequis pour quatre parcours IAgile. Aucun compte ni clé API requis.">
+<link rel="stylesheet" href="app.css"><link rel="stylesheet" href="preflight.css">
+<script type="module" src="preflight.js"></script></head>
+<body><a class="skip" href="#contenu">Aller au contenu</a>
+<header class="site-header"><a class="brand" href="index.html">I<span>A</span>gile <small>ACADEMY</small></a>
+<nav aria-label="Navigation"><a href="index.html">Tableau de bord</a><a href="https://cosscoll.github.io/IAgile/">Vitrine</a></nav></header>
+<main id="contenu" class="shell">
+<section class="hero"><p class="eyebrow">IAGILE / AVANT DE COMMENCER</p>
+<h1>Bien démarrer.<br><span>Sans mauvaise surprise.</span></h1>
+<p>Vérifiez les prérequis essentiels de votre parcours avant de commencer. Ce diagnostic fonctionne dans votre navigateur avec des données fictives. Il ne confirme ni une inscription ni l'accès à des leçons payantes.</p></section>
+<form id="preflight-form" class="preflight-form">
+<div class="field"><label for="course">Votre formation</label>
+<select id="course" name="course" required>
+<option value="">Choisir un parcours</option>
+<option value="processus">Processus du quotidien</option>
+<option value="automatisation">Automatisation</option>
+<option value="agents">Agents IA</option>
+<option value="sites-3d">Sites web 3D</option>
+</select></div>
+<fieldset class="field"><legend>Quel type de données souhaitez-vous utiliser ?</legend>
+<label><input type="radio" name="privacy" value="synthetic" checked> Uniquement des exemples fictifs</label>
+<label><input type="radio" name="privacy" value="unknown"> Je ne sais pas si mes données sont autorisées</label>
+<label><input type="radio" name="privacy" value="real-sensitive"> Données personnelles ou confidentielles non autorisées</label>
+</fieldset>
+<div class="field" id="process-question" hidden><label for="task">Votre tâche</label>
+<select id="task"><option value="repeatable">Répétitive ou complexe</option><option value="one-off">Simple et ponctuelle</option></select></div>
+<div class="field" id="automation-question" hidden><label for="json-sample">Un exemple JSON fictif, jamais de donnée client</label>
+<textarea id="json-sample" rows="4" spellcheck="false">{"id":"DEMO-01","statut":"a_traiter"}</textarea>
+<p class="hint">Nous vérifions seulement la forme du JSON, pas une connexion à n8n ou à une API.</p></div>
+<div class="field" id="agent-question" hidden><label for="tool-access">Comment souhaitez-vous travailler ?</label>
+<select id="tool-access"><option value="none">Simulateur sans compte ni clé</option><option value="live">Agent connecté à un vrai service</option></select>
+<label for="budget">Budget et droits autorisés</label>
+<select id="budget"><option value="unknown">Non encore vérifiés</option><option value="confirmed">Définis par le responsable</option></select></div>
+<div class="field" id="webgl-question" hidden><p>La compatibilité WebGL sera testée localement au moment du diagnostic, sans envoyer de données.</p></div>
+<button class="complete-button" type="submit">Afficher mon diagnostic</button>
+</form>
+<section id="diagnostic" class="preflight-result" hidden tabindex="-1" aria-labelledby="diagnostic-title">
+<p class="eyebrow">RÉSULTAT LOCAL / NON CERTIFIANT</p><h2 id="diagnostic-title"></h2><p id="diagnostic-reason"></p>
+<h3>Vos prochaines étapes</h3><ol id="diagnostic-steps"></ol>
+<p class="hint">Aucun résultat n'est envoyé à IAgile. Aucune inscription, accès premium ou action extérieure n'est créée par ce formulaire.</p>
+<button id="copy-diagnostic" type="button">Copier les étapes</button><span id="copy-status" role="status" aria-live="polite"></span>
+</section>
+</main><footer><span>IAgile Academy — outil de préparation, pas de vente ouverte.</span><a href="index.html">Retour au tableau de bord</a></footer>
+</body></html>
