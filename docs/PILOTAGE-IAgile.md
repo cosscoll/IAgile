@@ -308,3 +308,18 @@ La livraison Vercel `dpl_EM3cXXVNPiL3Q73rsSBe1NYa8UC3` contenait 12 fichiers et 
 La **PR #48** a été fusionnée après quatre workflows GitHub Actions réussis : manifeste exact `academy-app/deployment-files.json` et contrôle CI de toutes les dépendances locales HTML/CSS/JS pour éviter qu'un paquet futur omette une ressource. Le manifest et les tests ont été fusionnés après le déploiement ; ils ne modifient pas les 13 fichiers de l'application déployée.
 
 **Reste non vérifié :** résultat HTTP et parcours utilisateur derrière le SSO Vercel ; Auth Supabase multi-comptes et réglages redirect ; téléchargement des fichiers (Storage vide) ; évaluations pédagogiques et paiement. Ne pas annoncer l'Academy comme lancée ni vendre les accès.
+
+
+## Reprise autonome — correctifs opérationnels du 13 octobre 2026 (session suivante)
+
+**1. Auth déconnexion apprenant (#49) :** branche corrigée, simulation d'une erreur renvoyée par Supabase et d'une exception réseau, conservation du bouton « Se déconnecter » pour réessayer, verrou empêchant un TOKEN_REFRESHED de repeindre cours, copies ou liens signés pendant une déconnexion non confirmée. Quatre workflows GitHub Actions réussis sur la PR et merge `a2cffdb9e6c925248423ebc10da415e12d269dfc`.
+
+**2. Staging privé redéployé :** `dpl_67SyGj3RafHZRgtNRPPGMnqahk7A` remplace la livraison précédente. Vercel confirme `READY`, alias `https://iagile-academy-staging.vercel.app/`, 13 fichiers `src/` exacts incluant `instructor.css`, et SSO activé pour tout le projet. Le contrôle HTTP navigateur derrière SSO n'a pas pu être effectué ; statut de navigation réelle encore inconnu.
+
+**3. Supabase registre des paiements :** ajout de `academy_billing_orders_course_slug_fk_idx` et `academy_billing_webhook_events_order_id_fk_idx` par migration versionnée, requête de lecture confirmant les deux index et conseiller de performance ne signalant plus de clé étrangère non indexée. Il signale toujours des index « unused », attendus sur des tables de pré-lancement sans trafic ; ne pas les supprimer de manière prématurée. Les alertes INFO de sécurité sur les deux tables privées sans policies restent intentionnelles, sans exposition `anon`/`authenticated`. Aucune facturation activée.
+
+**4. GO/NO-GO SQL renforcé (#50) :** ancien faux positif corrigé pour les ressources Storage (il fallait 12 bons chemins, pas seulement 12 objets quelconques), pour les comptes pilotes (deux apprenants inscrits actifs **et** un formateur actif affecté à Processus) et pour la formation pilote (9/9 modules **et** cours publiés, au lieu d'un module quelconque). Relecture directe exécutée avec succès sur Supabase : 4/7 verrous techniques vrais ; trois bloqués (0/12 chemins en Storage, 0 profils/enrollments pilotables, 0/9 modules pilote publiés). Même 7/7 ne constituerait pas une autorisation de vente sans preuves humaines, paiement, conformité et tests Auth/RLS.
+
+**5. Supports privés :** scripts de pré-importation V0.9.1 et de recette du correctif formateur exécutés en environnement local sur les archives privées ; 12/12 SHA-256 concordants, calculs Orbe/Sillage et règles d'accès aux données fictives validés. Ceci ne justifie pas encore un changement du manifeste SQL historique. Aucun fichier ZIP premium n'a été placé dans GitHub ou sur le staging Vercel.
+
+**Décisions à obtenir pour un GO ultérieur :** arbitrage éditorial V0.9.1, comptes Auth pilotes et redirections, essais réels SSO/Auth, contrôle des octets téléchargés après import privé, vendeur/prix/offre, paiement testé, pilote humain et approbation juridique. Aucune publication forcée ni vente effectuée.
