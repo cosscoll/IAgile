@@ -18,7 +18,7 @@ test('invalid JSON',{course:'automatisation',sample:'{"id":},'},'prepare','ne pe
 test('array JSON invalid',{course:'automatisation',sample:'[]'},'prepare','champs texte');
 test('object missing status',{course:'automatisation',sample:'{"id":"x"}'},'prepare','champs texte');
 test('valid JSON',{course:'automatisation',sample:'{"id":"x","statut":"ok"}'},'ready','ne prouve ni');
-test('agent local',{course:'agents'},'alternative','sans clé API');
+test('agent local',{course:'agents'},'alternative','simulateur fictif');
 test('agent budget missing',{course:'agents',toolAccess:'live'},'prepare','sans limites');
 test('agent budget approved is still not verified',{course:'agents',toolAccess:'live',budget:'confirmed'},'prepare','ne peut ni vérifier');
 test('webgl absent',{course:'sites-3d',webgl:false},'alternative','sans GPU');
