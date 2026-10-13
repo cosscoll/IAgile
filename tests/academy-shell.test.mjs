@@ -56,7 +56,7 @@ assert(vercel.headers[0].headers.some(h=>h.key==='Content-Security-Policy'&&h.va
 const releaseManifest=JSON.parse(fs.readFileSync(path.join(app,'deployment-files.json'),'utf8'));
 const expectedAssets=[
   'index.html','app.css','app.js','config.js',
-  'instructor.html','instructor.css','instructor.js','instructor-policy.mjs',
+  'instructor.html','instructor.css','instructor.js','instructor-policy.mjs','instructor-rubric.mjs',
   'preflight.html','preflight.css','preflight.js','preflight-policy.mjs',
   'atelier-preuve.html','atelier-preuve.css','atelier-preuve.js','atelier-preuve-policy.mjs',
   'vercel.json','cours/sites-3d/index.html','cours/agents/index.html',
