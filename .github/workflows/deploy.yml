@@ -42,6 +42,7 @@ jobs:
           node tests/academy-billing-ledger.test.mjs
           node tests/repository-private-boundary.test.mjs
           node tests/academy-instructor.test.mjs
+          node tests/academy-instructor-rubric.test.mjs
           node tests/academy-payment-atomic-ledger.test.mjs
           node --check script.js
           node --check chatbot.js
