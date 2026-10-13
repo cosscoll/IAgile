@@ -40,6 +40,7 @@ async function simulate({
   const writes=[];
   const pendingWrites=[];
   const signatures=[];
+  let authCallback=null;
   const responses={
     academy_profiles:{data:profile?{account_status:'active'}:null,error:profileError?{message:'denied'}:null},
     academy_enrollments:{data:enrollment?[{course_slug:course,active:true}]:[],error:null},
@@ -95,7 +96,7 @@ async function simulate({
       getUser:async()=>({data:{user:user?{id:'pilot-1',email:'pilote@example.invalid'}:null},error:null}),
       signInWithOtp:async()=>({error:null}),
       signOut:async()=>({error:null}),
-      onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})
+      onAuthStateChange:callback=>{authCallback=callback;return {data:{subscription:{unsubscribe(){}}}}}
     }
   };
   const context={
@@ -117,7 +118,7 @@ async function simulate({
   vm.runInNewContext(source,context,{filename:'academy-app/app.js'});
   // Flush multiple async Supabase query steps, allowing refresh() to settle.
   for(let i=0;i<12;i++)await new Promise(resolve=>setImmediate(resolve));
-  return {elements,calls,writes,pendingWrites,signatures};
+  return {elements,calls,writes,pendingWrites,signatures,triggerAuthEvent:()=>authCallback?.('SIGNED_OUT',null)};
 }
 
 const tests=[
@@ -248,6 +249,23 @@ assert(item.children.find(e=>e.className==='instructor-feedback').hidden===true,
 assert(state.textContent.includes('nouvelle évaluation'),'New answer must signal correction is pending');
 console.log('PASS learner can save an authorized assignment in its own course');
 
+// A server-side upsert can touch the version even when the submitted text is identical.
+// The browser must not display the old instructor validation after any successful write.
+const identicalResubmission=await simulate({
+  tasks:[task],
+  answers:[{deliverable_index:2,content:'Déjà corrigé',updated_at:'2026-10-12T08:00:00+00:00'}],
+  feedback:[{deliverable_index:2,status:'validated',feedback_text:'Validation précédente',answer_updated_at:'2026-10-12T08:00:00+00:00'}]
+});
+const sameCard=identicalResubmission.elements.get('deliverables-content').children[0];
+const sameForm=sameCard.children.find(e=>e.className==='deliverable-form');
+assert.equal(sameCard.children.find(e=>e.className==='instructor-feedback').hidden,false);
+await sameForm.listeners.submit({preventDefault(){}});
+assert.equal(identicalResubmission.writes.length,1);
+assert.equal(sameCard.children.find(e=>e.className==='instructor-feedback').hidden,true,
+  'Even identical resubmission must hide previous feedback until server version is reread');
+assert(sameForm.children.find(e=>e.className==='deliverable-state').textContent.includes('nouvelle évaluation'));
+console.log('PASS identical resubmission cannot retain an unverified old grade');
+
 
 const oldFeedback=await simulate({
   tasks:[task],
@@ -340,6 +358,20 @@ assert(resourceLink.href.includes('?token='));
 assert.equal(resourceLink.target,'_blank');
 assert.equal(resourceLink.rel,'noopener noreferrer');
 console.log('PASS signed link is requested only after user click, for exact private path and 60 seconds');
+
+assetAllowed.triggerAuthEvent();
+assert.equal(assetAllowed.elements.get('learner-section').hidden,true,
+  'Auth changes must hide the learner view synchronously');
+assert.equal(assetAllowed.elements.get('course-resources-list').children.length,0,
+  'Auth changes must immediately remove signed bearer links from the DOM');
+assert.equal(assetAllowed.elements.get('modules').children.length,0,
+  'Auth changes must immediately clear premium lessons');
+assert.equal(assetAllowed.elements.get('deliverables-content').children.length,0,
+  'Auth changes must immediately clear submitted work');
+assert.equal(assetAllowed.elements.get('account-info').textContent,'',
+  'Auth changes must clear prior student identity');
+assert.equal(assetAllowed.elements.get('logout').hidden,true);
+console.log('PASS auth session changes synchronously clear lessons, submissions, identities and signed URLs');
 
 const signedDenied=await simulate({assets:[resource],storageError:true});
 const deniedItem=signedDenied.elements.get('course-resources-list').children[0];
