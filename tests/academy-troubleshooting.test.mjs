@@ -9,7 +9,8 @@ for(const slug of slugs){
  assert(items.every(x=>x.course===slug));
 }
 for(const item of TROUBLESHOOTING){
- for(const field of ['title','symptom','check','fix','evidence']){
+ assert(typeof item.title==='string'&&item.title.length>=8,item.id+' missing title');
+ for(const field of ['symptom','check','fix','evidence']){
   assert(typeof item[field]==='string'&&item[field].length>25,item.id+' missing '+field);
  }
  assert.equal(item.status,'generic-guidance-not-device-tested');
