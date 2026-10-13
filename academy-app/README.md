@@ -129,6 +129,16 @@ Lorsqu'un formateur valide un travail ou demande une révision, l'écriture incl
 
 ### Paquet complet du staging — correction de livraison
 
-Le dernier paquet protégé, deployment `dpl_9oRY8NfWaBE182HYkQLnjXQK3Npk`, contient **13 fichiers** et inclut désormais `instructor.css` (omis lors de la synchronisation précédente). Vercel indique `READY` et la protection SSO reste active pour tous les déploiements. Le paquet applicatif correspond au snapshot GitHub `75fa8d3c5f9cddae616c751ac207b732eb7e7846`; les commits de documentation et tests plus récents n'altèrent pas ces assets.
+Le paquet protégé du premier contrôle complet, deployment `dpl_9oRY8NfWaBE182HYkQLnjXQK3Npk`, contient **13 fichiers** et inclut désormais `instructor.css` (omis lors de la synchronisation précédente). Vercel indique `READY` et la protection SSO reste active pour tous les déploiements. Le paquet applicatif correspond au snapshot GitHub `75fa8d3c5f9cddae616c751ac207b732eb7e7846`; les commits de documentation et tests plus récents n'altèrent pas ces assets.
 
 Référence unique pour les futures synchronisations manuelles : `academy-app/deployment-files.json`. Le test `tests/academy-shell.test.mjs` vérifie désormais la liste exacte des 13 fichiers et les références locales des pages HTML. **La copie Vercel doit être recontrôlée après chaque synchronisation** : présence des 13 fichiers, alias, SSO, revision, puis essai HTTP authentifié. `READY` n'est pas une preuve de bon fonctionnement en navigateur.
+
+
+### Dernier staging contrôlé — 13 octobre 2026
+
+- **Code testé et déployé :** commit source `a2cffdb9e6c925248423ebc10da415e12d269dfc` (PR #49), staging `dpl_67SyGj3RafHZRgtNRPPGMnqahk7A`, `READY`, alias `https://iagile-academy-staging.vercel.app/`, exactement 13 fichiers et `instructor.css` présent. Le projet Vercel maintient `ssoProtection.enabled=true` pour tous les déploiements. L'exécution HTTP en navigateur **authentifié** n'a pas été certifiée.
+- **Déconnexion apprenant :** en cas d'échec du serveur Auth, masquer immédiatement le contenu premium et les URLs signées, laisser un bouton de réessai, empêcher un événement de rafraîchissement du token de repeindre des contenus ; tests succès après reprise, erreur renvoyée et exception réseau via PR #49, 4 workflows GitHub Actions réussis.
+- **Registre financier privé :** migration appliquée le 13/10 pour indexer `orders.course_slug` et `webhook_events.order_id` ; disparition des deux alertes `unindexed_foreign_keys`. Aucun flux de paiement activé.
+- **Gates de lancement :** contrôle SQL en lecture seule `docs/academy-readiness-gates.sql` renforcé (PR #50). Les ressources doivent correspondre aux **12 chemins exacts**, les comptes pilotes doivent inclure deux apprenants actifs inscrits et un formateur actif, et le pilote doit avoir **9/9 modules publiés**. Ce contrôle ne remplace pas la vérification des empreintes et des droits de fichiers ni les essais réels.
+
+**Statut : NO GO commercial ; aucun achat ou compte pilote créé.** Les contenus V0.9.1 restent dans une bibliothèque privée sans publication ni import automatique.
