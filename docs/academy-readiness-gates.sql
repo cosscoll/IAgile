@@ -25,11 +25,19 @@ storage_count AS (
 ),
 bucket AS (
   SELECT NOT public AND file_size_limit=51200
-    AND allowed_mime_types @> ARRAY['text/csv','text/markdown']::text[] AS safe
+    AND allowed_mime_types @> ARRAY['text/csv','text/markdown']::text[]
+    AND NOT EXISTS (
+      SELECT 1 FROM pg_policies
+      WHERE schemaname='storage' AND tablename='objects'
+        AND policyname LIKE 'academy_%'
+        AND ('anon'=ANY(roles) OR 'public'=ANY(roles))
+    ) AS safe
   FROM storage.buckets WHERE id='iagile-course-files'
 ),
 rls AS (
-  SELECT COUNT(*) AS total,COUNT(*) FILTER (WHERE c.relrowsecurity) AS protected
+  SELECT COUNT(*) AS total,COUNT(*) FILTER (WHERE c.relrowsecurity) AS protected,
+         COUNT(*) FILTER (WHERE has_table_privilege('anon',c.oid,'SELECT')
+                          OR has_table_privilege('anon',c.oid,'INSERT')) AS anon_grants
   FROM pg_class AS c JOIN pg_namespace AS n ON n.oid=c.relnamespace
   WHERE n.nspname='public' AND c.relkind='r' AND c.relname LIKE 'academy_%'
 ),
@@ -57,8 +65,9 @@ FROM (
     COALESCE((SELECT safe FROM bucket),false) AS ready,
     'Bucket privé, CSV/Markdown seulement, taille max 50 Ko'::text AS detail
   UNION ALL SELECT 'rls_all_academy_tables',
-    (SELECT total>=10 AND total=protected FROM rls),
-    (SELECT protected||'/'||total||' tables protégées par RLS' FROM rls)
+    (SELECT total>=10 AND total=protected AND anon_grants=0 FROM rls),
+    (SELECT protected||'/'||total||' tables protégées, '||
+      anon_grants||' avec droits de lecture/écriture anonymes' FROM rls)
   UNION ALL SELECT 'grade_revision_guard',
     EXISTS (SELECT 1 FROM pg_trigger
       WHERE tgrelid='public.academy_deliverable_feedback'::regclass
