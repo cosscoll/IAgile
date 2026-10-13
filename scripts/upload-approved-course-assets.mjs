@@ -36,7 +36,8 @@ export async function uploadApprovedCourseAssets({
 
   if(approvedManifestSha256!==manifestSha256)
     fail('STOP: editorial manifest approval hash is missing or differs');
-  if(typeof serviceRoleKey!=='string'||serviceRoleKey.length<40)
+  if(typeof serviceRoleKey!=='string'||serviceRoleKey.length<40||
+     serviceRoleKey.startsWith('sb_publishable_'))
     fail('STOP: server-only credential missing; never use a publishable browser key');
   if(typeof fetchImpl!=='function')fail('STOP: no HTTP client supplied');
   let origin;
@@ -49,6 +50,17 @@ export async function uploadApprovedCourseAssets({
   }catch(_error){fail('STOP: expected the IAgile HTTPS Supabase project URL');}
 
   const authHeaders={apikey:serviceRoleKey,Authorization:'Bearer '+serviceRoleKey};
+  // A valid administrator credential is insufficient if the bucket is public.
+  // Check the remote bucket before transmitting a single paid lesson file.
+  const bucketResponse=await fetchImpl(origin+'/storage/v1/bucket/'+BUCKET,{
+    method:'GET',headers:authHeaders,redirect:'error'
+  });
+  if(!bucketResponse.ok)fail('STOP: cannot verify private bucket settings');
+  const settings=await bucketResponse.json();
+  if(settings?.public!==false||Number(settings.file_size_limit)!==51200||
+     !Array.isArray(settings.allowed_mime_types)||
+     !['text/csv','text/markdown'].every(type=>settings.allowed_mime_types.includes(type)))
+    fail('STOP: Storage bucket is public or lacks required private file restrictions');
   for(const item of manifest.files){
     // Preflight has already verified size, content type, path and SHA-256.
     const bytes=await fs.readFile(path.join(datasetDir,item.name));
