@@ -1,0 +1,31 @@
+<!doctype html><html lang="fr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Centre de dépannage pédagogique IAgile, avec 20 fiches génériques et vérifications.">
+<title>Centre de dépannage | IAgile Academy</title>
+<link rel="stylesheet" href="app.css"><link rel="stylesheet" href="depannage.css">
+<script type="module" src="depannage.js"></script></head>
+<body><a class="skip" href="#contenu">Aller au contenu</a>
+<header class="site-header"><a class="brand" href="index.html">I<span>A</span>gile <small>ACADEMY</small></a><nav aria-label="Navigation">
+<a href="index.html">Tableau de bord</a><a href="preflight.html">Prérequis</a></nav></header>
+<main id="contenu" class="shell">
+<section class="hero"><p class="eyebrow">IAGILE / SUPPORT PÉDAGOGIQUE</p>
+<h1>Un problème ?<br><span>Trouvez la prochaine vérification.</span></h1>
+<p>Recherchez une difficulté fréquente, choisissez votre formation, puis suivez un diagnostic et un moyen de vérifier la solution. Les informations sont génériques : contrôlez toujours les versions, autorisations et outils de votre environnement.</p></section>
+<section class="troubleshoot-tool" aria-labelledby="search-title">
+<h2 id="search-title">Rechercher un symptôme</h2>
+<div class="troubleshoot-filters"><div>
+<label for="course-filter">Formation</label><select id="course-filter">
+<option value="">Toutes les formations</option>
+<option value="processus">Processus du quotidien</option>
+<option value="automatisation">Automatisation</option>
+<option value="agents">Agents IA</option>
+<option value="sites-3d">Sites web 3D</option></select></div>
+<div><label for="query-filter">Mot ou problème rencontré</label>
+<input id="query-filter" type="search" autocomplete="off" maxlength="150" placeholder="ex. 401, doublon, source, caméra">
+</div></div>
+<p id="search-status" aria-live="polite" role="status"></p>
+<div id="troubleshoot-results" class="troubleshoot-results"></div>
+</section>
+<p class="state">Cette aide ne remplace pas un diagnostic technique sur votre configuration réelle. Aucun accès premium, connexion à vos comptes, outil externe ni modèle d'IA n'est utilisé sur cette page.</p>
+</main><footer><span>IAgile Academy — bibliothèque de dépannage générique.</span><a href="index.html">Retour au tableau de bord</a></footer></body></html>
