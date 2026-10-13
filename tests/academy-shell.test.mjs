@@ -57,19 +57,20 @@ const releaseManifest=JSON.parse(fs.readFileSync(path.join(app,'deployment-files
 const expectedAssets=[
   'index.html','app.css','app.js','config.js',
   'instructor.html','instructor.css','instructor.js','instructor-policy.mjs',
+  'preflight.html','preflight.css','preflight.js','preflight-policy.mjs',
   'vercel.json','cours/sites-3d/index.html','cours/agents/index.html',
   'cours/automatisation/index.html','cours/processus/index.html'
 ];
 assert.equal(releaseManifest.schema_version,1);
 assert.deepEqual([...releaseManifest.files].sort(),[...expectedAssets].sort(),
-  'The protected staging release must contain all 13 reviewed client files, including instructor.css');
+  'The protected staging release must contain all 17 reviewed client files, including preflight and instructor assets');
 const deployable=new Set(releaseManifest.files);
 for(const asset of deployable){
   assert(!asset.startsWith('/')&&!asset.includes('..')&&!asset.includes('\\'),
     'Do not deploy a file outside the Academy client directory');
   assert(fs.statSync(path.join(app,asset)).isFile(),'Missing listed deployment asset: '+asset);
 }
-for(const filename of ['index.html','instructor.html',...slugs.map(s=>'cours/'+s+'/index.html')]){
+for(const filename of ['index.html','instructor.html','preflight.html',...slugs.map(s=>'cours/'+s+'/index.html')]){
   const html=fs.readFileSync(path.join(app,filename),'utf8');
   for(const match of html.matchAll(/<(?:script|link)\\b[^>]*\\b(?:src|href)="([^"]+)"/g)){
     const url=match[1].split(/[?#]/)[0];
@@ -83,6 +84,6 @@ for(const filename of ['index.html','instructor.html',...slugs.map(s=>'cours/'+s
 assert(deployable.has('instructor-policy.mjs')&&
   fs.readFileSync(path.join(app,'instructor.js'),'utf8').includes("from './instructor-policy.mjs'"),
   'Instructor module import must be packaged with its source');
-console.log('PASS — private Academy deployment manifest: 13 local files, all stylesheet/script references included');
+console.log('PASS — private Academy deployment manifest: 17 local files, all stylesheet/script references included');
 
 console.log('PASS — private Academy shell: 5 entrypoints, no embedded lessons, guarded Supabase access');
