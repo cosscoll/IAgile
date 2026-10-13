@@ -28,6 +28,8 @@
   const resources = document.getElementById('course-resources');
   const resourcesList = document.getElementById('course-resources-list');
   let sequence = 0;
+  // A failed sign-out must not repopulate private content on a token refresh.
+  let logoutRequested = false;
 
   const message = text => { status.textContent = text; };
   const resetContent = () => {
@@ -573,6 +575,13 @@
   }
 
   async function refresh() {
+    // Stay in the private-content-free state until sign-out succeeds or is retried.
+    if (logoutRequested) {
+      concealPrivateView();
+      logout.hidden = false;
+      message('Déconnexion non confirmée. Réessayez ou rechargez la page.');
+      return;
+    }
     const request = ++sequence;
     resetContent();
     info.textContent = '';
@@ -716,25 +725,32 @@
   });
 
   logout.addEventListener('click', async () => {
+    logoutRequested = true;
     concealPrivateView();
     message('Déconnexion en cours…');
     try {
       const {error} = await client.auth.signOut();
-      if (error) {
-        auth.hidden = false;
-        message('Déconnexion non confirmée. Réessayez ou rechargez la page.');
-        return;
-      }
+      if (error) throw new Error('Sign-out not confirmed');
+      logoutRequested = false;
       await refresh();
     } catch (_error) {
-      auth.hidden = false;
+      // Keep all course data and signed URLs hidden, but let the user retry.
+      logout.hidden = false;
+      auth.hidden = true;
       message('Déconnexion non confirmée. Réessayez ou rechargez la page.');
     }
   });
 
-  client.auth.onAuthStateChange(() => {
+  client.auth.onAuthStateChange((event) => {
     // Clear sensitive DOM synchronously, before scheduling any Supabase calls.
     concealPrivateView();
+    if (event === 'SIGNED_OUT') logoutRequested = false;
+    if (logoutRequested) {
+      // TOKEN_REFRESHED and other events cannot accidentally re-show the course.
+      logout.hidden = false;
+      message('Déconnexion non confirmée. Réessayez ou rechargez la page.');
+      return;
+    }
     message('Vérification de la session…');
     setTimeout(() => { void refresh(); }, 0);
   });
