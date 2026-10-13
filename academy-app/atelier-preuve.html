@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Atelier de vérification | IAgile Academy</title>
+<link rel="stylesheet" href="app.css"><link rel="stylesheet" href="atelier-preuve.css">
+<script type="module" src="atelier-preuve.js"></script></head>
+<body><a class="skip" href="#contenu">Aller au contenu</a>
+<header class="site-header"><a class="brand" href="index.html">I<span>A</span>gile <small>ACADEMY</small></a>
+<nav aria-label="Navigation"><a href="index.html">Tableau de bord</a><a href="preflight.html">Prérequis</a></nav></header>
+<main id="contenu" class="shell">
+<section class="hero"><p class="eyebrow">IAGILE / EXERCICE DE DÉMONSTRATION</p>
+<h1>Une réponse fluide.<br><span>Mais est-elle vérifiée ?</span></h1>
+<p>Deux situations fictives pour distinguer une affirmation plausible d'un fait réellement confirmé. Le deuxième cas utilise un autre contexte : il vérifie le raisonnement, pas une simple mémorisation de la première phrase.</p></section>
+<p class="state">Démonstration gratuite non certifiante. Votre texte reste sur cet appareil. Aucune réponse n'est transmise ni enregistrée ; les corrigés du véritable parcours ne sont pas inclus.</p>
+<section class="evidence-panel" aria-labelledby="scenario-title">
+<p class="eyebrow" id="scenario-step">CAS GUIDÉ / 1 SUR 2</p><h2 id="scenario-title"></h2><p id="scenario-context"></p>
+<form id="evidence-form">
+<fieldset><legend>Quelle réponse est justifiable avec les informations disponibles ?</legend>
+<label><input type="radio" name="choice" value="A" required><span id="choice-a"></span></label>
+<label><input type="radio" name="choice" value="B" required><span id="choice-b"></span></label></fieldset>
+<fieldset><legend>Quel est le risque principal ?</legend><div id="risk-list"></div></fieldset>
+<label for="explanation">Expliquez votre choix avec vos propres mots (au moins 20 caractères)</label>
+<textarea id="explanation" name="explanation" minlength="20" required rows="4" placeholder="Qu'est-ce qui manque pour pouvoir confirmer ce résultat ?"></textarea>
+<button class="complete-button" type="submit">Vérifier mon raisonnement</button>
+</form>
+<section id="evidence-result" class="evidence-result" hidden aria-live="polite">
+<h3 id="result-title"></h3><p id="result-summary"></p><p id="result-detail"></p>
+<p class="evidence-disclaimer">La réponse proposée a été vérifiée par une règle pédagogique. Votre explication personnelle n'a pas été corrigée par une personne : la compétence reste à évaluer avec les travaux privés du parcours.</p>
+<button id="transfer-button" type="button" hidden>Passer au cas inédit →</button>
+</section>
+</section>
+<p class="back-link"><a href="preflight.html">← Revenir au diagnostic des prérequis</a></p>
+</main>
+<footer><span>IAgile Academy — simulation sans compte ni frais d’API.</span><a href="index.html">Retour au tableau de bord</a></footer>
+</body></html>
