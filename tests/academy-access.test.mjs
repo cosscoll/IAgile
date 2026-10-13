@@ -28,7 +28,7 @@ async function simulate({
   published=true, modules=[{title:'Leçon autorisée',body_markdown:'Texte privé',module_index:0}],
   moduleError=false, profileError=false, progressError=false, writeError=false, progress=[], deferProgressWrites=false,
   tasks=[], answers=[], feedback=[], answersError=false, answerWriteError=false,
-  assets=[], assetsError=false, storageError=false, signedUrl='https://example.supabase.co/storage/v1/object/sign/iagile-course-files/agents/sample.md?token=test'
+  assets=[], assetsError=false, storageError=false, signOutError=false, signOutReject=false, signedUrl='https://example.supabase.co/storage/v1/object/sign/iagile-course-files/agents/sample.md?token=test'
 }={}){
   const elements=new Map();
   for(const id of ['status','auth-section','learner-section','logout','login-form','account-info','modules','deliverables','deliverables-content','course-resources','course-resources-list'])
@@ -41,6 +41,8 @@ async function simulate({
   const pendingWrites=[];
   const signatures=[];
   let authCallback=null;
+  let signedIn=user;
+  let signOutCalls=0;
   const responses={
     academy_profiles:{data:profile?{account_status:'active'}:null,error:profileError?{message:'denied'}:null},
     academy_enrollments:{data:enrollment?[{course_slug:course,active:true}]:[],error:null},
@@ -93,9 +95,15 @@ async function simulate({
     },
     storage:{from(bucket){return {createSignedUrl(filePath,expiry,opts){signatures.push({bucket,filePath,expiry,opts});return Promise.resolve({data:storageError?null:{signedUrl},error:storageError?{message:'Access denied'}:null});}}}},
     auth:{
-      getUser:async()=>({data:{user:user?{id:'pilot-1',email:'pilote@example.invalid'}:null},error:null}),
+      getUser:async()=>({data:{user:signedIn?{id:'pilot-1',email:'pilote@example.invalid'}:null},error:null}),
       signInWithOtp:async()=>({error:null}),
-      signOut:async()=>({error:null}),
+      signOut:async()=>{
+        signOutCalls++;
+        if(signOutError&&signOutCalls===1)return {error:{message:'Network problem'}};
+        if(signOutReject&&signOutCalls===1)throw new Error('Network problem');
+        signedIn=false;
+        return {error:null};
+      },
       onAuthStateChange:callback=>{authCallback=callback;return {data:{subscription:{unsubscribe(){}}}}}
     }
   };
@@ -118,7 +126,7 @@ async function simulate({
   vm.runInNewContext(source,context,{filename:'academy-app/app.js'});
   // Flush multiple async Supabase query steps, allowing refresh() to settle.
   for(let i=0;i<12;i++)await new Promise(resolve=>setImmediate(resolve));
-  return {elements,calls,writes,pendingWrites,signatures,triggerAuthEvent:()=>authCallback?.('SIGNED_OUT',null)};
+  return {elements,calls,writes,pendingWrites,signatures,triggerAuthEvent:(event='SIGNED_OUT')=>authCallback?.(event,null)};
 }
 
 const tests=[
@@ -388,6 +396,33 @@ assert.equal(assetAllowed.elements.get('account-info').textContent,'',
   'Auth changes must clear prior student identity');
 assert.equal(assetAllowed.elements.get('logout').hidden,true);
 console.log('PASS auth session changes synchronously clear lessons, submissions, identities and signed URLs');
+
+// A denied or rejected sign-out must not strand the user behind a login form with
+// no retry button, or re-expose private content on a token refresh.
+for(const failure of [{signOutError:true},{signOutReject:true}]){
+  const attempt=await simulate({...failure,assets:[resource],tasks:[task]});
+  const exit=attempt.elements.get('logout');
+  assert.equal(exit.hidden,false,'Signed-in learner has logout control');
+  await exit.listeners.click();
+  assert.equal(exit.hidden,false,'Failed logout must leave a retry action visible');
+  assert.equal(attempt.elements.get('auth-section').hidden,true,
+    'Failed logout must not suggest signing in with an existing session');
+  assert.equal(attempt.elements.get('learner-section').hidden,true,
+    'Failed logout must conceal the learner view');
+  assert.equal(attempt.elements.get('modules').children.length,0);
+  assert.equal(attempt.elements.get('course-resources-list').children.length,0);
+  assert.equal(attempt.elements.get('deliverables-content').children.length,0);
+  attempt.triggerAuthEvent('TOKEN_REFRESHED');
+  assert.equal(exit.hidden,false,'Token refresh must not remove the retry button');
+  assert.equal(attempt.elements.get('modules').children.length,0,
+    'Token refresh during a failed logout must not restore lessons');
+  await exit.listeners.click();
+  assert.equal(attempt.elements.get('learner-section').hidden,true,
+    'Successful retry must not show private content');
+  assert.equal(attempt.elements.get('auth-section').hidden,false,
+    'Successful retry must return to logged-out sign-in');
+}
+console.log('PASS failed or rejected learner sign-out stays private and can be retried');
 
 const signedDenied=await simulate({assets:[resource],storageError:true});
 const deniedItem=signedDenied.elements.get('course-resources-list').children[0];
