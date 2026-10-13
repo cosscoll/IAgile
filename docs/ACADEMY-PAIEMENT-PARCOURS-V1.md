@@ -28,3 +28,16 @@ Le module `scripts/academy-fulfillment-plan.mjs` n'est **pas** un webhook ou un 
 ## Commande de simulation
 
 `node tests/academy-fulfillment-plan.test.mjs` ; aucune variable d'environnement, aucun secret, aucune connexion au processeur de paiement.
+
+## Étape préwebhook supplémentaire — simulation du payload Stripe signé (13 octobre 2026)
+
+Le module `scripts/academy-checkout-webhook-plan.mjs` reçoit un **corps brut** d'événement Stripe fictif, son en-tête de signature et un secret de simulation, puis :
+1. valide l'horodatage/HMAC avant toute consultation d'une commande ;
+2. refuse un marchand non configuré, le mauvais compte Stripe et les événements non liés à un paiement ;
+3. lit une commande canonique depuis une dépendance abstraite injectée, jamais depuis les métadonnées de l'utilisateur ;
+4. vérifie acheteur, cours, prix, devise, mode, session, payment_intent, version contractuelle et consentement ;
+5. ne renvoie qu'une **proposition** `academy_billing.record_checkout_payment` avec arguments précisément typés. Il n'exécute pas la procédure, n'envoie aucun e-mail et n'ouvre aucun cours.
+
+Tests : `node tests/academy-checkout-webhook-plan.test.mjs`, événements synthétiques uniquement, y compris signatures expirées/falsifiées, confusion marchand, usurpation de compte, mauvais prix, consentement absent et erreur du registre.
+
+**Point de blocage restant :** aucun serveur webhook public, aucun marchand IAgile ni offre légale approuvée. Ne pas déployer un endpoint de production ou demander de vrais secrets dans ce chat sans ces validations.
