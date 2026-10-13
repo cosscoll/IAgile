@@ -323,3 +323,12 @@ La **PR #48** a été fusionnée après quatre workflows GitHub Actions réussis
 **5. Supports privés :** scripts de pré-importation V0.9.1 et de recette du correctif formateur exécutés en environnement local sur les archives privées ; 12/12 SHA-256 concordants, calculs Orbe/Sillage et règles d'accès aux données fictives validés. Ceci ne justifie pas encore un changement du manifeste SQL historique. Aucun fichier ZIP premium n'a été placé dans GitHub ou sur le staging Vercel.
 
 **Décisions à obtenir pour un GO ultérieur :** arbitrage éditorial V0.9.1, comptes Auth pilotes et redirections, essais réels SSO/Auth, contrôle des octets téléchargés après import privé, vendeur/prix/offre, paiement testé, pilote humain et approbation juridique. Aucune publication forcée ni vente effectuée.
+
+
+## Outil de migration privée prêt en dry-run — 13 octobre 2026
+
+La **PR #51** a été fusionnée après quatre workflows GitHub Actions réussis. Elle contient un outil d'import des supports Processus V0.9.1 protégé par **deux consentements opérateur distincts** : option explicite d'exécution et empreinte SHA-256 du manifeste éditorialement approuvé. Exécution normale sans option = simulation 100 % locale sans réseau ni privilèges. Le mode opérateur vérifie le bucket privé et ses limites, puis relit les fichiers et contrôle le SHA-256 après transfert, refuse toute divergence et ne remplace jamais un fichier existant sans contrôle. Les tests mock comprennent 12 fichiers fictifs, réexécution idempotente, refus du bucket public, clé publique et fichiers altérés. L'outil ne manipule pas les permissions, commandes, données réelles, publication ni manifeste en base. Source et procédure : `scripts/upload-approved-course-assets.mjs` et `docs/ACADEMY-PRIVATE-IMPORT-RUNBOOK.md`.
+
+**État de production inchangé :** aucun objet dans Supabase Storage, 12 manifestes candidats privés non approuvés pour la vente, zéro compte pilote, zéro module publié, système de paiement non activé. Aucun essai réel de l'outil d'import n'a été effectué. Les contenus premium ne sont pas dans GitHub public ni dans le staging protégé.
+
+**Preuve de livraison renforcée :** pour le staging `dpl_67SyGj3RafHZRgtNRPPGMnqahk7A` les 13 empreintes SHA-1 des fichiers Vercel ont été comparées indépendamment à celles des 13 fichiers GitHub du commit applicatif `a2cffdb9e6c925248423ebc10da415e12d269dfc` ; **13/13 correspondances**. Ne prouve pas l'acceptation du lien SSO ou les redirections Auth.
