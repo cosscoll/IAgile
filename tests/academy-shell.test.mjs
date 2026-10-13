@@ -59,19 +59,20 @@ const expectedAssets=[
   'instructor.html','instructor.css','instructor.js','instructor-policy.mjs','instructor-rubric.mjs',
   'preflight.html','preflight.css','preflight.js','preflight-policy.mjs',
   'atelier-preuve.html','atelier-preuve.css','atelier-preuve.js','atelier-preuve-policy.mjs',
+  'depannage.html','depannage.css','depannage.js','depannage-data.mjs',
   'vercel.json','cours/sites-3d/index.html','cours/agents/index.html',
   'cours/automatisation/index.html','cours/processus/index.html'
 ];
 assert.equal(releaseManifest.schema_version,1);
 assert.deepEqual([...releaseManifest.files].sort(),[...expectedAssets].sort(),
-  'The protected staging release must contain all 22 reviewed client files, including preflight and instructor assets');
+  'The protected staging release must contain all 26 reviewed client files, including preflight and instructor assets');
 const deployable=new Set(releaseManifest.files);
 for(const asset of deployable){
   assert(!asset.startsWith('/')&&!asset.includes('..')&&!asset.includes('\\'),
     'Do not deploy a file outside the Academy client directory');
   assert(fs.statSync(path.join(app,asset)).isFile(),'Missing listed deployment asset: '+asset);
 }
-for(const filename of ['index.html','instructor.html','preflight.html','atelier-preuve.html',...slugs.map(s=>'cours/'+s+'/index.html')]){
+for(const filename of ['index.html','instructor.html','preflight.html','atelier-preuve.html','depannage.html',...slugs.map(s=>'cours/'+s+'/index.html')]){
   const html=fs.readFileSync(path.join(app,filename),'utf8');
   for(const match of html.matchAll(/<(?:script|link)\\b[^>]*\\b(?:src|href)="([^"]+)"/g)){
     const url=match[1].split(/[?#]/)[0];
@@ -88,6 +89,6 @@ assert(deployable.has('instructor-policy.mjs')&&
 assert(deployable.has('instructor-rubric.mjs') &&
   fs.readFileSync(path.join(app,'instructor.js'),'utf8').includes("from './instructor-rubric.mjs'"),
   'Structured rubric policy must be present in the deployed private Academy');
-console.log('PASS — private Academy deployment manifest: 22 local files, all stylesheet/script references included');
+console.log('PASS — private Academy deployment manifest: 26 local files, all stylesheet/script references included');
 
 console.log('PASS — private Academy shell: 5 entrypoints, no embedded lessons, guarded Supabase access');
