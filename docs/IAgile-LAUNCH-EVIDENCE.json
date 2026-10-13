@@ -8,7 +8,7 @@
       "id": "vitrine",
       "label": "Site vitrine et exclusion des fichiers privés",
       "status": "verified",
-      "evidence": "GitHub Pages workflow: HTTP 200, commit main exact et 20 chemins internes refusés"
+      "evidence": "Audit GitHub Pages précédent: HTTP 200, SHA de main et chemins internes refusés. Nouvelle PR #55 fusionnée avec 4 workflows QA réussis, mais propagation et rendu HTTP public de l'Incident Lab/brief 3D non vérifiés dans cette session (accès web externe et Firecrawl indisponibles). Recontrôler avant de revendiquer que la dernière version est publiée."
     },
     {
       "id": "curriculum_reference",
