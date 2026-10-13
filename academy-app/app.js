@@ -34,6 +34,16 @@
     auth: { flowType: 'pkce', detectSessionInUrl: true, autoRefreshToken: true, persistSession: true }
   });
 
+  // Immediately remove private DOM and signed download links whenever identity changes.
+  const concealPrivateView = () => {
+    ++sequence;
+    resetContent();
+    info.textContent = '';
+    learner.hidden = true;
+    auth.hidden = true;
+    logout.hidden = true;
+  };
+
   const failClosed = (text) => {
     resetContent();
     info.textContent = '';
@@ -429,11 +439,13 @@
           if (error) {
             state.textContent='Enregistrement refusé ou indisponible. Votre saisie reste visible.';
           } else {
-            const changed=currentValue!==String(saved.get(task.deliverable_index)?.content||'');
+            // Even resubmitting identical text can advance the server-side revision.
+            // Never leave a former grade visible after a successful write.
+            const previousReviewVisible=!!assessment && !assessment.hidden;
             saved.set(task.deliverable_index,{content:currentValue});
-            if (changed && assessment) assessment.hidden=true;
-            state.textContent=changed && assessment
-              ? 'Nouvelle version enregistrée. L’ancienne correction est masquée dans l’attente d’une nouvelle évaluation.'
+            if (assessment) assessment.hidden=true;
+            state.textContent=previousReviewVisible
+              ? 'Travail enregistré. L’ancienne correction est masquée dans l’attente d’une nouvelle évaluation.'
               : 'Travail enregistré. Vous pouvez reprendre cette réponse plus tard.';
           }
         } catch (_error) {
@@ -544,6 +556,10 @@
   async function refresh() {
     const request = ++sequence;
     resetContent();
+    info.textContent = '';
+    learner.hidden = true;
+    auth.hidden = true;
+    logout.hidden = true;
     message('Vérification de vos droits…');
     try {
       // getUser verifies the user with Auth; database RLS remains the real authorization boundary.
@@ -558,7 +574,6 @@
       }
       const user = userData.user;
       auth.hidden = true;
-      learner.hidden = false;
       logout.hidden = false;
       info.textContent = 'Compte connecté : ' + (user.email || 'apprenant');
 
@@ -577,6 +592,7 @@
         return;
       }
       const active = new Set((enrollments || []).filter(e => e.active).map(e => e.course_slug));
+      learner.hidden = false;
       if (!course) {
         const {data: catalogue, error: catalogueError} = await client.from('academy_courses')
           .select('slug,published');
@@ -681,14 +697,26 @@
   });
 
   logout.addEventListener('click', async () => {
-    sequence++;
-    resetContent();
-    await client.auth.signOut();
-    await refresh();
+    concealPrivateView();
+    message('Déconnexion en cours…');
+    try {
+      const {error} = await client.auth.signOut();
+      if (error) {
+        auth.hidden = false;
+        message('Déconnexion non confirmée. Réessayez ou rechargez la page.');
+        return;
+      }
+      await refresh();
+    } catch (_error) {
+      auth.hidden = false;
+      message('Déconnexion non confirmée. Réessayez ou rechargez la page.');
+    }
   });
 
   client.auth.onAuthStateChange(() => {
-    // Avoid awaiting Supabase calls synchronously inside the auth callback.
+    // Clear sensitive DOM synchronously, before scheduling any Supabase calls.
+    concealPrivateView();
+    message('Vérification de la session…');
     setTimeout(() => { void refresh(); }, 0);
   });
   void refresh();
