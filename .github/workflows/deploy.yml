@@ -29,6 +29,7 @@ jobs:
           node tests/publication-boundary.test.mjs
           node tests/jekyll-boundary.test.mjs
           node tests/academy-shell.test.mjs
+          node tests/academy-preflight-policy.test.mjs
           node tests/academy-access.test.mjs
           node tests/academy-dashboard.test.mjs
           node tests/academy-private-assets.test.mjs && node tests/academy-private-upload.test.mjs
