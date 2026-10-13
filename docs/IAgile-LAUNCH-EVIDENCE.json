@@ -26,7 +26,7 @@
       "id": "academy_staging",
       "label": "Staging Academy HTTPS construit",
       "status": "verified",
-      "evidence": "Déploiement Vercel protégé dpl_67SyGj3RafHZRgtNRPPGMnqahk7A READY, 13/13 fichiers et SSO activé. Les parcours navigateur authentifiés ne sont pas encore testés."
+      "evidence": "Vercel SSO all actif, dpl_67SyGj3RafHZRgtNRPPGMnqahk7A READY sur iagile-academy-staging.vercel.app ; comparaison indépendante des UID SHA-1 Vercel aux 13 fichiers du commit applicatif a2cffdb9e6c925248423ebc10da415e12d269dfc : 13/13 identiques. Test HTTP authentifié toujours en attente."
     },
     {
       "id": "academy_browser",
