@@ -1,8 +1,8 @@
 {
-  "version": "2026-10-12-prelaunch",
+  "version": "2026-10-13-prelaunch",
   "notice": "Ce fichier documente des contrôles, il ne remplace pas leurs preuves. Ne jamais le traiter comme une autorisation de facturer.",
   "project": "IAgile",
-  "last_reviewed": "2026-10-12",
+  "last_reviewed": "2026-10-13",
   "gates": [
     {
       "id": "vitrine",
@@ -14,31 +14,31 @@
       "id": "curriculum_reference",
       "label": "Référentiel apprenant et corrigés versionnés",
       "status": "blocked",
-      "evidence": "Candidat V0.9.1 privé, formateur à valider; 12 SHA Supabase différents"
+      "evidence": "Corpus V0.9.1 intègre 12/12 fichiers vérifiés et corrigé formateur harmonisé, conservés en bibliothèque privée. Une revue pédagogique humaine demeure indispensable avant d'adopter la version ; 12 empreintes Supabase historiques différentes."
     },
     {
       "id": "private_storage",
       "label": "12 fichiers réellement dans Storage et vérifiés",
       "status": "blocked",
-      "evidence": "0 objet Storage. Pack privé V0.9.1 vérifié 12/12 localement, import et validation pédagogique toujours manquants."
+      "evidence": "Bucket privé 50 Ko CSV/Markdown sécurisé, mais 0/12 objet téléversé : aucune correspondance d'empreintes SHA-256 distante ni test de lien signé authentifié."
     },
     {
       "id": "academy_staging",
       "label": "Staging Academy HTTPS construit",
       "status": "verified",
-      "evidence": "Vercel deployment initial READY + SSO all. La version courante avec RPC n'a pas été redéployée (quota API 402)."
+      "evidence": "Déploiement Vercel protégé dpl_67SyGj3RafHZRgtNRPPGMnqahk7A READY, 13/13 fichiers et SSO activé. Les parcours navigateur authentifiés ne sont pas encore testés."
     },
     {
       "id": "academy_browser",
       "label": "Navigation réelle et redirections Auth testées",
       "status": "blocked",
-      "evidence": "Browser QA mock learner (9 modules/9 deliverables/12 assets) et interface formateur réussis. Aucun accès réel SSO/PKCE/SDK sur dernier staging Vercel ; quota/autorisation bloquants."
+      "evidence": "Tests automatisés mock réussis, mais la navigation SSO/PKCE avec comptes Auth réels et le bon fonctionnement HTTP authentifié du nouveau staging restent à vérifier."
     },
     {
       "id": "auth_isolation",
       "label": "Deux comptes réels, accès/cours et RLS vérifiés",
       "status": "blocked",
-      "evidence": "RLS test de refus avec identités simulées. Interface formateur développée ; zéro utilisateur Auth et aucun test positif avec vrais comptes."
+      "evidence": "RLS des 10 tables Academy vérifiée, contrôle serveur anti-corrections périmées et tests synthétiques réussis. Aucun compte pilote Auth réel ni contrôle croisé positif/négatif en navigateur."
     },
     {
       "id": "pedagogy_pilot",
@@ -74,7 +74,7 @@
       "id": "signed_checkout",
       "label": "Paiement signé, événements idempotents et refus de spoofing",
       "status": "blocked",
-      "evidence": "Simulation webhook signé + transaction privée record_checkout_payment testées. Aucun endpoint Stripe déployé et aucun système d'accès post-paiement."
+      "evidence": "Registre de paiements serveur privé, simulation de webhook signé et garde de version ; deux index FK manquants corrigés le 13/10. Aucun fournisseur IAgile, endpoint Stripe, paiement réel, ni attribution automatique d'accès."
     },
     {
       "id": "invoices",
