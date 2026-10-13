@@ -52,4 +52,37 @@ for(const [slug,file] of [['',path.join(app,'index.html')],...slugs.map(s=>[s,pa
 const vercel=JSON.parse(fs.readFileSync(path.join(app,'vercel.json'),'utf8'));
 assert(vercel.headers?.[0]?.headers?.some(h=>h.key==='X-Robots-Tag'&&h.value.includes('noindex')),'Staging deployment must block search indexation');
 assert(vercel.headers[0].headers.some(h=>h.key==='Content-Security-Policy'&&h.value.includes("frame-ancestors 'none'")),'Missing staging CSP');
+
+const releaseManifest=JSON.parse(fs.readFileSync(path.join(app,'deployment-files.json'),'utf8'));
+const expectedAssets=[
+  'index.html','app.css','app.js','config.js',
+  'instructor.html','instructor.css','instructor.js','instructor-policy.mjs',
+  'vercel.json','cours/sites-3d/index.html','cours/agents/index.html',
+  'cours/automatisation/index.html','cours/processus/index.html'
+];
+assert.equal(releaseManifest.schema_version,1);
+assert.deepEqual([...releaseManifest.files].sort(),[...expectedAssets].sort(),
+  'The protected staging release must contain all 13 reviewed client files, including instructor.css');
+const deployable=new Set(releaseManifest.files);
+for(const asset of deployable){
+  assert(!asset.startsWith('/')&&!asset.includes('..')&&!asset.includes('\\'),
+    'Do not deploy a file outside the Academy client directory');
+  assert(fs.statSync(path.join(app,asset)).isFile(),'Missing listed deployment asset: '+asset);
+}
+for(const filename of ['index.html','instructor.html',...slugs.map(s=>'cours/'+s+'/index.html')]){
+  const html=fs.readFileSync(path.join(app,filename),'utf8');
+  for(const match of html.matchAll(/<(?:script|link)\\b[^>]*\\b(?:src|href)="([^"]+)"/g)){
+    const url=match[1].split(/[?#]/)[0];
+    if(!url||/^(?:https?:|\/\/|data:)/i.test(url))continue;
+    const resolved=path.relative(app,path.resolve(path.dirname(path.join(app,filename)),url))
+      .split(path.sep).join('/');
+    assert(deployable.has(resolved),
+      'Referenced Academy asset missing from private Vercel package: '+filename+' -> '+resolved);
+  }
+}
+assert(deployable.has('instructor-policy.mjs')&&
+  fs.readFileSync(path.join(app,'instructor.js'),'utf8').includes("from './instructor-policy.mjs'"),
+  'Instructor module import must be packaged with its source');
+console.log('PASS — private Academy deployment manifest: 13 local files, all stylesheet/script references included');
+
 console.log('PASS — private Academy shell: 5 entrypoints, no embedded lessons, guarded Supabase access');
