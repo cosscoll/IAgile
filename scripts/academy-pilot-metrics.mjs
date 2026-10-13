@@ -6,9 +6,9 @@ const evidences=new Set(['verified','unverified','not-tested']);
 const forbidden=new Set(['email','name','full_name','phone','address','birthdate','ip','user_id']);
 export function summarizePilot(observations=[]){
  if(!Array.isArray(observations))throw Error('Expected an array');
- const counts={guided:{attempts:0,verified:0,passed:0,notTested:0},
-   transfer:{attempts:0,verified:0,passed:0,notTested:0},
-   delayed:{attempts:0,verified:0,passed:0,notTested:0}};
+ const counts={guided:{attempts:0,verified:0,passed:0,nonVerified:0},
+   transfer:{attempts:0,verified:0,passed:0,nonVerified:0},
+   delayed:{attempts:0,verified:0,passed:0,nonVerified:0}};
  const testers=new Set(),unique=new Set(),times=[];
  for(const row of observations){
    if(!row||Array.isArray(row)||typeof row!=='object')throw Error('Invalid observation');
@@ -27,7 +27,7 @@ export function summarizePilot(observations=[]){
    unique.add(key);testers.add(row.test_id);
    const c=counts[row.condition];c.attempts++;
    if(row.evidence==='verified'){c.verified++;if(row.passed)c.passed++;times.push(row.minutes);}
-   else{c.notTested++;}
+   else{c.nonVerified++;}
  }
  const sorted=times.sort((a,b)=>a-b);
  const median=sorted.length?
