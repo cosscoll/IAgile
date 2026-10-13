@@ -78,7 +78,9 @@ try{
   assert.equal(await teacher.locator('img').count(),0,'Answer markup must remain inert');
   assert((await teacher.locator('.instructor-answer').innerText()).includes('<img src=x'));
   assert.equal(await teacher.evaluate(()=>window.__injected||0),0);
-  await teacher.locator('textarea').fill('Merci de préciser les sources et les décisions à valider.');
+  await teacher.locator('.review-criterion').fill('Vérifier la source et sa date');
+  await teacher.locator('.review-evidence').fill('La réponse ne documente pas de source pour valider les informations du calendrier.');
+  await teacher.locator('.review-next-action').fill('Ajouter une source primaire et identifier les points restant à confirmer.');
   await teacher.locator('.instructor-review-form button').click();
   await teacher.getByText('Correction enregistrée et confirmée pour cette version.').waitFor();
   assert.equal(await teacher.locator('.instructor-copy').count(),1);

@@ -56,7 +56,7 @@ assert(vercel.headers[0].headers.some(h=>h.key==='Content-Security-Policy'&&h.va
 const releaseManifest=JSON.parse(fs.readFileSync(path.join(app,'deployment-files.json'),'utf8'));
 const expectedAssets=[
   'index.html','app.css','app.js','config.js',
-  'instructor.html','instructor.css','instructor.js','instructor-policy.mjs',
+  'instructor.html','instructor.css','instructor.js','instructor-policy.mjs','instructor-rubric.mjs',
   'preflight.html','preflight.css','preflight.js','preflight-policy.mjs',
   'atelier-preuve.html','atelier-preuve.css','atelier-preuve.js','atelier-preuve-policy.mjs',
   'vercel.json','cours/sites-3d/index.html','cours/agents/index.html',
@@ -64,7 +64,7 @@ const expectedAssets=[
 ];
 assert.equal(releaseManifest.schema_version,1);
 assert.deepEqual([...releaseManifest.files].sort(),[...expectedAssets].sort(),
-  'The protected staging release must contain all 21 reviewed client files, including preflight and instructor assets');
+  'The protected staging release must contain all 22 reviewed client files, including preflight and instructor assets');
 const deployable=new Set(releaseManifest.files);
 for(const asset of deployable){
   assert(!asset.startsWith('/')&&!asset.includes('..')&&!asset.includes('\\'),
@@ -85,6 +85,9 @@ for(const filename of ['index.html','instructor.html','preflight.html','atelier-
 assert(deployable.has('instructor-policy.mjs')&&
   fs.readFileSync(path.join(app,'instructor.js'),'utf8').includes("from './instructor-policy.mjs'"),
   'Instructor module import must be packaged with its source');
-console.log('PASS — private Academy deployment manifest: 21 local files, all stylesheet/script references included');
+assert(deployable.has('instructor-rubric.mjs') &&
+  fs.readFileSync(path.join(app,'instructor.js'),'utf8').includes("from './instructor-rubric.mjs'"),
+  'Structured rubric policy must be present in the deployed private Academy');
+console.log('PASS — private Academy deployment manifest: 22 local files, all stylesheet/script references included');
 
 console.log('PASS — private Academy shell: 5 entrypoints, no embedded lessons, guarded Supabase access');
