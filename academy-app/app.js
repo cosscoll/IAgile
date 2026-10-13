@@ -3,6 +3,19 @@
   'use strict';
   const allow = new Set(['sites-3d','agents','automatisation','processus']);
   const course = document.body.dataset.course || '';
+  // Editorial module-to-work mapping, never a permission grant and never a grade.
+  // Indices reflect the unpublished nine-assignment Processus pilot syllabus.
+  const processAssignmentGuide = new Map([
+    [0,'Après le module 5 · Décisions, preuves et inconnues'],
+    [1,'Après le module 6 · Planning réaliste'],
+    [2,'Après les modules 3 et 5 · Rédaction sous réserve'],
+    [3,'Après le module 8 · Confidentialité'],
+    [4,'Après le module 7 · Procédure reproductible'],
+    [5,'Après les modules 0 et 6 · Mesurer le gain net'],
+    [6,'Après les modules 5 et 8 · Refuser une fausse validation'],
+    [7,'Après le module 8 · Épreuve de transfert fictive, distincte du projet final'],
+    [8,'Après le module 8 · Projet final personnel, évalué séparément']
+  ]);
   const status = document.getElementById('status');
   const auth = document.getElementById('auth-section');
   const learner = document.getElementById('learner-section');
@@ -382,6 +395,12 @@
     for (const task of tasks) {
       const article=document.createElement('article');
       article.className='deliverable-card';
+      if (course==='processus' && processAssignmentGuide.has(Number(task.deliverable_index))) {
+        const phase=document.createElement('p');
+        phase.className='deliverable-stage';
+        phase.textContent=processAssignmentGuide.get(Number(task.deliverable_index));
+        article.append(phase);
+      }
       const title=document.createElement('h3');
       title.textContent=String(task.title||'Livrable');
       const directions=document.createElement('div');

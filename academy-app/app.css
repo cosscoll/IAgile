@@ -27,6 +27,7 @@ footer{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;paddin
 .deliverables h2{font-size:clamp(27px,4vw,43px);letter-spacing:-.045em}
 .deliverables-intro{color:var(--muted);line-height:1.75;max-width:735px}
 .deliverable-card{background:#111e31;border:1px solid #354966;border-radius:15px;margin:24px 0;padding:clamp(20px,4vw,36px)}
+.deliverable-stage{display:inline-block;margin:0 0 13px;padding:8px 12px;border:1px solid #557399;border-radius:7px;background:#1d304a;color:#d4e9ff;font-size:12px;font-weight:750;line-height:1.5}
 .deliverable-card h3{font-size:clamp(19px,2.6vw,27px);letter-spacing:-.035em;margin:0 0 12px}
 .deliverable-instructions{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.75;color:#d2ddeb}
 .deliverable-form{display:grid;gap:12px;margin-top:22px}
