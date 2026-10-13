@@ -31,7 +31,7 @@ jobs:
           node tests/academy-shell.test.mjs
           node tests/academy-access.test.mjs
           node tests/academy-dashboard.test.mjs
-          node tests/academy-private-assets.test.mjs
+          node tests/academy-private-assets.test.mjs && node tests/academy-private-upload.test.mjs
           node tests/academy-launch-gate.test.mjs
           node tests/academy-checkout-policy.test.mjs
           node tests/academy-billing-ledger.test.mjs
