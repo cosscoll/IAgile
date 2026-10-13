@@ -32,3 +32,14 @@ Staging HTTPS fonctionnel et vérifié ; trois rôles de test réels et matrice 
 - La branche `main` reste une vitrine publique ; conserver le principe de zéro fichier premium dans toute l'histoire GitHub.
 
 **Prochaine reprise :** partir de ce relevé, ne pas reconstruire les composants déjà codés et concentrer les efforts sur le staging accessible, les essais Auth/RLS réels et le corpus privé vérifié.
+
+
+## Rectification opérationnelle le 13 octobre 2026
+
+Le relevé précédent signalait encore un blocage 403 Vercel. Il est désormais **levé pour la lecture et le déploiement du projet** en omettant le scope d'équipe forcé qui provoquait le refus. Un projet de staging préexistant a été identifié, synchronisé manuellement avec les fichiers de l'Academy et redéployé deux fois pendant les corrections.
+
+**Dernier staging vérifié :** projet `iagile-academy-staging`, déploiement Vercel `dpl_3eEPjQextu73VwJy8xEAN6FZ8b8r`, source des fichiers Academy au commit `69486bf0515f1a3e34e224c9f740b23cdefd77da`. Le listing de retour comporte les 12 fichiers attendus, dont interface apprenant et interface formateur. L'alias `https://iagile-academy-staging.vercel.app/` est affecté au déploiement `READY`. Protection Vercel SSO toujours activée pour tous les déploiements.
+
+**Corrections GitHub fusionnées :** PR #45 (purge immédiate du contenu apprenant lors des changements de session, invalidation visuelle des corrections précédentes après nouvelle soumission) et PR #46 (déconnexion du formateur conservant les copies cachées en cas d'erreur). Les quatre workflows GitHub Actions sont passés sur chacune des deux PR avant fusion. La synchronisation Vercel reste manuelle : des commits de documentation postérieurs ne changent pas les fichiers de l'application déployée.
+
+**Configuration Supabase contrôlée :** `academy-app/config.js` référence la bonne URL de projet et une clé publique active reconnue par Supabase. Les 47 modules restent non publiés et aucun paiement ni inscription n'a été ouvert. **Attention :** aucun test navigateur authentifié derrière SSO, aucune vérification complète HTTP du site privé ni aucun essai Auth/RLS multi-comptes ne sont encore acquis ; l'état commercial demeure NO GO. Les problèmes de versions des 12 jeux de données et de l'épreuve Rivage / Playbook restent à résoudre avant publication de ressources.
