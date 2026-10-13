@@ -126,3 +126,9 @@ Lorsqu'un formateur valide un travail ou demande une révision, l'écriture incl
 - Mission Rivage (index 7) est une **épreuve de transfert sur dossier fictif**, distincte du projet final Playbook personnel (index 8, sur 100 points). Ce renommage a été effectué dans le brouillon Supabase, avec `published=false` conservé.
 - Un audit SQL de préparation réexécutable est conservé dans `docs/academy-readiness-gates.sql` : préflight en lecture seule, **pas** un test multi-comptes ni un GO commercial.
 - Le corpus candidat V0.9.1 et son corrigé reformulé V0.9.1 restent dans la bibliothèque de supports privée ; aucun octet premium n'a été publié dans ce dépôt.
+
+### Paquet complet du staging — correction de livraison
+
+Le dernier paquet protégé, deployment `dpl_9oRY8NfWaBE182HYkQLnjXQK3Npk`, contient **13 fichiers** et inclut désormais `instructor.css` (omis lors de la synchronisation précédente). Vercel indique `READY` et la protection SSO reste active pour tous les déploiements. Le paquet applicatif correspond au snapshot GitHub `75fa8d3c5f9cddae616c751ac207b732eb7e7846`; les commits de documentation et tests plus récents n'altèrent pas ces assets.
+
+Référence unique pour les futures synchronisations manuelles : `academy-app/deployment-files.json`. Le test `tests/academy-shell.test.mjs` vérifie désormais la liste exacte des 13 fichiers et les références locales des pages HTML. **La copie Vercel doit être recontrôlée après chaque synchronisation** : présence des 13 fichiers, alias, SSO, revision, puis essai HTTP authentifié. `READY` n'est pas une preuve de bon fonctionnement en navigateur.
