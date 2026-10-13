@@ -7,7 +7,7 @@ const built=createStructuredFeedback(review);
 assert.equal(built.ok,true);assert.equal(built.text.includes('Critère contrôlé :'),true);
 assert.deepEqual(parseStructuredFeedback(built.text),{...review,legacy:false});
 for(const empty of ['criterion','evidence','nextAction']){
- const bad=createStructuredFeedback({...review,[empty]:'Trop court'});
+ const bad=createStructuredFeedback({...review,[empty]:'x'});
  assert.equal(bad.ok,false,empty);
  assert.equal(bad.text,'','Invalid feedback must not be persisted');
 }
