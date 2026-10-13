@@ -31,7 +31,7 @@ Ces entrées constituent des pages dédiées dans une même application, pas enc
 ## Déploiement de staging du 13 octobre 2026 (preuve technique)
 
 - Projet Vercel existant `iagile-academy-staging`, ID `prj_bMiSXP3lGCrYPDtzkXAHBPMkXUOC`. Le précédent HTTP 403 provenait d'un appel forcé avec un identifiant de scope inapproprié : l'accès au projet a réussi en réutilisant la session Vercel sans ce paramètre.
-- Synchronisation **manuelle** actualisée depuis GitHub `cosscoll/IAgile`, commit source `69486bf0515f1a3e34e224c9f740b23cdefd77da` (PR #45 et #46). Dernier déploiement Vercel vérifié `READY` : `dpl_3eEPjQextu73VwJy8xEAN6FZ8b8r`, alias `https://iagile-academy-staging.vercel.app/`.
+- Synchronisation **manuelle** actualisée depuis GitHub `cosscoll/IAgile`, commit source `2c24091dbee9041aa7a8af4b8c0eaa6ca781f2c0` (PR #45, #46 et #47). Dernier déploiement Vercel vérifié `READY` : `dpl_EM3cXXVNPiL3Q73rsSBe1NYa8UC3`, alias `https://iagile-academy-staging.vercel.app/`.
 - Arborescence Vercel vérifiée : **12 fichiers** client uniquement, dont quatre routes apprenant et `instructor.html`, `instructor.js`, `instructor-policy.mjs`. Le répertoire racine a été corrigé après une première tentative qui créait un `src/src/` indésirable. La version finale revient à `src/`, structure du déploiement initial.
 - Contrôle de protection Vercel : `ssoProtection.enabled=true`, `deploymentType=all`. Cette protection n'autorise pas à déclarer des cours accessibles à des utilisateurs réels : ni connexion Supabase à deux comptes, ni test de téléchargement privé, ni test navigateur SSO authentifié ne sont validés.
 - Les réponses de lecture des fichiers Vercel via connecteur sont limitées en taille pour certains fichiers ; le statut `READY` et l'arborescence ne constituent pas une vérification bit-à-bit de chaque fichier ni une preuve HTTP de bon fonctionnement de l'application.
@@ -118,3 +118,11 @@ Les copies sont affichées exclusivement en texte inerte (`textContent`), y comp
 Lorsqu'un formateur valide un travail ou demande une révision, l'écriture inclut `answer_updated_at`. Le trigger SQL `academy_feedback_verify_answer_version` refuse les corrections périmées, et le navigateur vérifie ensuite la version et le contenu relus en base avant d'afficher la confirmation. La possibilité de modification d'une correction existante dépend des politiques RLS en vigueur.
 
 **Non validé avec de vraies personnes** : aucun compte formateur, aucun apprenant et aucun cours publié à ce jour. La route est un développement préparé et contrôlé en CI, pas une correction opérationnelle démontrée. Le staging Vercel existant n'est pas automatiquement synchronisé après un commit GitHub ; il faudra le redéployer derrière SSO, puis tester deux comptes apprenants et un formateur avec rôles réels.
+
+
+### Mise à jour pédagogique du 13 octobre 2026
+
+- La formation Processus comprend **9 consignes** de travaux en base (indices 0 à 8), et non plus 8. L'interface apprenant indique après quels modules chaque travail est pertinent.
+- Mission Rivage (index 7) est une **épreuve de transfert sur dossier fictif**, distincte du projet final Playbook personnel (index 8, sur 100 points). Ce renommage a été effectué dans le brouillon Supabase, avec `published=false` conservé.
+- Un audit SQL de préparation réexécutable est conservé dans `docs/academy-readiness-gates.sql` : préflight en lecture seule, **pas** un test multi-comptes ni un GO commercial.
+- Le corpus candidat V0.9.1 et son corrigé reformulé V0.9.1 restent dans la bibliothèque de supports privée ; aucun octet premium n'a été publié dans ce dépôt.
