@@ -1,6 +1,6 @@
 # IAgile Academy — prototype d'espace apprenant
 
-**Statut : code préparé, non déployé et non validé par des tests multi-comptes. Ne pas commercialiser.**
+**Statut au 13 octobre 2026 : staging Vercel créé et déployé avec SSO actif ; tests multi-comptes Supabase Auth/RLS encore non effectués. Aucune formation ni vente ouverte.**
 
 ## Entrées disponibles
 
@@ -28,7 +28,17 @@ Ces entrées constituent des pages dédiées dans une même application, pas enc
 - Aucun achat, attribution d'inscription, import de fichiers, droit formateur ou facturation depuis le navigateur.
 - Si le backend ou les permissions échouent, aucun cours n'est affiché.
 
-## Avant tout hébergement / test réel
+## Déploiement de staging du 13 octobre 2026 (preuve technique)
+
+- Projet Vercel existant `iagile-academy-staging`, ID `prj_bMiSXP3lGCrYPDtzkXAHBPMkXUOC`. Le précédent HTTP 403 provenait d'un appel forcé avec un identifiant de scope inapproprié : l'accès au projet a réussi en réutilisant la session Vercel sans ce paramètre.
+- Nouvelle synchronisation **manuelle** depuis GitHub `cosscoll/IAgile`, commit source `a267aa199ab5369a2a57558bec228f4660694b23`. Déploiement Vercel vérifié `READY` : `dpl_515GrZspuRJKFYp8ZfhNpQ1phBj8`, alias `https://iagile-academy-staging.vercel.app/`.
+- Arborescence Vercel vérifiée : **12 fichiers** client uniquement, dont quatre routes apprenant et `instructor.html`, `instructor.js`, `instructor-policy.mjs`. Le répertoire racine a été corrigé après une première tentative qui créait un `src/src/` indésirable. La version finale revient à `src/`, structure du déploiement initial.
+- Contrôle de protection Vercel : `ssoProtection.enabled=true`, `deploymentType=all`. Cette protection n'autorise pas à déclarer des cours accessibles à des utilisateurs réels : ni connexion Supabase à deux comptes, ni test de téléchargement privé, ni test navigateur SSO authentifié ne sont validés.
+- Les réponses de lecture des fichiers Vercel via connecteur sont limitées en taille pour certains fichiers ; le statut `READY` et l'arborescence ne constituent pas une vérification bit-à-bit de chaque fichier ni une preuve HTTP de bon fonctionnement de l'application.
+- Ne pas activer de comptes de vente : 47 modules toujours non publiés, aucun apprenant inscrit et bucket privé vide au dernier contrôle Supabase. Vérifier les URL de redirection Auth exactes de staging avant les essais de comptes pilotes.
+- Le dépôt GitHub n'est pas relié à ce projet Vercel pour un déploiement automatique prouvé : les commits GitHub futurs **ne mettent pas automatiquement le staging à jour**. Utiliser une synchronisation explicite et vérifier l'identifiant du déploiement.
+
+## Étapes encore nécessaires avant validation réelle
 
 1. Créer un environnement de staging HTTPS distinct de la vitrine principale, sans y déposer de ressources pédagogiques dans le dépôt public.
 2. Autoriser explicitement les URLs de retour du staging dans Supabase Auth, en veillant à ne pas autoriser des domaines arbitraires.
