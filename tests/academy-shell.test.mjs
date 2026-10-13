@@ -64,7 +64,7 @@ const expectedAssets=[
 ];
 assert.equal(releaseManifest.schema_version,1);
 assert.deepEqual([...releaseManifest.files].sort(),[...expectedAssets].sort(),
-  'The protected staging release must contain all 21 reviewed client files, including preflight and instructor assets');
+  'The protected staging release must contain all 22 reviewed client files, including preflight and instructor assets');
 const deployable=new Set(releaseManifest.files);
 for(const asset of deployable){
   assert(!asset.startsWith('/')&&!asset.includes('..')&&!asset.includes('\\'),
