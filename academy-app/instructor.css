@@ -11,7 +11,7 @@
 .instructor-answer{box-sizing:border-box;white-space:pre-wrap;overflow-wrap:anywhere;overflow:auto;max-height:460px;border:1px solid #47607d;border-radius:12px;padding:18px;background:#071424;color:#e6eefc;font:14px/1.7 ui-monospace,monospace}
 .instructor-review-form{border-top:1px solid #465b75;padding-top:20px;margin-top:22px;display:grid;gap:15px}
 .instructor-review-form label{display:grid;gap:9px;font:700 14px/1.5 system-ui;color:#e6efff}
-.instructor-review-form select,.instructor-review-form textarea{box-sizing:border-box;width:100%;padding:12px;border-radius:9px;border:1px solid #6e89ac;background:#071424;color:#f6faff;font:14px/1.5 system-ui}
+.instructor-review-form select,.instructor-review-form input,.instructor-review-form textarea{box-sizing:border-box;width:100%;padding:12px;border-radius:9px;border:1px solid #6e89ac;background:#071424;color:#f6faff;font:14px/1.5 system-ui}
 .instructor-review-form textarea{resize:vertical;min-height:145px}
 .instructor-review-form button{justify-self:start}
 .instructor-save-status{margin:0;color:#bfd7f7;min-height:1.5em;font:14px/1.5 system-ui}
