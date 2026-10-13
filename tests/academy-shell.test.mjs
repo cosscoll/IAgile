@@ -85,6 +85,6 @@ for(const filename of ['index.html','instructor.html','preflight.html','atelier-
 assert(deployable.has('instructor-policy.mjs')&&
   fs.readFileSync(path.join(app,'instructor.js'),'utf8').includes("from './instructor-policy.mjs'"),
   'Instructor module import must be packaged with its source');
-console.log('PASS — private Academy deployment manifest: 21 local files, all stylesheet/script references included');
+console.log('PASS — private Academy deployment manifest: 22 local files, all stylesheet/script references included');
 
 console.log('PASS — private Academy shell: 5 entrypoints, no embedded lessons, guarded Supabase access');
