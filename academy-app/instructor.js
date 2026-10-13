@@ -1,4 +1,5 @@
 import {buildReviewQueue,sameRevision} from './instructor-policy.mjs';
+import {createStructuredFeedback,parseStructuredFeedback} from './instructor-rubric.mjs';
 const $=id=>document.getElementById(id);
 const status=$('status'),auth=$('auth-section'),work=$('work-section'),
   logout=$('logout'),list=$('work-list'),count=$('count');
@@ -131,25 +132,42 @@ if(!config?.url||!config?.publishableKey||!window.supabase?.createClient){
         }
         select.value=answer.last_review?.status||'needs_revision';
         label.append(select);
+        const previousFeedback=parseStructuredFeedback(answer.last_review?.feedback_text||'');
+        const criterionLabel=document.createElement('label');
+        criterionLabel.textContent='Critère évalué (8 à 900 caractères)';
+        const criterion=document.createElement('input');
+        criterion.type='text';criterion.className='review-criterion';
+        criterion.required=true;criterion.minLength=8;criterion.maxLength=900;
+        criterion.value=previousFeedback.criterion;
+        criterionLabel.append(criterion);
         const notesLabel=document.createElement('label');
-        notesLabel.textContent='Retour formateur (20 à 5 000 caractères)';
+        notesLabel.textContent='Preuve ou élément observé dans la copie (20 à 2 500 caractères)';
         const notes=document.createElement('textarea');
-        notes.required=true;notes.minLength=20;notes.maxLength=5000;notes.rows=6;
-        notes.value=String(answer.last_review?.feedback_text||'');
+        notes.required=true;notes.minLength=20;notes.maxLength=2500;notes.rows=5;
+        notes.className='review-evidence';
+        notes.value=previousFeedback.evidence;
         notesLabel.append(notes);
+        const nextLabel=document.createElement('label');
+        nextLabel.textContent='Action concrète à effectuer ensuite (15 à 1 200 caractères)';
+        const nextAction=document.createElement('textarea');
+        nextAction.required=true;nextAction.minLength=15;nextAction.maxLength=1200;nextAction.rows=3;
+        nextAction.className='review-next-action';
+        nextAction.value=previousFeedback.nextAction;
+        nextLabel.append(nextAction);
         const save=document.createElement('button');
         save.type='submit';save.textContent='Enregistrer cette correction';
         const output=document.createElement('p');
         output.className='instructor-save-status';
         output.setAttribute('role','status');output.setAttribute('aria-live','polite');
-        form.append(label,notesLabel,save,output);
+        form.append(label,criterionLabel,notesLabel,nextLabel,save,output);
         form.addEventListener('submit',async event=>{
           event.preventDefault();
-          const feedbackText=notes.value.trim();
+          const structured=createStructuredFeedback({criterion:criterion.value,
+            evidence:notes.value,nextAction:nextAction.value});
+          const feedbackText=structured.text;
           if(request!==generation||save.disabled)return;
-          if(!['validated','needs_revision'].includes(select.value)||
-             feedbackText.length<20||feedbackText.length>5000){
-            output.textContent='Décision ou commentaire invalide.';return;
+          if(!['validated','needs_revision'].includes(select.value)||!structured.ok){
+            output.textContent='Précisez le critère, une preuve et une action concrète.';return;
           }
           save.disabled=true;output.textContent='Enregistrement en cours…';
           try{
