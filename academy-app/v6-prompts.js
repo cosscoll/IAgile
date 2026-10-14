@@ -11,8 +11,9 @@
     if (area) area.hidden = true;
   }
   async function load(client, course, isCurrent) {
-    clear();
+    // A stale request must never erase a newer authorized view.
     if (!client || !allowedCourses.has(course) || typeof isCurrent !== 'function' || !isCurrent()) return;
+    clear();
     const area = document.getElementById('v6-prompts');
     const list = document.getElementById('v6-prompts-list');
     if (!area || !list) return;
@@ -24,7 +25,9 @@
         .order('module_index',{ascending:true}).order('prompt_code',{ascending:true});
     } catch (_) { return; }
     if (!isCurrent() || response?.error || !Array.isArray(response?.data)) return;
+    const coursePrefix = {processus:'P',automatisation:'A',agents:'G','sites-3d':'W'}[course];
     const entries = response.data.filter(row => codePattern.test(String(row.prompt_code || '')) &&
+      String(row.prompt_code).startsWith(coursePrefix) &&
       Number.isInteger(row.module_index) && row.module_index >= 0 && row.module_index < 200 &&
       typeof row.title === 'string' && typeof row.content_markdown === 'string' &&
       row.content_markdown.length > 0).slice(0,maxRows);
