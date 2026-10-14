@@ -65,6 +65,7 @@ jobs:
           node --check academy-app/atelier-preuve.js
           node --check academy-app/atelier-preuve-policy.mjs
           node --check scripts/academy-api-failure-lab.mjs
+          node --check scripts/academy-pilot-metrics.mjs
           node --check academy-app/instructor-rubric.mjs
           node --check scripts/academy-pilot-metrics.mjs
           node --check tests/staged-public.test.mjs
