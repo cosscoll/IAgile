@@ -71,6 +71,8 @@ jobs:
           node --check academy-app/atelier-preuve-policy.mjs
           node --check scripts/academy-api-failure-lab.mjs
           node --check scripts/academy-agent-safety-lab.mjs
+          node --check academy-app/diagnostic-3d-policy.mjs
+          node --check academy-app/diagnostic-3d.js
           node --check academy-app/instructor-rubric.mjs
           node --check scripts/academy-pilot-metrics.mjs
           node --check scripts/academy-agent-guardrail-lab.mjs
