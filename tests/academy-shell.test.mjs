@@ -91,4 +91,6 @@ assert(deployable.has('instructor-rubric.mjs') &&
   'Structured rubric policy must be present in the deployed private Academy');
 console.log('PASS — private Academy deployment manifest: 26 local files, all stylesheet/script references included');
 
+assert(logic.includes("file.module_index == null ? 'Pack complet du parcours'"),
+  'A course-wide resource cannot be mislabeled as module 1 when module_index is null');
 console.log('PASS — private Academy shell: 5 entrypoints, no embedded lessons, guarded Supabase access');
