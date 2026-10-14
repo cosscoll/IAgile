@@ -23,6 +23,9 @@ const client={from(table){assert.equal(table,'academy_prompt_library');fromCount
 await load(client,'processus',()=>true);
 assert.equal(fromCount,1);
 assert.equal(areas['v6-prompts'].hidden,false);
+// Stale refresh must not erase a newer authorized view.
+await load(client,'processus',()=>false);
+assert.equal(areas['v6-prompts'].hidden,false);
 const container=areas['v6-prompts-list'];
 assert.equal(container.children.length,3);
 const cards=container.children[2].children;
@@ -43,3 +46,6 @@ assert.equal(areas['v6-prompts'].hidden,true);assert.equal(container.children.le
 await load(makeClient({data:null,error:{message:'denied'}}),'processus',()=>true);
 assert.equal(areas['v6-prompts'].hidden,true);
 console.log('PASS: V6 library gating, DOM escaping, search, denial and race conditions');
+await load(makeClient({data:[...rows,{prompt_code:'G01',module_index:1,title:'Cross-course',content_markdown:'Other'}],error:null}),'processus',()=>true);
+assert.equal(areas['v6-prompts-list'].children[2].children.length,2,'reject cross-course prefixes');
+clear();
