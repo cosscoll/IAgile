@@ -522,8 +522,8 @@
       const name=document.createElement('h3');
       name.textContent=String(file.title||'Support');
       const detail=document.createElement('p');
-      detail.textContent='Module '+(Number(file.module_index)+1)+
-        (Number.isFinite(Number(file.content_bytes)) ? ' · '+String(file.content_bytes)+' octets' : '');
+      detail.textContent=(file.module_index == null ? 'Pack complet du parcours' : 'Module '+(Number(file.module_index)+1))+
+        (Number.isFinite(Number(file.content_bytes)) && Number(file.content_bytes)>0 ? ' · '+String(file.content_bytes)+' octets' : '');
       const trigger=document.createElement('button');
       trigger.type='button';
       trigger.className='complete-button';
