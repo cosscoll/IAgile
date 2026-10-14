@@ -38,6 +38,7 @@
     if (deliverablesContent) deliverablesContent.replaceChildren();
     if (resources) resources.hidden = true;
     if (resourcesList) resourcesList.replaceChildren();
+    window.IAgileV6Prompts?.clear?.();
   };
   const config = window.IAgileAcademyConfig;
   if ((course && !allow.has(course)) || !config?.url || !config?.publishableKey || !window.supabase?.createClient) {
@@ -697,6 +698,9 @@
       await showModules(lessons,user.id,request);
       if (request === sequence) await showDeliverables(user.id,request);
       if (request === sequence) await showResources(request);
+      if (request === sequence && window.IAgileV6Prompts?.load) {
+        await window.IAgileV6Prompts.load(client,course,()=>request===sequence&&!logoutRequested);
+      }
     } catch (_error) {
       if (request === sequence) failClosed('Vérification indisponible. Aucun cours privé n’a été chargé.');
     }
