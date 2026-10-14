@@ -59,6 +59,7 @@ const expectedAssets=[
   'instructor.html','instructor.css','instructor.js','instructor-policy.mjs','instructor-rubric.mjs',
   'preflight.html','preflight.css','preflight.js','preflight-policy.mjs',
   'atelier-preuve.html','atelier-preuve.css','atelier-preuve.js','atelier-preuve-policy.mjs',
+  'diagnostic-3d.html','diagnostic-3d.css','diagnostic-3d.js','diagnostic-3d-policy.mjs',
   'vercel.json','cours/sites-3d/index.html','cours/agents/index.html',
   'cours/automatisation/index.html','cours/processus/index.html'
 ];
