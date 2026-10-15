@@ -152,7 +152,7 @@ const externalReference = {
   module_index:0,tool_id:'R001',title:'<script>outil</script>',
   short_description:'Une référence autorisée pour la formation.',
   source_url:'https://example.org/docs',priority:'P1',
-  license_status:'CONTRÔLE CIBLÉ',license_caveat:'Ne pas copier les éléments sous licence.',
+  license_status:'CONTRÔLE CIBLÉ',source_review_status:'verified',license_caveat:'Ne pas copier les éléments sous licence.',
   approved_for_course:true,published:true,archived:false
 };
 const referencesAllowed=await simulate({externalReferences:[
@@ -160,7 +160,9 @@ const referencesAllowed=await simulate({externalReferences:[
   {...externalReference,tool_id:'R002',approved_for_course:false},
   {...externalReference,tool_id:'R003',source_url:'javascript:alert(1)'},
   {...externalReference,tool_id:'R004',published:false},
-  {...externalReference,tool_id:'R005',archived:true}
+  {...externalReference,tool_id:'R005',archived:true},
+  {...externalReference,tool_id:'R006',source_review_status:'needs_review'},
+  {...externalReference,tool_id:'R007',license_status:'NON CONTRÔLÉE'}
 ]});
 const referenceContainer=referencesAllowed.elements.get('external-references');
 const referenceList=referencesAllowed.elements.get('external-references-list');
@@ -171,9 +173,12 @@ assert.equal(referenceCards.length,1,'Approved, published, unarchived and HTTPS 
 const approvedLink=referenceCards[0].children.find(el=>el.href);
 assert.equal(approvedLink.href,'https://example.org/docs');
 assert.equal(approvedLink.rel,'noopener noreferrer nofollow');
+assert.equal(approvedLink.textContent,'Consulter la ressource externe ↗');
 assert(referenceCards[0].children.some(el=>el.textContent==='<script>outil</script>'), 'Resource names remain inert text');
 assert(referencesAllowed.calls.some(row=>row.table==='academy_external_learning_resources' && row.filters.some(([k,v])=>k==='course_slug'&&v==='agents')));
-console.log('PASS external reference library filters, URLs and safe DOM');
+assert(referencesAllowed.calls.some(row=>row.table==='academy_external_learning_resources' && row.filters.some(([k,v])=>k==='source_review_status'&&v==='verified')));
+assert(referencesAllowed.calls.some(row=>row.table==='academy_external_learning_resources' && row.filters.some(([k,v])=>k==='license_status'&&v==='CONTRÔLE CIBLÉ')));
+console.log('PASS external reference library filters, licensed review states, URLs and safe DOM');
 
 const referencesDenied=await simulate({externalReferences:[externalReference],enrollment:false});
 assert.equal(referencesDenied.elements.get('external-references').hidden,true,'Non-enrolled accounts may not see library');
