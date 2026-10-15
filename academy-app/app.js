@@ -38,6 +38,10 @@
     if (deliverablesContent) deliverablesContent.replaceChildren();
     if (resources) resources.hidden = true;
     if (resourcesList) resourcesList.replaceChildren();
+    const references = document.getElementById('external-references');
+    if (references) references.hidden = true;
+    const referenceList = document.getElementById('external-references-list');
+    if (referenceList) referenceList.replaceChildren();
     window.IAgileV6Prompts?.clear?.();
   };
   const config = window.IAgileAcademyConfig;
@@ -575,6 +579,86 @@
     resources.hidden=resourcesList.children.length===0;
   }
 
+
+  // Third-party references are premium curation, not downloadable course assets.
+  // Supabase RLS, course publication, and enrollment remain authoritative.
+  async function showExternalReferences(request) {
+    const section = document.getElementById('external-references');
+    const list = document.getElementById('external-references-list');
+    const state = document.getElementById('external-references-state');
+    if (!section || !list || !state || !course || request !== sequence) return;
+    const {data: rows, error} = await client.from('academy_external_learning_resources')
+      .select('module_index,tool_id,title,source_url,short_description,priority,license_status,license_caveat,approved_for_course,published,archived')
+      .eq('course_slug',course).eq('approved_for_course',true)
+      .eq('published',true).eq('archived',false)
+      .order('module_index',{ascending:true});
+    if (request !== sequence || logoutRequested) return;
+    list.replaceChildren();
+    if (error || !Array.isArray(rows)) {
+      state.textContent = 'La bibliothèque d’outils est temporairement indisponible.';
+      section.hidden = false;
+      return;
+    }
+    const grouped = new Map();
+    for (const row of rows) {
+      // An incorrect API or mock response cannot loosen the display gate.
+      if (!row.approved_for_course || !row.published || row.archived) continue;
+      let safe;
+      try {
+        safe = new URL(String(row.source_url || ''));
+        if (safe.protocol !== 'https:' || !safe.hostname || safe.username || safe.password) continue;
+      } catch (_error) { continue; }
+      const index = Number(row.module_index);
+      if (!Number.isInteger(index) || index < 0 || index > 199) continue;
+      if (!grouped.has(index)) grouped.set(index,[]);
+      grouped.get(index).push({row,url:safe.href});
+    }
+    let count = 0;
+    for (const [index, entries] of grouped) {
+      const group = document.createElement('details');
+      group.className = 'external-reference-group';
+      const summary = document.createElement('summary');
+      summary.textContent = 'Module ' + (index + 1) + ' · ' + entries.length + ' référence(s)';
+      group.append(summary);
+      if (!count) group.open = true;
+      for (const {row,url} of entries) {
+        const item = document.createElement('article');
+        item.className = 'external-reference-card';
+        const name = document.createElement('h3');
+        name.textContent = String(row.title || 'Outil externe');
+        const description = document.createElement('p');
+        description.textContent = String(row.short_description || 'Consultez la documentation d’origine.');
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer nofollow';
+        link.referrerPolicy = 'no-referrer';
+        link.textContent = 'Consulter la ressource officielle ↗';
+        const note = document.createElement('p');
+        note.className = 'external-reference-note';
+        const label = row.priority === 'P0' ? 'Essentiel' : (row.priority === 'P1' ? 'Recommandé' : 'Complémentaire');
+        note.textContent = label + ' · Source tierce · Vérifiez la licence et les conditions avant de réutiliser du code.';
+        if (row.license_caveat) {
+          const warning = document.createElement('p');
+          warning.className = 'external-reference-note';
+          warning.textContent = String(row.license_caveat);
+          item.append(name,description,note,warning,link);
+        } else {
+          item.append(name,description,note,link);
+        }
+        group.append(item);
+        count++;
+      }
+      list.append(group);
+    }
+    if (!count) {
+      state.textContent = 'Les références sont en cours de vérification avant leur mise à disposition.';
+    } else {
+      state.textContent = count + ' référence(s) vérifiée(s) et publiée(s) pour cette formation.';
+    }
+    section.hidden = false;
+  }
+
   async function refresh() {
     // Stay in the private-content-free state until sign-out succeeds or is retried.
     if (logoutRequested) {
@@ -698,6 +782,7 @@
       await showModules(lessons,user.id,request);
       if (request === sequence) await showDeliverables(user.id,request);
       if (request === sequence) await showResources(request);
+      if (request === sequence) await showExternalReferences(request);
       if (request === sequence && window.IAgileV6Prompts?.load) {
         await window.IAgileV6Prompts.load(client,course,()=>request===sequence&&!logoutRequested);
       }
