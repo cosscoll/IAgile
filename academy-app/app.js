@@ -588,9 +588,10 @@
     const state = document.getElementById('external-references-state');
     if (!section || !list || !state || !course || request !== sequence) return;
     const {data: rows, error} = await client.from('academy_external_learning_resources')
-      .select('module_index,tool_id,title,source_url,short_description,priority,license_status,license_caveat,approved_for_course,published,archived')
+      .select('module_index,tool_id,title,source_url,short_description,priority,license_status,license_caveat,source_review_status,approved_for_course,published,archived')
       .eq('course_slug',course).eq('approved_for_course',true)
       .eq('published',true).eq('archived',false)
+      .eq('source_review_status','verified').eq('license_status','CONTRÔLE CIBLÉ')
       .order('module_index',{ascending:true});
     if (request !== sequence || logoutRequested) return;
     list.replaceChildren();
@@ -602,7 +603,8 @@
     const grouped = new Map();
     for (const row of rows) {
       // An incorrect API or mock response cannot loosen the display gate.
-      if (!row.approved_for_course || !row.published || row.archived) continue;
+      if (!row.approved_for_course || !row.published || row.archived ||
+          row.source_review_status !== 'verified' || row.license_status !== 'CONTRÔLE CIBLÉ') continue;
       let safe;
       try {
         safe = new URL(String(row.source_url || ''));
@@ -633,7 +635,7 @@
         link.target = '_blank';
         link.rel = 'noopener noreferrer nofollow';
         link.referrerPolicy = 'no-referrer';
-        link.textContent = 'Consulter la ressource officielle ↗';
+        link.textContent = 'Consulter la ressource externe ↗';
         const note = document.createElement('p');
         note.className = 'external-reference-note';
         const label = row.priority === 'P0' ? 'Essentiel' : (row.priority === 'P1' ? 'Recommandé' : 'Complémentaire');
@@ -654,7 +656,7 @@
     if (!count) {
       state.textContent = 'Les références sont en cours de vérification avant leur mise à disposition.';
     } else {
-      state.textContent = count + ' référence(s) vérifiée(s) et publiée(s) pour cette formation.';
+      state.textContent = count + ' référence(s) disponible(s) dans votre parcours. Consultez les conditions des sites tiers.';
     }
     section.hidden = false;
   }
