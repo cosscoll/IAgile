@@ -82,3 +82,17 @@ footer{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;paddin
 @media(max-width:520px){.module-nav-list{grid-template-columns:1fr}.module-pager-button{flex:1 1 135px}.lesson{padding:22px 18px}}
 
 .lesson-notes-form{display:grid;gap:11px;margin-top:24px;padding-top:21px;border-top:1px solid var(--line)}.lesson-notes-form label{font-size:14px;font-weight:700;color:#e6eeff}.lesson-notes-form textarea{box-sizing:border-box;width:100%;max-width:100%;resize:vertical;min-height:108px;padding:14px 16px;color:#f4f8ff;background:#091728;border:1px solid #60769a;border-radius:10px;font:14px/1.65 system-ui,sans-serif}.lesson-notes-form textarea:focus-visible{outline:3px solid #9ab7ff;outline-offset:3px}.lesson-notes-form textarea:disabled{opacity:.6}.lesson-notes-form button{justify-self:start}.lesson-notes-status{margin:0;color:#bccce2;font-size:13px;line-height:1.5}@media(max-width:520px){.lesson-notes-form button{width:100%}}
+
+
+/* Curated external references: private, progressive disclosure, keyboard-friendly. */
+#external-references-state{color:var(--muted);font-size:14px;line-height:1.6}
+.external-reference-group{margin:15px 0;border:1px solid #3b526d;border-radius:12px;background:#111d2d;overflow:hidden}
+.external-reference-group>summary{cursor:pointer;padding:19px 22px;font-weight:750;color:#e2ecff;line-height:1.5}
+.external-reference-group>summary:focus-visible{outline:3px solid #9ab7ff;outline-offset:-3px}
+.external-reference-card{margin:0 18px 18px;padding:18px;border:1px solid #334662;border-radius:10px;background:#15263d;overflow-wrap:anywhere}
+.external-reference-card h3{margin:0 0 10px;font-size:18px;line-height:1.4}
+.external-reference-card p{line-height:1.65;margin:8px 0;color:#c8d4e5}
+.external-reference-card .external-reference-note{font-size:12px;color:#b1c5df}
+.external-reference-card>a{display:inline-block;margin-top:10px;padding:10px 0;color:#b5cbff;font-size:13px;font-weight:750}
+.external-reference-card>a:hover{text-decoration:underline}
+@media(max-width:500px){.external-reference-group>summary{padding:16px}.external-reference-card{margin:0 10px 12px;padding:14px}}
