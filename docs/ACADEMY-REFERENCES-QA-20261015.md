@@ -45,3 +45,40 @@ Quatre associations ont été mises à jour dans Supabase : deux Mockoon, une Wi
 5. Terminer le contenu pédagogique et les contrôles de qualité des 47 modules ; ne publier qu'après validation.
 6. Vérifier les webhooks de paiement, l'idempotence, les remboursements et l'attribution d'inscription sur environnement de test avant toute vente.
 7. Exécuter et relever le résultat de la CI complète GitHub ; le statut `READY` de Vercel ne signifie pas que tous les tests ont réussi.
+
+
+## Mise à jour de l'audit — 15 octobre 2026, deuxième session
+
+**État Supabase contrôlé en direct** : 283 associations dont 79 P0, 56 P1, 148 P2. 282 sources sont enregistrées `verified`; 1 source P2 (`R012`, Awwwards) reste `needs_review` après échec du chargement direct. Aucune ressource n'est approuvée ni publiée.
+
+### Références déplacées : adresses remplacées et README revérifiés
+- `G089` Giskard → `https://github.com/Giskard-AI/giskard-oss`
+- `G100` WebPageTest → `https://github.com/catchpoint/WebPageTest`
+- `G114` LibreChat → `https://github.com/LibreChat-AI/LibreChat`
+- `G117` Prompts.chat → `https://github.com/f/prompts.chat`
+- `G156` maath / math → `https://github.com/pmndrs/math`
+- `G163` React XR → `https://github.com/pmndrs/xr`
+- `G173` Strands Agents → `https://github.com/strands-agents/harness-sdk`
+- `G174` Supabase MCP → `https://github.com/supabase/mcp`
+- `G179` Triplex → `https://github.com/pmndrs/triplex`
+
+Toutes ces adresses ont fait l'objet d'une nouvelle vérification de dépôt et de documentation de départ. Une redirection ou un changement de nom peut impliquer des migrations d'API ou de dépendances : ne pas remplacer du code sans tests.
+
+### Deuxième contrôle : liens et licence ne sont pas équivalents
+- 79/79 associations essentielles P0 : source identifiée et **revue ciblée du mode d'usage**.
+- Pour `G026` Faker.js, le fichier `LICENSE` GitHub confirme MIT, avec conservation des mentions requise pour redistribuer du code.
+- Pour 27 associations de documentation officielles P0, la revue cible **uniquement l'ajout d'un hyperlien**. Aucune licence de reproduction de texte, de code, de capture ou de vidéo n'est établie par cette revue.
+- Les P1 et P2 restent majoritairement à contrôler côté licences et conditions financières ; les contrôles de source ne les libèrent pas pour redistribution.
+- La vérification de disponibilité n'établit pas le caractère totalement gratuit d'un outil.
+
+### Nouvelles règles
+- SQL : impossible de publier une référence non approuvée, archivée, à source non vérifiée ou dont le contrôle de licence ciblé est absent.
+- Trigger SQL : toute modification du `source_url` invalide la vérification, l'approbation et la publication.
+- Academy JS : la requête et le rendu exigent désormais `source_review_status=verified` et `license_status=CONTRÔLE CIBLÉ`, en plus des protections de compte/inscription/RLS et du statut publié.
+- Des tests d'interface simulés ont réussi pour les sources invalides, les licences manquantes, l'absence d'inscription, les liens non HTTPS et l'erreur API.
+- Aucun contenu premium n'a été ajouté au dépôt public, aucune nouvelle inscription n'a été accordée.
+
+### Vérification des déploiements et limites
+- Le dépôt ne peut pas être cloné depuis le runtime de QA utilisé : l'accès réseau direct à GitHub échoue sur la résolution DNS. Les simulations ciblées de `app.js` ont toutefois pu s'exécuter après récupération du code via GitHub.
+- La suite intégrale `npm test`, les tests visuels navigateur et les contrôles Auth/RLS avec deux comptes réels restent **à exécuter et constater**.
+- La préproduction Vercel demeure SSO protégée ; le statut READY d'un déploiement ne suffit pas à démontrer le chargement HTTP ni les droits utilisateurs.
