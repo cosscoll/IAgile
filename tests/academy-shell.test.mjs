@@ -21,6 +21,8 @@ assert(logic.includes(".from('academy_deliverable_prompts')"),'Missing RLS-backe
 assert(logic.includes(".from('academy_deliverable_answers')"),'Missing scoped learner submission lookup');
 assert(logic.includes(".from('academy_deliverable_feedback')"),'Missing read-only instructor feedback');
 assert(logic.includes(".from('academy_course_assets')"),'Missing private resource registry lookup');
+assert(logic.includes(".from('academy_external_learning_resources')"),'Missing curated reference library lookup');
+assert(logic.includes(".eq('approved_for_course',true)"),'Only explicitly approved references may be displayed');
 assert(logic.includes(".createSignedUrl(path,60"),'Missing short-lived signed Storage URL');
 assert(!logic.includes('.getPublicUrl('),'Paid files cannot have a public URL');
 assert(!/\.from\('academy_deliverable_feedback'\)[\s\S]{0,120}\.(?:insert|update|upsert|delete)\(/.test(logic),'Learners must not write instructor feedback');
@@ -44,6 +46,8 @@ for(const [slug,file] of [['',path.join(app,'index.html')],...slugs.map(s=>[s,pa
    assert(source.includes('id="deliverables" class="deliverables" hidden'),'Assignment region must start hidden');
    assert(source.includes('id="course-resources" class="course-resources" hidden'),'Resource list must start hidden');
    assert(source.includes('id="course-resources-list"'),'Private resource content container missing');
+   assert(source.includes('id="external-references" class="course-resources" hidden'),'Third-party library must start hidden');
+   assert(source.includes('id="external-references-list"'),'Third-party library content region missing');
  }
 
  assert(source.includes('app.js')&&source.includes('config.js')&&source.includes('app.css'),'Shared guarded app missing');
