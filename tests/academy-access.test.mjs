@@ -28,10 +28,10 @@ async function simulate({
   published=true, modules=[{title:'Leçon autorisée',body_markdown:'Texte privé',module_index:0}],
   moduleError=false, profileError=false, progressError=false, writeError=false, progress=[], deferProgressWrites=false,
   tasks=[], answers=[], feedback=[], answersError=false, answerWriteError=false,
-  assets=[], assetsError=false, storageError=false, signOutError=false, signOutReject=false, signedUrl='https://example.supabase.co/storage/v1/object/sign/iagile-course-files/agents/sample.md?token=test'
+  assets=[], assetsError=false, externalReferences=[], externalReferencesError=false, storageError=false, signOutError=false, signOutReject=false, signedUrl='https://example.supabase.co/storage/v1/object/sign/iagile-course-files/agents/sample.md?token=test'
 }={}){
   const elements=new Map();
-  for(const id of ['status','auth-section','learner-section','logout','login-form','account-info','modules','deliverables','deliverables-content','course-resources','course-resources-list'])
+  for(const id of ['status','auth-section','learner-section','logout','login-form','account-info','modules','deliverables','deliverables-content','course-resources','course-resources-list','external-references','external-references-list','external-references-state'])
     elements.set(id,element());
   const form=elements.get('login-form');
   form.elements={email:{value:'pilote@example.invalid'}};
@@ -52,7 +52,8 @@ async function simulate({
     academy_deliverable_prompts:{data:tasks,error:null},
     academy_deliverable_answers:{data:answers,error:answersError?{message:'RLS denied'}:null},
     academy_deliverable_feedback:{data:feedback,error:null},
-    academy_course_assets:{data:assets,error:assetsError?{message:'forbidden'}:null}
+    academy_course_assets:{data:assets,error:assetsError?{message:'forbidden'}:null},
+    academy_external_learning_resources:{data:externalReferences,error:externalReferencesError?{message:'RLS refused'}:null}
   };
   const makeQuery=table=>{
     const state={table, filters:[],columns:''};
@@ -145,6 +146,42 @@ for(const t of tests){
   assert.equal(v.calls.length,t.calls,t.name+' should not query beyond access boundary');
   console.log('PASS '+t.name);
 }
+
+
+const externalReference = {
+  module_index:0,tool_id:'R001',title:'<script>outil</script>',
+  short_description:'Une référence autorisée pour la formation.',
+  source_url:'https://example.org/docs',priority:'P1',
+  license_status:'CONTRÔLE CIBLÉ',license_caveat:'Ne pas copier les éléments sous licence.',
+  approved_for_course:true,published:true,archived:false
+};
+const referencesAllowed=await simulate({externalReferences:[
+  externalReference,
+  {...externalReference,tool_id:'R002',approved_for_course:false},
+  {...externalReference,tool_id:'R003',source_url:'javascript:alert(1)'},
+  {...externalReference,tool_id:'R004',published:false},
+  {...externalReference,tool_id:'R005',archived:true}
+]});
+const referenceContainer=referencesAllowed.elements.get('external-references');
+const referenceList=referencesAllowed.elements.get('external-references-list');
+assert.equal(referenceContainer.hidden,false,'Published reference library should become visible after authorization');
+assert.equal(referenceList.children.length,1,'Only modules containing approved safe references may appear');
+const referenceCards=referenceList.children[0].children.filter(el=>el.className==='external-reference-card');
+assert.equal(referenceCards.length,1,'Approved, published, unarchived and HTTPS checks must all hold');
+const approvedLink=referenceCards[0].children.find(el=>el.href);
+assert.equal(approvedLink.href,'https://example.org/docs');
+assert.equal(approvedLink.rel,'noopener noreferrer nofollow');
+assert(referenceCards[0].children.some(el=>el.textContent==='<script>outil</script>'), 'Resource names remain inert text');
+assert(referencesAllowed.calls.some(row=>row.table==='academy_external_learning_resources' && row.filters.some(([k,v])=>k==='course_slug'&&v==='agents')));
+console.log('PASS external reference library filters, URLs and safe DOM');
+
+const referencesDenied=await simulate({externalReferences:[externalReference],enrollment:false});
+assert.equal(referencesDenied.elements.get('external-references').hidden,true,'Non-enrolled accounts may not see library');
+assert(!referencesDenied.calls.some(row=>row.table==='academy_external_learning_resources'),'Do not fetch library before entitlement check');
+const referencesReadError=await simulate({externalReferencesError:true});
+assert.equal(referencesReadError.elements.get('external-references-list').children.length,0);
+assert(referencesReadError.elements.get('external-references-state').textContent.includes('indisponible'));
+console.log('PASS reference access denied before fetch; RLS query failures remain empty');
 
 const permitted=await simulate();
 assert(permitted.elements.get('status').textContent.includes('progression ont été chargés'));
