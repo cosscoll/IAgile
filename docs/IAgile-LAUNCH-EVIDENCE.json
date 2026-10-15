@@ -14,7 +14,7 @@
       "id": "curriculum_reference",
       "label": "Référentiel apprenant et corrigés versionnés",
       "status": "blocked",
-      "evidence": "47 modules rédigés non publiés ; audit SQL read-only et titres des 38 modules Agents/Automatisation/Sites 3D rapprochés de leurs sources Drive (38/38). Corpus Processus V0.9.1 : 12/12 empreintes privées conformes hors ligne, corrigés à approuver humainement. Audit de contenu et de laboratoires réels non achevé."
+      "evidence": "Source des programmes techniques dans Google Drive consultée le 15/10/2026 : titres des 12 modules Agents, 11 modules Automatisation et 15 modules Sites 3D alignés avec leur ordre de référence. 47 modules et 50 livrables en base tous non publiés. 282/283 associations de références vérifiées (source uniquement), 79/79 P0 avec mode lien seul; audit pédagogique intégral, licences P1/P2 et labs réels restent bloquants."
     },
     {
       "id": "private_storage",
@@ -26,13 +26,13 @@
       "id": "academy_staging",
       "label": "Staging Academy HTTPS construit",
       "status": "verified",
-      "evidence": "Staging protégé Vercel dpl_H8tEb5dbB6TKhwCRHNVozBUbCzXL READY, dernier déploiement, SSO activé sur tous les environnements ; les 13 UID SHA-1 Vercel correspondent aux 13 sources du commit applicatif 8f4f74b5ce45b2dde82ce3785d0de36df1e63047. Navigateur SSO + Supabase Auth réel non vérifié."
+      "evidence": "Projet Vercel iagile-academy-staging, déploiement dpl_A5CeEt34po7zXdou1XpTEhrejvsB (15/10/2026) READY pour SHA source e73f71d8bd6a22293ddedabe9dc7c8fc3643434a. Protection SSO activée pour tous les environnements. READY atteste la construction, non le succès HTTP authentifié ou une formation commercialisable."
     },
     {
       "id": "academy_browser",
       "label": "Navigation réelle et redirections Auth testées",
       "status": "blocked",
-      "evidence": "Tests automatisés mock réussis, mais la navigation SSO/PKCE avec comptes Auth réels et le bon fonctionnement HTTP authentifié du nouveau staging restent à vérifier."
+      "evidence": "Simulation directe du code Academy réussie (refus des ressources sans inscription, hors licence, non vérifiées et URL non HTTPS). Nouvel app.js publié en staging SSO READY. L'accès HTTP automatisé via Vercel est toujours refusé; aucun parcours authentifié mobile/desktop en conditions réelles vérifié."
     },
     {
       "id": "auth_isolation",
