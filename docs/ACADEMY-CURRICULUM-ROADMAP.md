@@ -105,3 +105,29 @@ Autres données vérifiées : 14 consignes de livrables (2 agents, 2 automatisat
 3. Importer les fichiers dans le bucket privé avec contrôles côté serveur et références cohérentes ; la simple présence de 12 lignes de registre ne signifie pas que les supports existent dans Storage.
 4. Installer l'interface authentifiée et tester l'isolation entre deux apprenants avant tout contenu premium.
 5. Conserver le dépôt public GitHub exclusivement pour les aperçus et le code non confidentiel, jamais pour les supports réservés.
+
+
+## Contrôle structurel des contenus — 15 octobre 2026
+
+Lecture croisée du programme de référence Google Drive, des titres de modules Supabase et du suivi des livrables.
+
+| Parcours | Modules en base | Livrables associés | Constat |
+| --- | ---: | ---: | --- |
+| Agents personnalisés | 12 | 13 | Les 12 intitulés et leur ordre reprennent le programme de référence Drive. |
+| Automatisation | 11 | 12 | Les 11 intitulés et leur ordre reprennent le programme de référence Drive. |
+| Sites web 3D | 15 | 16 | Les 15 intitulés et leur ordre reprennent le programme de référence Drive. |
+| Processus | 9 | 9 | Structure en base inventoriée ; programme maître Processus à contrôler séparément sur le document de référence propre au parcours. |
+| **Total** | **47** | **50** | **Aucun module ni livrable publié.** |
+
+**Observation qualitative ciblée :** des exemples de modules techniques (Agents #4, Automatisation #7, Sites 3D #8) montrent un résultat observable, un laboratoire, des cas de refus/panne, une épreuve et une grille de validation. Le module Processus #2 présente aussi un corpus fictif, une épreuve et des preuves. Un comptage du mot « exercice » ne constitue donc pas un audit de présence de pratique : les rubriques sont souvent nommées « lab », « défi » ou « épreuve ».
+
+**Limite essentielle :** alignement des titres et présence d'une trame ne prouvent ni la durée réellement nécessaire, ni que les scripts, les projets et les assets ont été exécutés, ni l'efficacité de la pédagogie avec de vrais apprenants. Les modules restent volontairement non publiés. Les 50 livrables restent à contrôler dans leur articulation à la progression réelle.
+
+**Chantiers de QA obligatoires :**
+1. Comparer chaque module intégral à son programme Drive, notamment exemples, fiches pratiques et promesse de compétence.
+2. Vérifier qu'un apprenant peut réaliser et prouver chaque compétence sans code, fichier ou réponse caché manquant.
+3. Exécuter les labs techniques réels sur environnements isolés, sur plusieurs navigateurs et appareils lorsque pertinent.
+4. Vérifier les rubriques de correction, les critères éliminatoires et leur traçabilité au travail rendu.
+5. Effectuer un pilote avec des comptes réels, relever les incompréhensions, réviser les leçons, puis seulement envisager la publication.
+
+Référence complémentaire : `docs/ACADEMY-REFERENCES-QA-20261015.md`, audit des sources et licences. Les références à des logiciels gratuits peuvent comporter des options payantes ; celles-ci ne doivent pas être présentées comme incluses gratuitement.
