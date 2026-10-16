@@ -5,6 +5,8 @@
 
 Site public : https://cosscoll.github.io/IAgile/
 
+**Suivi du projet :** [Avancement des formations et de la plateforme Academy](avancement.html), accessible également depuis le menu du site.
+
 ## État actuel
 
 Site vitrine en pré-lancement, pas de vente ouverte. Les quatre parcours disposent d'un aperçu commercial : sites web 3D, agents personnalisés, automatisation, IA au quotidien. La présentation immersive d’origine est conservée.
