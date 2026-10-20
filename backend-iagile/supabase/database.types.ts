@@ -1,5 +1,4 @@
-// Generated from the actual IAgile Academy Supabase project on 2026-10-09.
-// Update with Supabase type generation when the schema changes.
+// Generated from IAgile Academy Supabase, feedback revision lock (2026-10-10).
 export type Json =
   | string
   | number
@@ -133,6 +132,47 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "academy_deliverable_prompts"
             referencedColumns: ["course_slug", "deliverable_index"]
+          },
+        ]
+      }
+      academy_deliverable_feedback: {
+        Row: {
+          answer_updated_at: string
+          course_slug: string
+          deliverable_index: number
+          feedback_text: string
+          instructor_id: string
+          reviewed_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          answer_updated_at?: string
+          course_slug: string
+          deliverable_index: number
+          feedback_text: string
+          instructor_id: string
+          reviewed_at?: string
+          status: string
+          user_id: string
+        }
+        Update: {
+          answer_updated_at?: string
+          course_slug?: string
+          deliverable_index?: number
+          feedback_text?: string
+          instructor_id?: string
+          reviewed_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_deliverable_feedback_user_id_course_slug_deliverab_fkey"
+            columns: ["user_id", "course_slug", "deliverable_index"]
+            isOneToOne: true
+            referencedRelation: "academy_deliverable_answers"
+            referencedColumns: ["user_id", "course_slug", "deliverable_index"]
           },
         ]
       }
