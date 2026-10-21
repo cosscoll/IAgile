@@ -87,6 +87,7 @@ jobs:
           files=(
             "404.html"
             "a-propos.html"
+            "avancement.html"
             "assets/social-accueil.jpg"
             "assets/social-agents-personnalises.jpg"
             "assets/social-automatiser-tache.jpg"
