@@ -1,4 +1,4 @@
--- IAgile Academy — seven read-only, intentionally conservative release checks.
+-- IAgile Academy — seven read-only release checks (reviewed 2026-10-21).
 -- This is a diagnostic snapshot, NOT a commercial authorization.
 -- Auth/RLS multi-account browser tests, educational review, contract and checkout
 -- require separate evidence. Storage SQL metadata does NOT prove the bytes' SHA-256.
@@ -21,11 +21,12 @@ assets AS (
 ),
 storage_count AS (
   SELECT COUNT(*) AS stored
-  FROM storage.objects WHERE bucket_id='iagile-course-files'
+  FROM storage.objects WHERE bucket_id='iagile-course-files' AND name LIKE 'processus/%'
 ),
 bucket AS (
-  SELECT NOT public AND file_size_limit=51200
-    AND allowed_mime_types @> ARRAY['text/csv','text/markdown']::text[]
+  SELECT NOT public AND file_size_limit=1048576
+    AND allowed_mime_types @> ARRAY['text/csv','text/markdown','application/zip']::text[]
+    AND allowed_mime_types <@ ARRAY['text/csv','text/markdown','application/zip']::text[]
     AND NOT EXISTS (
       SELECT 1 FROM pg_policies
       WHERE schemaname='storage' AND tablename='objects'
@@ -63,7 +64,7 @@ SELECT gate,ready,detail
 FROM (
   SELECT 'private_storage'::text AS gate,
     COALESCE((SELECT safe FROM bucket),false) AS ready,
-    'Bucket privé, CSV/Markdown seulement, taille max 50 Ko'::text AS detail
+    'Bucket privé, CSV/Markdown/ZIP, taille max 1 Mio ; droits à vérifier sur comptes réels'::text AS detail
   UNION ALL SELECT 'rls_all_academy_tables',
     (SELECT total>=10 AND total=protected AND anon_grants=0 FROM rls),
     (SELECT protected||'/'||total||' tables protégées, '||
@@ -77,10 +78,10 @@ FROM (
     (SELECT total=9 AND transfer=1 AND capstone=1 FROM exercises),
     'Neuf travaux dont Rivage et Playbook final distincts'
   UNION ALL SELECT 'processus_assets_uploaded',
-    (SELECT registered=12 AND matched_paths=12 FROM assets)
-      AND (SELECT stored=12 FROM storage_count),
+    (SELECT registered=14 AND matched_paths=14 FROM assets)
+      AND (SELECT stored=14 FROM storage_count),
     (SELECT matched_paths||'/'||registered||' chemins présents, '||
-      (SELECT stored FROM storage_count)||' objets dans le bucket. SHA-256 et droits à vérifier séparément' FROM assets)
+      (SELECT stored FROM storage_count)||' objets du parcours Processus. SHA-256 et droits à vérifier séparément' FROM assets)
   UNION ALL SELECT 'pilot_accounts_prepared',
     (SELECT total>=2 FROM learners) AND (SELECT total>=1 FROM instructors),
     (SELECT total||' apprenant(s) actif(s) inscrit(s), '||
