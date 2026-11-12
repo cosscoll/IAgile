@@ -43,6 +43,7 @@
     const referenceList = document.getElementById('external-references-list');
     if (referenceList) referenceList.replaceChildren();
     window.IAgileV6Prompts?.clear?.();
+    window.IAgileV9Tools?.clear?.();
   };
   const config = window.IAgileAcademyConfig;
   if ((course && !allow.has(course)) || !config?.url || !config?.publishableKey || !window.supabase?.createClient) {
@@ -787,6 +788,9 @@
       if (request === sequence) await showExternalReferences(request);
       if (request === sequence && window.IAgileV6Prompts?.load) {
         await window.IAgileV6Prompts.load(client,course,()=>request===sequence&&!logoutRequested);
+      }
+      if (request === sequence && window.IAgileV9Tools?.load) {
+        await window.IAgileV9Tools.load(client,course,()=>request===sequence&&!logoutRequested);
       }
     } catch (_error) {
       if (request === sequence) failClosed('Vérification indisponible. Aucun cours privé n’a été chargé.');
