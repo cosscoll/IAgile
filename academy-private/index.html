@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#111827">
+<title>IAgile Academy — Espace apprenant</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<a href="#main" class="skip">Aller au contenu principal</a>
+<header class="top"><a class="brand" href="../index.html">IAgile<span> Academy</span></a><div class="session"><span id="identity" aria-live="polite"></span><button id="signout" hidden type="button">Se déconnecter</button></div></header>
+<main id="main" class="shell">
+<section class="intro"><p class="eyebrow">ESPACE APPRENANT PRIVÉ</p><h1>Apprenez, appliquez, progressez.</h1><p>Retrouvez uniquement les formations auxquelles votre compte est autorisé à accéder.</p></section>
+<section id="configuration" class="panel" hidden><h2>Configuration en cours</h2><p>La connexion à l'espace apprenant n'est pas encore activée sur cette adresse.</p></section>
+<section id="auth" class="panel" hidden><h2>Se connecter</h2><p>Utilisez l’adresse e-mail associée à votre compte apprenant. Aucun achat n’est disponible depuis cet espace.</p>
+<form id="loginForm"><label for="email">Adresse e-mail</label><input id="email" type="email" autocomplete="email" placeholder="vous@exemple.fr" required>
+<label for="password">Mot de passe</label><input id="password" type="password" autocomplete="current-password" required minlength="8">
+<button type="submit" id="loginBtn">Connexion</button></form>
+<p class="hint">Vous avez oublié votre mot de passe ? <button class="text-button" type="button" id="reset">Recevoir un e-mail de réinitialisation</button></p>
+</section>
+<section id="recovery" class="panel" hidden><h2>Choisir un nouveau mot de passe</h2><p>Ce formulaire n'est disponible qu'après ouverture d'un lien de réinitialisation valide.</p><form id="recoveryForm"><label for="newPassword">Nouveau mot de passe</label><input id="newPassword" type="password" autocomplete="new-password" minlength="10" required><label for="confirmPassword">Confirmer le mot de passe</label><input id="confirmPassword" type="password" autocomplete="new-password" minlength="10" required><button type="submit">Enregistrer le mot de passe</button></form></section>
+<section id="dashboard" hidden>
+<div class="section-header"><div><p class="eyebrow">MON ESPACE</p><h2>Mes formations</h2></div><button type="button" id="refresh">Actualiser</button></div>
+<div id="courses" class="courses" aria-live="polite"></div>
+<div id="courseView" hidden><button id="back" class="text-button" type="button">← Retour aux formations</button><h2 id="courseTitle"></h2><p id="courseDescription"></p><div class="progress-widget"><p id="progressText" aria-live="polite">Progression de la formation</p><progress id="progressMeter" value="0" max="1">0</progress></div><div id="modules" class="modules"></div><section id="resources" aria-labelledby="resourcesTitle"><h3 id="resourcesTitle">Ressources de formation</h3><div id="courseAssets" class="modules"></div></section><section id="deliverables" aria-labelledby="deliverablesTitle"><h3 id="deliverablesTitle">Mes travaux</h3><div id="prompts" class="modules"></div></section></div>
+</section>
+<p id="status" role="status" aria-live="polite"></p>
+</main>
+<footer>IAgile Academy · Accès réservé aux apprenants autorisés · Aucune leçon complète sur le site vitrine.</footer>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

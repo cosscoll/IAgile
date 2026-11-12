@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>IAgile Academy — Import privé formateur</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+  <header>
+    <a class="brand" href="./instructor.html">I<span>Agile</span> Academy</a>
+    <div class="session"><span id="identity"></span><button id="signout" hidden>Déconnexion</button></div>
+  </header>
+  <main id="main">
+    <section class="intro">
+      <p class="eyebrow">ADMINISTRATION PÉDAGOGIQUE · ACCÈS CONTRÔLÉ</p>
+      <h1>Import des supports privés</h1>
+      <p>Les documents restent dans Supabase Storage privé. Aucune publication de cours ni changement des droits apprenants n'est effectué ici.</p>
+    </section>
+    <section id="auth" class="panel">
+      <h2>Authentification formateur</h2>
+      <form id="loginForm">
+        <label for="email">Adresse e-mail</label>
+        <input id="email" type="email" required autocomplete="username">
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" required autocomplete="current-password">
+        <button type="submit" id="login">Accéder à l'import</button>
+      </form>
+    </section>
+    <section id="importer" hidden>
+      <h2>Formation pilote : IA au quotidien</h2>
+      <p>Importer uniquement le ZIP privé du parcours <strong>processus</strong>. Les douze fichiers et leurs SHA-256 doivent correspondre exactement aux métadonnées stockées dans Supabase.</p>
+      <div class="panel">
+        <label for="package">Archive pédagogique .zip (maximum 100 Ko)</label>
+        <input id="package" type="file" accept=".zip,application/zip">
+        <p><button id="verify" type="button">Vérifier le pack</button> <button id="upload" type="button" disabled>Importer les 12 fichiers vérifiés</button></p>
+        <p id="privacy">Aucun fichier ne sera envoyé avant votre action d'import. Les fichiers ne passent jamais par GitHub.</p>
+      </div>
+      <h3>Vérification des ressources</h3>
+      <ul id="files" class="import-files"></ul>
+    </section>
+    <p id="status" role="status" aria-live="polite"></p>
+  </main>
+  <footer>IAgile Academy — administration privée réservée aux formateurs habilités</footer>
+  <script type="module" src="./import.js"></script>
+</body>
+</html>
